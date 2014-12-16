@@ -22,6 +22,9 @@ class Organism(models.Model):
     def get_common_name(self):
         return self.common
 
+    class Meta:
+        app_label = 'ACAD'
+
 class Source(models.Model):
     CONTINENTS = (
         ('africa', 'Africa'),
@@ -79,9 +82,8 @@ class Source(models.Model):
     def get_source_id(self):
         return self.id
 
-    def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
-        return reverse('source_detail', args=[str(self.id)])
+    class Meta:
+        app_label = 'ACAD'
 
 class Sample(models.Model):
     SAMPLE_CATS = (
@@ -115,9 +117,8 @@ class Sample(models.Model):
     def get_id(self):
         return self.id
 
-    def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
-        return reverse('sample_detail', args=[str(self.id)])
+    class Meta:
+        app_label = 'ACAD'
 
 class Extract(models.Model):
     id = models.CharField("Extract ID", primary_key=True, max_length=255)
@@ -129,9 +130,13 @@ class Extract(models.Model):
     def __unicode__(self):
         return "Extract " + self.id + " " + str(self.date)
 
+    class Meta:
+        app_label = 'ACAD'
+
 class Library(models.Model):
     class Meta:
         verbose_name_plural = 'libraries'
+        app_label = 'ACAD'
 
     LIB_SOURCES = (
         ('genomic', 'Genomic'),
@@ -190,6 +195,9 @@ class Sequence(models.Model):
     def __unicode__(self):
         return "Sequence " + self.id + " " + str(self.date)
 
+    class Meta:
+        app_label = 'ACAD'
+
 class Processing(models.Model):
     id = models.CharField("Processing ID", primary_key=True, max_length=255)
     sequence = models.OneToOneField(Sequence)
@@ -202,9 +210,13 @@ class Processing(models.Model):
     def __unicode__(self):
         return "Processing " + self.id
 
+    class Meta:
+        app_label = 'ACAD'
+
 class Analysis(models.Model):
     class Meta:
         verbose_name_plural = 'analyses'
+        app_label = 'ACAD'
 
     id = models.CharField("Analysis ID", primary_key=True, max_length=255)
     dataset = models.OneToOneField('Dataset')
