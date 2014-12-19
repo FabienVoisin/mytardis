@@ -8,8 +8,7 @@ from urllib2 import HTTPError
 from tardis.tardis_portal.models import ExperimentParameter, \
     ExperimentParameterSet, ParameterName, Schema
 
-import re
-import urllib2
+import requests, json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -80,18 +79,16 @@ class DOIService(object):
         return doi
 
     def _mint_doi(self, url):
-        headers = {
-            'Content-type': 'application/x-www-form-urlencoded',
-            'Accept': 'text/plain'
-        }
-        post_data = 'xml=' + self._datacite_xml()
-
         base_url = settings.DOI_MINT_URL
         app_id = settings.DOI_APP_ID
         mint_url = "%s?app_id=%s&url=%s" % (base_url, app_id, url)
+	post_data = {'xml': self._datacite_xml()}
 
-        doi_response = DOIService._post(mint_url, post_data, headers)
-        doi = DOIService._read_doi(doi_response)
+	if hasattr(settings, 'DOI_SHARED_SECRET') and settings.DOI_SHARED_SECRET:
+	    post_data['shared_secret'] = settings.DOI_SHARED_SECRET
+
+	doi_response = requests.post(mint_url, data = post_data)
+	doi = DOIService._read_doi(doi_response.json())
         if hasattr(settings, 'DOI_RELATED_INFO_ENABLE') and settings.DOI_RELATED_INFO_ENABLE:
             import tardis.apps.related_info.related_info as ri
             rih = ri.RelatedInfoHandler(self.experiment.id)
@@ -115,22 +112,11 @@ class DOIService(object):
         return eps
 
     @staticmethod
-    def _read_doi(doi_response):
-        matches = re.match(r'\[MT001\] DOI (.+) was successfully minted.', doi_response)
-        if not matches:
-            raise Exception('unrecognised response: %s' + doi_response)
-        return matches.group(1)
-
-    @staticmethod
-    def _post(url, post_data, headers):
-        try:
-            request = urllib2.Request(url, post_data, headers)
-            response = urllib2.urlopen(request)
-            return response.read()
-        except HTTPError as e:
-            logger.error(e.read())
-            raise e
-
+    def _read_doi(rj):
+	if rj['response']['responsecode'] == 'MT001':
+	    return rj['response']['doi']
+	else:
+	    raise Exception('unrecognised response: %s' % json.dumps(rj, sort_keys=True, indent=2, separators=(",", ": ")))
 
 class DOIXMLProvider(object):
     """
