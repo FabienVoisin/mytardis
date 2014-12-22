@@ -23,7 +23,7 @@ class Organism(models.Model):
         return self.common
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Source(models.Model):
     CONTINENTS = (
@@ -83,7 +83,7 @@ class Source(models.Model):
         return self.id
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Sample(models.Model):
     SAMPLE_CATS = (
@@ -118,7 +118,7 @@ class Sample(models.Model):
         return self.id
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Extract(models.Model):
     id = models.CharField("Extract ID", primary_key=True, max_length=255)
@@ -131,12 +131,12 @@ class Extract(models.Model):
         return "Extract " + self.id + " " + str(self.date)
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Library(models.Model):
     class Meta:
         verbose_name_plural = 'libraries'
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
     LIB_SOURCES = (
         ('genomic', 'Genomic'),
@@ -196,7 +196,7 @@ class Sequence(models.Model):
         return "Sequence " + self.id + " " + str(self.date)
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Processing(models.Model):
     id = models.CharField("Processing ID", primary_key=True, max_length=255)
@@ -211,15 +211,15 @@ class Processing(models.Model):
         return "Processing " + self.id
 
     class Meta:
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
 class Analysis(models.Model):
     class Meta:
         verbose_name_plural = 'analyses'
-        app_label = 'tardis_portal'
+        app_label = 'acad'
 
     id = models.CharField("Analysis ID", primary_key=True, max_length=255)
-    dataset = models.OneToOneField('Dataset')
+    dataset = models.OneToOneField('tardis_portal.Dataset')
     note = models.TextField("temp text field")
 
     def __unicode__(self):

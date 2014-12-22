@@ -63,5 +63,3 @@ from .parameters import DatafileParameter, DatafileParameterSet, \
                         InstrumentParameter, InstrumentParameterSet, \
                         FreeTextSearchField, ParameterName, Schema
 from .token import Token
-
-from .acad_models import Organism, Source, Sample, Extract, Library, Sequence, Processing, Analysis
