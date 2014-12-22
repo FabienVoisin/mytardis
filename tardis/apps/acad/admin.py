@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models import Organism, Source, Sample, Extract, Library, Sequence,   Processing, Analysis
+from tardis.apps.models import Organism, Source, Sample, Extract, Library, Sequence,   Processing, Analysis
 
 admin.site.register(Organism)
 admin.site.register(Source)
