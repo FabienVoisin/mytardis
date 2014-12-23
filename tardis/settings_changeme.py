@@ -393,7 +393,7 @@ DOI_APP_ID = ''
 #DOI_SHARED_SECRET: optional, used when IP is not registered with ANDS DOI server
 #DOI_SHARED_SECRET = ''
 DOI_NAMESPACE = 'http://www.tardis.edu.au/schemas/doi/2011/12/07'
-DOI_MINT_URL = 'https://services.ands.org.au/home/dois/doi_mint.php'
+DOI_MINT_URL = 'https://services.ands.org.au/doi/1.1/mint.json/'
 DOI_RELATED_INFO_ENABLE = False
 DOI_BASE_URL = 'http://mytardis.example.com'
 
