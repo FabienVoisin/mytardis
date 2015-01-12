@@ -562,6 +562,8 @@ def view_experiment(request, experiment_id,
     c['experiment'] = experiment
     c['has_write_permissions'] = \
         authz.has_write_permissions(request, experiment_id)
+    c['has_change_permissions'] = \
+        experiment_change_permissions(request.user, experiment)
     c['has_download_permissions'] = \
         authz.has_experiment_download_access(request, experiment_id)
     if request.user.is_authenticated():
@@ -799,6 +801,8 @@ def view_dataset(request, dataset_id):
         authz.has_dataset_download_access(request, dataset_id),
         'has_write_permissions':
         authz.has_dataset_write(request, dataset_id),
+        'has_change_permissions':
+        dataset._has_change_perm(request.user),
         'from_experiment':
         get_experiment_referer(request, dataset_id),
         'other_experiments':
@@ -3040,6 +3044,11 @@ def single_search(request):
         form_class=RawSearchForm,
     ).__call__(request)
 
+def experiment_change_permissions(user, exp):
+    if exp._has_change_perm(user) != False:
+        return True
+    else:
+        return False
 
 def share(request, experiment_id):
     '''
@@ -3053,6 +3062,8 @@ def share(request, experiment_id):
         authz.has_write_permissions(request, experiment_id)
     c['has_download_permissions'] = \
         authz.has_experiment_download_access(request, experiment_id)
+    c['has_change_permissions'] = \
+        experiment_change_permissions(request.user, experiment)
     if request.user.is_authenticated():
         c['is_owner'] = authz.has_experiment_ownership(request, experiment_id)
 

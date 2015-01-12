@@ -231,7 +231,7 @@ $('#modal-metadata .submit-button').click(function() {
 
 <div class="page-header">
   <h4>Experiment</h4>
-  {% if has_write_permissions and not experiment.public %}
+  {% if has_write_permissions and not experiment.public and has_change_permissions %}
   <div class="pull-right">
     <a class="btn btn-mini btn-warning" title="Edit Experiment"
        href="{{ experiment.get_edit_url }}">

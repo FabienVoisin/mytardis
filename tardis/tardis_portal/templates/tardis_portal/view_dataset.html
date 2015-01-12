@@ -347,7 +347,7 @@ $('#modal-metadata .submit-button').live('click', function() {
 
 <div class="page-header">
   <h4>Dataset</h4>
-  {% if has_write_permissions %}
+  {% if has_write_permissions and has_change_permissions %}
   <div class="pull-right">
     <a class="btn btn-warning btn-mini" title="Edit Dataset"
        href="{{ dataset.get_edit_url }}">
