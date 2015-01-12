@@ -346,6 +346,8 @@ class RegisterExperimentForm(forms.Form):
 
 class DatasetForm(forms.ModelForm):
 
+    publish = forms.BooleanField(required=False, label="Publically accessible, put into model?")
+    publish.widget.attrs['title'] = "Once published, there is no reverse, should be disabled"
     class Meta:
         model = models.Dataset
         exclude = ('experiments', 'immutable')

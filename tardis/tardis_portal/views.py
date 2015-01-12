@@ -3262,7 +3262,7 @@ def edit_dataset(request, dataset_id):
         form = DatasetForm(request.POST)
         if form.is_valid():
             dataset.description = form.cleaned_data['description']
-            dataset.save()
+            dataset.save(publish=form.cleaned_data['publish']) #temporary solution
             return _redirect_303('tardis.tardis_portal.views.view_dataset',
                                  dataset.id)
     else:
