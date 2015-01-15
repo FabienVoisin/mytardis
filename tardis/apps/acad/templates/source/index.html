@@ -1,0 +1,23 @@
+{% extends "tardis_portal/portal_template.html" %}
+{% block content %}
+<h1>Sources</h1>
+{% if source_list %}
+<ul>
+    {% for i in source_list %}
+    <li><a href="{{ i.get_absolute_url }}">{{i}}</a></li>
+    {% endfor %}
+</ul>
+<div id="map" style="height: 500px"></div>
+<script>
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+
+    var map = L.map('map').setView([0, 0], 2).addLayer(layer);
+
+    {% for i in source_list %}
+    L.marker([{{ i.geoloc_lat }}, {{ i.geoloc_lon}}])
+        .addTo(map)
+        .bindPopup('<a href="{{ i.get_absolute_url }}">{{ i }}</a>')
+    {% endfor %}
+</script>
+{% endif %}
+{% endblock %}

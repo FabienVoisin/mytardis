@@ -82,6 +82,10 @@ class Source(models.Model):
     def get_source_id(self):
         return self.id
 
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('source_detail', args=[str(self.id)])
+
     class Meta:
         app_label = 'acad'
 
