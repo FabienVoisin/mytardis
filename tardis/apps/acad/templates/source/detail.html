@@ -19,6 +19,28 @@
 <p>Env feature: {{ source.env_feature }}</p>
 {% if source.carbondate_id %}<p>Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</p>{% endif %}
 
+{% if samples %}
+<h2>Samples</h2>
+
+<ul class="nav nav-tabs">
+    {% for i in samples %}
+    <li{%if i == samples.0 %} class="active"{%endif%}><a data-toggle="tab"      >href="#{{i.get_id}}">{{ i }}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="tab-content">
+    {% for i in samples %}
+    <div role="tabpanel" class="tab-pane{%if i == samples.0 %} active{%endif%}" >id="{{i.get_id}}">
+        <p>Collection date: {{ i.date }}</p>
+        <p>Category of sample: {{ i.get_sample_cat_display }}</p>
+        <p>Sample details: {{ i.sample_details }}</p>
+        <p>Environmental package: {{ i.get_env_package_display }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js" />
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 

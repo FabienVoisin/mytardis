@@ -7,5 +7,6 @@ def source_index(request):
 
 def source_detail(request, id):
     source = get_object_or_404(Source, pk=id)
-    context = {'source': source}
+    samples = source.sample_set.all()
+    context = {'source': source, 'samples': samples}
     return render(request, 'source/detail.html', context) 
