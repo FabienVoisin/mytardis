@@ -2,7 +2,7 @@
 {% block content %}
 <h1>{{ source }}</h1>
 
-<div id="map" style="height: 300px; width: 300px; float: right"></div>
+<!-- <div id="map" style="height: 300px; width: 300px; float: right"></div> -->
 
 <p>Source ID: {{ source.id }}</p>
 <p>Collection date: {{ source.date|date:"c"}}</p>
@@ -40,7 +40,9 @@
 </div>
 {% endif %}
 
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js" />
+{% endblock %}
+<!--
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 
@@ -56,4 +58,4 @@
             fillOpacity: 0.25
         }).addTo(map);
 </script>
-{% endblock %}
+-->

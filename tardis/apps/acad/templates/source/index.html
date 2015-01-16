@@ -7,8 +7,11 @@
     <li><a href="{{ i.get_absolute_url }}">{{i}}</a></li>
     {% endfor %}
 </ul>
+{% endif %}
+{% endblock %}
+<!--
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <div id="map" style="height: 500px"></div>
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js" />
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 
@@ -20,5 +23,4 @@
         .bindPopup('<a href="{{ i.get_absolute_url }}">{{ i }}</a>')
     {% endfor %}
 </script>
-{% endif %}
-{% endblock %}
+-->
