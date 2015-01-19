@@ -24,13 +24,13 @@
 
 <ul class="nav nav-tabs">
     {% for i in samples %}
-    <li{%if i == samples.0 %} class="active"{%endif%}><a data-toggle="tab"      >href="#{{i.get_id}}">{{ i }}</a></li>
+    <li{%if i == samples.0 %} class="active"{%endif%}><a data-toggle="tab" href="#{{i.get_id}}">{{ i }}</a></li>
     {% endfor %}
 </ul>
 
 <div class="tab-content">
     {% for i in samples %}
-    <div role="tabpanel" class="tab-pane{%if i == samples.0 %} active{%endif%}" >id="{{i.get_id}}">
+    <div role="tabpanel" class="tab-pane{%if i == samples.0 %} active{%endif%}" id="{{i.get_id}}">
         <p>Collection date: {{ i.date }}</p>
         <p>Category of sample: {{ i.get_sample_cat_display }}</p>
         <p>Sample details: {{ i.sample_details }}</p>
@@ -40,7 +40,6 @@
 </div>
 {% endif %}
 
-{% endblock %}
 <!--
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script>
@@ -59,3 +58,4 @@
         }).addTo(map);
 </script>
 -->
+{% endblock %}
