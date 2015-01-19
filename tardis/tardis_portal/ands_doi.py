@@ -32,7 +32,6 @@ class DOIService(object):
             obj_type = type(obj).__name__
             DOI_SETTINGS = "%s_DOI" % obj_type.upper()
             if hasattr(settings, DOI_SETTINGS):
-                print "we can mint %s" % obj_type
                 ds = getattr(settings, DOI_SETTINGS)
                 self.schema = Schema.objects.get(namespace=ds['NAMESPACE'])
                 self.doi_name = ParameterName.objects.get(name=ds['PRAMETERNAME']) # e.g. doi or doi_experiment or doi_dataset
@@ -100,6 +99,12 @@ class ExperimentDOIService(DOIService):
             return doi_params[0].string_value
         return None
 
+    def _mint_doi(self, url):
+        doi = super(ExperimentDOIService, self)._mint_doi(url)
+        if doi:
+            self._mint_datasets()
+        return doi
+
     def _save_doi(self, doi):
         paramset = self._get_or_create_doi_parameterset()
         ep = ExperimentParameter(parameterset=paramset, name=self.doi_name,\
@@ -133,6 +138,13 @@ class ExperimentDOIService(DOIService):
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml
 
+    def _mint_datasets(self):
+        datasets = self.obj.datasets.all()
+        for ds in datasets:
+            doi_url = settings.DOI_BASE_URL + ds.get_absolute_url()
+            doi_service = DatasetDOIService(ds)
+            doi_service.get_or_mint_doi(doi_url)
+
 class DatasetDOIService(DOIService):
     """
     DOIService
@@ -161,7 +173,6 @@ class DatasetDOIService(DOIService):
         ep.save()
         #if there has been no exception, turn self.obj.immutable = True
         self.obj.immutable = True
-        print "Setting immutable"
         self.obj.save(update_fields=['immutable'])
         return doi
 
