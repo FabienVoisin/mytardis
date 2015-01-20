@@ -6,8 +6,6 @@ from tardis.tardis_portal.tasks import verify_dfo
 
 from .datafile import DataFileObject
 from .experiment import Experiment, Author_Experiment
-from .dataset import Dataset
-from .replica import Replica
 from .parameters import ExperimentParameter, ExperimentParameterSet
 
 import logging
