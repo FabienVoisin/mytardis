@@ -68,14 +68,6 @@ def ensure_doi_exists(sender, **kwargs):
         doi_service = ExperimentDOIService(experiment)
         doi_service.get_or_mint_doi(doi_url)
 
-# Modified based on ensure_doi_exists(sender, **kwargs), above
-def ensure_doi_exists_dataset(dataset):
-    if settings.DOI_ENABLE:  # Currently does not care access control as I am developing:  and experiment.public_access != Experiment.PUBLIC_ACCESS_NONE
-        doi_url = settings.DOI_BASE_URL + dataset.get_absolute_url()
-        from tardis.tardis_portal.ands_doi import DatasetDOIService
-        doi_service = DatasetDOIService(dataset)
-        doi_service.get_or_mint_doi(doi_url)
-
 ### ApiKey hooks
 if getattr(settings, 'AUTOGENERATE_API_KEY', False):
     from django.contrib.auth.models import User

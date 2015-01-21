@@ -42,17 +42,6 @@ class Dataset(models.Model):
         app_label = 'tardis_portal'
         ordering = ['-id']
 
-    def save(self, *args, **kwargs):
-        publish = False
-        if 'publish' in kwargs: #check if an atrificial field publish is here
-            publish = kwargs['publish']
-            del kwargs['publish']
-
-        super(Dataset, self).save(*args, **kwargs)
-        if publish:
-            from .hooks import ensure_doi_exists_dataset
-            ensure_doi_exists_dataset(self)
-
     def getParameterSets(self, schemaType=None):
         """Return the dataset parametersets associated with this
         experiment.
