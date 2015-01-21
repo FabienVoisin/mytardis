@@ -110,6 +110,9 @@ class ExperimentDOIService(DOIService):
         ep = ExperimentParameter(parameterset=paramset, name=self.doi_name,\
                                     string_value=doi)
         ep.save()
+        #if there has been no exception, turn self.obj.immutable = True
+        self.obj.locked = True
+        self.obj.save(update_fields=['locked'])
         return doi
 
     def _get_or_create_doi_parameterset(self):
