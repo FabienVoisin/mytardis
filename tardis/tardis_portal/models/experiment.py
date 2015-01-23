@@ -4,9 +4,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.safestring import SafeUnicode
+from datetime import date
 
 from tardis.tardis_portal.managers import OracleSafeManager, ExperimentManager
 from tardis.tardis_portal.models import ObjectACL
@@ -55,10 +57,11 @@ class Experiment(models.Model):
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
-    update_time = models.DateTimeField(auto_now=True)
+    update_time = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User)
     handle = models.TextField(null=True, blank=True)
     locked = models.BooleanField()
+    publication_year = models.CharField(max_length=4, validators=[RegexValidator(regex='^2\d{3}$', message='Has to be a four-digit year, starts with 2, e.g. 2015')], default=date.today().year)
     public_access = \
         models.PositiveSmallIntegerField(choices=PUBLIC_ACCESS_CHOICES,
                                          null=False,

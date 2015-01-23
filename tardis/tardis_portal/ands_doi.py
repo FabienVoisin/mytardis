@@ -110,7 +110,7 @@ class ExperimentDOIService(DOIService):
         ep = ExperimentParameter(parameterset=paramset, name=self.doi_name,\
                                     string_value=doi)
         ep.save()
-        #if there has been no exception, turn self.obj.immutable = True
+        #if there has been no exception, turn self.obj.locked = True
         self.obj.locked = True
         self.obj.save(update_fields=['locked'])
         return doi
@@ -136,7 +136,7 @@ class ExperimentDOIService(DOIService):
         c = Context()
         c['title'] = ex.title
         c['institution_name'] = ex.institution_name
-        c['publication_year'] = date.today().year
+        c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml
@@ -200,7 +200,7 @@ class DatasetDOIService(DOIService):
         c = Context()
         c['title'] = ex.title
         c['institution_name'] = ex.institution_name
-        c['publication_year'] = date.today().year
+        c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml

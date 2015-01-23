@@ -53,6 +53,7 @@ from django.conf import settings
 from django.db import transaction
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from datetime import date
 
 from haystack.forms import SearchForm
 
@@ -370,7 +371,7 @@ class ExperimentForm(forms.ModelForm):
 
     class Meta:
         model = models.Experiment
-        fields = ('title', 'institution_name', 'description')
+        fields = ('title', 'institution_name', 'description', 'publication_year')
 
     class FullExperiment(UserDict):
         """
