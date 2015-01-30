@@ -592,9 +592,12 @@ def view_experiment(request, experiment_id,
         {'name': 'Metadata',
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
         {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
-        {'name': 'Transfer Datasets',
-         'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'},
     ]
+    # do not load 'Transger Dataset' if user has no 'has_change_permissions'
+    if c['has_change_permissions']:
+        default_apps.append({'name': 'Transfer Datasets',
+         'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
+
     appnames = []
     appurls = []
 
@@ -913,7 +916,12 @@ def experiment_datasets_json(request, experiment_id):
 @never_cache
 @authz.experiment_access_required
 def experiment_dataset_transfer(request, experiment_id):
-    experiments = Experiment.safe.owned(request.user)
+    try:
+        experiment = Experiment.safe.get(request.user, experiment_id)
+    except PermissionDenied:
+        return return_response_error(request)
+    except Experiment.DoesNotExist:
+        return return_response_not_found(request)
 
     def get_json_url_pattern():
         placeholder = '314159'
@@ -921,9 +929,14 @@ def experiment_dataset_transfer(request, experiment_id):
                        args=[placeholder]).replace(placeholder,
                                                    '{{experiment_id}}')
 
-    c = Context({'experiments': experiments.exclude(id=experiment_id),
-                 'url_pattern': get_json_url_pattern()
-                 })
+    if experiment_change_permissions(request.user, experiment):
+        experiments = Experiment.safe.owned(request.user)
+        c = Context({'experiments': experiments.exclude(id=experiment_id),
+                     'url_pattern': get_json_url_pattern()
+                     })
+    else:
+        c = Context({'experiments': None})
+
     return HttpResponse(render_response_index(
         request,
         'tardis_portal/ajax/experiment_dataset_transfer.html',
