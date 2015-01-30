@@ -198,7 +198,7 @@ class DatasetDOIService(DOIService):
 
         ex = self.obj.get_first_experiment()
         c = Context()
-        c['title'] = ex.title
+        c['title'] = self.obj.description
         c['institution_name'] = ex.institution_name
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
