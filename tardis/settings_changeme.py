@@ -398,7 +398,7 @@ DOI_RELATED_INFO_ENABLE = False
 DOI_BASE_URL = 'http://mytardis.example.com'
 # WHATTYPE_DOI = {
 #   "NAMESPACE": "http://www.tardis.edu.au/schemas/doi/2011/12/07",
-#   "PRAMETERNAME": "doi"
+#   "PARAMETERNAME": "doi"
 # }
 
 OAIPMH_PROVIDERS = [

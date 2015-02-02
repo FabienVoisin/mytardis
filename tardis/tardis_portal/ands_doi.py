@@ -34,7 +34,7 @@ class DOIService(object):
             if hasattr(settings, DOI_SETTINGS):
                 ds = getattr(settings, DOI_SETTINGS)
                 self.schema = Schema.objects.get(namespace=ds['NAMESPACE'])
-                self.doi_name = ParameterName.objects.get(name=ds['PRAMETERNAME']) # e.g. doi or doi_experiment or doi_dataset
+                self.doi_name = ParameterName.objects.get(name=ds['PARAMETERNAME']) # e.g. doi or doi_experiment or doi_dataset
             else:
                 raise Exception('DOI is enabled, but lacking of information: %s does not exist.' % DOI_SETTINGS)
 
