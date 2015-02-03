@@ -536,11 +536,11 @@ $(document).ready(function() {
                 {% if experiment.license_id %}
                   <div class="row-fluid">
                     <div class="span6">
-                      This experiment data is licensed under
+                      This experiment data and metadata is licensed under a
                       <a rel="license"
                          property="dc:license"
                          href="{{ experiment.license.url }}">
-                        {{ experiment.license.name }}</a>.
+                        {{ experiment.license.name }} licence</a>.
                     </div>
                     {% if experiment.license.image_url != None %}
                     <div class="span6">

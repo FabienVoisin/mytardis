@@ -40,24 +40,6 @@ var populateLicenseOptions = function(public_access, markSameLicense) {
 </script>
 
 <script type="text/javascript">
-$('#publishing-consent').live("change", function() {
-  // (submit disabled) <=> !(consent checked)
-  $('#legal-section .submit-button').prop('disabled', !$(this).prop('checked'))
-});
-// Disable submit button (as consent checkbox should start unchecked)
-$('#publishing-consent').trigger('change');
-// Disable consent until we've loaded the legal text
-$('#publishing-consent').prop('disabled', true)
-// Get legal text
-$.ajax({
-  url: "{% static 'publishing_legal.txt' %}",
-  dataType: 'html',
-  success: function(data) {
-    $('#publishing-legal-text').html(data);
-    $('#publishing-consent').prop('disabled', false);
-  }
-});
-
 $('#legal-section .submit-button').live("click", function() {
   // Submit form
   $('form.experiment-rights').trigger('submit');
@@ -186,16 +168,6 @@ $('form.experiment-rights').submit(function(evt) {
 <div id="selected-license-text"></div>
 <div id="legal-section">
     <a id="reselect-license">Reselect License</a>
-    <br/><br/>
-    <h3 class="title">Step 3: Accept The Legal Agreement:</h3>
-
-  <div class="form-horizontal">
-    <pre id="publishing-legal-text"></pre>
-    <label class="checkbox">
-      <input id="publishing-consent" type="checkbox" value="Agree" />
-      I agree to the above terms
-    </label>
-  </div>
   <div class="footer">
     <button class="submit-button btn btn-success">
       <i class="icon-ok"></i>
