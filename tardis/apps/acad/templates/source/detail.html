@@ -2,7 +2,7 @@
 {% block content %}
 <h1>{{ source }}</h1>
 
-<!-- <div id="map" style="height: 300px; width: 300px; float: right"></div> -->
+<div id="map" style="height: 300px; width: 300px; float: right"></div>
 
 <p>Source ID: {{ source.id }}</p>
 <p>Collection date: {{ source.date|date:"c"}}</p>
@@ -14,7 +14,7 @@
 <p>Continent: {{ source.get_geoloc_continent_display }}</p>
 <p>Country: {{ source.geoloc_country }}</p>
 <p>Locale: {{ source.geoloc_locale }}</p>
-{%if source.geoloc_lat or source.geoloc_lon %}<p>Lat/lon: {{source.geoloc_lat}}, {{source.geoloc_lon}}{%endif%}
+{%if source.geoloc_lat or source.geoloc_lon %}<p>Lat/lon: {{source.geoloc_lat}}, {{source.geoloc_lon|default_if_none:"138.596434"}}{%endif%}
 <p>Biome: {{ source.env_biome }}</p>
 <p>Env feature: {{ source.env_feature }}</p>
 {% if source.carbondate_id %}<p>Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</p>{% endif %}
@@ -40,22 +40,22 @@
 </div>
 {% endif %}
 
-<!--
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 
-    var map = L.map('map').setView([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}], 7).addLayer(layer);
+    var map = L.map('map').setView([{{ source.geoloc_lat|default:"-33" }}, {{source.geoloc_lon|default_if_none:"138.596434"}} ], 7).addLayer(layer);
 
-    L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}])
+    L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}])
         .addTo(map)
-        .bindPopup('{{ source.geoloc_lat }}, {{ source.geoloc_lon}}')
+        .bindPopup('{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}')
 
-    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}], 100000, {
+    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}], 100000, {
             color: 'red',
             fillColor: 'red',
             fillOpacity: 0.25
         }).addTo(map);
 </script>
--->
+
 {% endblock %}
