@@ -92,7 +92,7 @@ For security reasons this needs to be set to your hostname and/or IP
 address in production.
 '''
 
-SITE_TITLE = None
+SITE_TITLE = 'ACADTardis schema test'
 '''
 customise the title of your site
 '''
@@ -248,6 +248,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'mustachejs',
     'tastypie',
+    'tardis.apps.acad',
 )
 
 JASMINE_TEST_DIRECTORY = path.abspath(path.join(path.dirname(__file__),
