@@ -816,6 +816,14 @@ def view_dataset(request, dataset_id):
         authz.get_accessible_experiments_for_dataset(request, dataset_id),
         'upload_method': upload_method
     })
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import DatasetDOIService
+        # Citation needs to find out chronologically earliest parent experiment ex
+        doi_service = DatasetDOIService(dataset)
+        c['doi_exp'] = dataset.get_first_experiment()
+        c['doi'] = doi_service.get_doi()
+        logger.debug("We have doi of %s, %s" % (c['doi_exp'], c['doi']))
+
     _add_protocols_and_organizations(request, dataset, c)
     return HttpResponse(render_response_index(
         request, 'tardis_portal/view_dataset.html', c))
@@ -973,6 +981,12 @@ def retrieve_experiment_metadata(request, experiment_id):
     c = Context({'experiment': experiment,
                  'parametersets': parametersets,
                  'has_write_permissions': has_write_permissions})
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import ExperimentDOIService
+        doi_service = ExperimentDOIService(experiment)
+        c['doi'] = doi_service.get_doi()
+        logger.debug("We have doi of %s, %s" % (experiment.title, c['doi']))
+
     return HttpResponse(render_response_index(request,
                         'tardis_portal/ajax/experiment_metadata.html', c))
 

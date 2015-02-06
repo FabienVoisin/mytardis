@@ -57,3 +57,22 @@
     There is no metadata for this dataset.
   </div>
 {% endfor %}
+
+{% if doi %}
+<h1>To be moved and cleaned</h1>
+<div class="row-fluid">
+    <p> Citation for your convience: Llamas, Bastian; Haak, Wolfgang (2014): Awesome ancient human DNA experiment. Australian Centre for Ancient DNA, University of Adelaide. Collection. http://dx.doi.org/10.5072/1234</p>
+    <small>
+    {% for author in experiment.author_experiment_set.all %}{% capture as creator_span %}
+    <span property="dc:creator" style="white-space: nowrap;">
+      {{ author.author }}</span>{% endcapture %}{% if not forloop.first %};
+      {% endif %}
+      {{ creator_span }}{% endfor %}
+    </small>
+    ({{ experiment.publication_year }}):
+    {{ experiment.title }}.
+    {{ experiment.institution_name }}.
+    Collection.
+    http://dx.doi.org/{{ doi }}</a>
+</div>
+{% endif %}
