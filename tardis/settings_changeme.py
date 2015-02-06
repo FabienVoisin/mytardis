@@ -92,7 +92,7 @@ For security reasons this needs to be set to your hostname and/or IP
 address in production.
 '''
 
-SITE_TITLE = 'ACADTardis schema test'
+SITE_TITLE = 'ACADTardis'
 '''
 customise the title of your site
 '''
