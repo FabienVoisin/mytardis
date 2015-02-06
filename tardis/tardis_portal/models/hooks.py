@@ -64,8 +64,8 @@ def ensure_doi_exists(sender, **kwargs):
     if settings.DOI_ENABLE and \
        experiment.public_access != Experiment.PUBLIC_ACCESS_NONE:
         doi_url = settings.DOI_BASE_URL + experiment.get_absolute_url()
-        from tardis.tardis_portal.ands_doi import DOIService
-        doi_service = DOIService(experiment)
+        from tardis.tardis_portal.ands_doi import ExperimentDOIService
+        doi_service = ExperimentDOIService(experiment)
         doi_service.get_or_mint_doi(doi_url)
 
 ### ApiKey hooks

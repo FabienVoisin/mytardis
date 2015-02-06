@@ -562,6 +562,8 @@ def view_experiment(request, experiment_id,
     c['experiment'] = experiment
     c['has_write_permissions'] = \
         authz.has_write_permissions(request, experiment_id)
+    c['has_change_permissions'] = \
+        experiment_change_permissions(request.user, experiment)
     c['has_download_permissions'] = \
         authz.has_experiment_download_access(request, experiment_id)
     if request.user.is_authenticated():
@@ -590,9 +592,12 @@ def view_experiment(request, experiment_id,
         {'name': 'Metadata',
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
         {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
-        {'name': 'Transfer Datasets',
-         'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'},
     ]
+    # do not load 'Transger Dataset' if user has no 'has_change_permissions'
+    if c['has_change_permissions']:
+        default_apps.append({'name': 'Transfer Datasets',
+         'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
+
     appnames = []
     appurls = []
 
@@ -799,6 +804,8 @@ def view_dataset(request, dataset_id):
         authz.has_dataset_download_access(request, dataset_id),
         'has_write_permissions':
         authz.has_dataset_write(request, dataset_id),
+        'has_change_permissions':
+        dataset._has_change_perm(request.user),
         'from_experiment':
         get_experiment_referer(request, dataset_id),
         'other_experiments':
@@ -909,7 +916,12 @@ def experiment_datasets_json(request, experiment_id):
 @never_cache
 @authz.experiment_access_required
 def experiment_dataset_transfer(request, experiment_id):
-    experiments = Experiment.safe.owned(request.user)
+    try:
+        experiment = Experiment.safe.get(request.user, experiment_id)
+    except PermissionDenied:
+        return return_response_error(request)
+    except Experiment.DoesNotExist:
+        return return_response_not_found(request)
 
     def get_json_url_pattern():
         placeholder = '314159'
@@ -917,9 +929,14 @@ def experiment_dataset_transfer(request, experiment_id):
                        args=[placeholder]).replace(placeholder,
                                                    '{{experiment_id}}')
 
-    c = Context({'experiments': experiments.exclude(id=experiment_id),
-                 'url_pattern': get_json_url_pattern()
-                 })
+    if experiment_change_permissions(request.user, experiment):
+        experiments = Experiment.safe.owned(request.user)
+        c = Context({'experiments': experiments.exclude(id=experiment_id),
+                     'url_pattern': get_json_url_pattern()
+                     })
+    else:
+        c = Context({'experiments': None})
+
     return HttpResponse(render_response_index(
         request,
         'tardis_portal/ajax/experiment_dataset_transfer.html',
@@ -3040,6 +3057,11 @@ def single_search(request):
         form_class=RawSearchForm,
     ).__call__(request)
 
+def experiment_change_permissions(user, exp):
+    if exp._has_change_perm(user) != False:
+        return True
+    else:
+        return False
 
 def share(request, experiment_id):
     '''
@@ -3053,6 +3075,8 @@ def share(request, experiment_id):
         authz.has_write_permissions(request, experiment_id)
     c['has_download_permissions'] = \
         authz.has_experiment_download_access(request, experiment_id)
+    c['has_change_permissions'] = \
+        experiment_change_permissions(request.user, experiment)
     if request.user.is_authenticated():
         c['is_owner'] = authz.has_experiment_ownership(request, experiment_id)
 
