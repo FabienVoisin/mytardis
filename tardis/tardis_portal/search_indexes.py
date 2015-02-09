@@ -36,7 +36,7 @@ search indexes for single search
 .. moduleauthor:: Shaun O'Keefe  <shaun.okeefe@versi.edu.au>
 
 '''
-from haystack.indexes import *
+from haystack import indexes
 from models import DataFile, \
     DatafileParameter, DatasetParameter, ExperimentParameter, \
     ParameterName, Schema, Experiment
