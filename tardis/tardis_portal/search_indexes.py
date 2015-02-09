@@ -55,7 +55,7 @@ class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
     created_time = indexes.DateTimeField(model_attr='created_time')
 
     def get_model(self):
-        return Note
+        return Experiment
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
