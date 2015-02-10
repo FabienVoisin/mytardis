@@ -11,7 +11,7 @@ class Organism(models.Model):
     common = models.CharField("Common name", max_length=255, blank=True)
 
     def __unicode__(self):
-        return Organism.get_organism_name(self)
+        return self.get_organism_name()
 
     def get_organism_id(self):
         return str(self.id)
@@ -59,15 +59,18 @@ class Source(models.Model):
     age_cat = models.CharField("Age category", choices=AGE_CATS, max_length=255)
     age_range = models.CharField("Estimated age range of source", max_length=255, blank=True)
     geoloc_continent = models.CharField("Continent", choices=CONTINENTS, max_length=255)
-    geoloc_country = models.CharField("Country or sea", max_length=255, blank=True)
+    geoloc_country = models.CharField("Country or sea", max_length=255)
     geoloc_locale = models.CharField("Town, city or other locality", max_length=255, blank=True)
     geoloc_lat = models.FloatField(blank=True, null=True)
     geoloc_lon = models.FloatField(blank=True, null=True)
+    geo_depth = models.PositiveIntegerField("Geographic location depth", blank=True, null=True)
+    geo_altitude = models.PositiveIntegerField("Geographic location altitude", blank=True, null=True)
+    geo_elev = models.PositiveIntegerField("Geographic location elevation", blank=True, null=True)
     env_biome = models.CharField("Broad ecological context of where source collected", max_length=255, blank=True)
     env_feature = models.CharField("Geographic environmental features", max_length=255, blank=True)
     env_material = models.CharField("Material in which source was embedded, or material displaced", max_length=255, blank=True)
-    carbondate_years = models.PositiveSmallIntegerField("Estimated age of source in radiocarbon years", blank=True, null=True)
-    carbondate_error = models.PositiveSmallIntegerField("Estimated carbon date error range", blank=True, null=True)
+    carbondate_years = models.PositiveIntegerField("Estimated age of source in radiocarbon years", blank=True, null=True)
+    carbondate_error = models.PositiveIntegerField("Estimated carbon date error range", blank=True, null=True)
     carbondate_id = models.CharField("Centre + id reference for carbon dating", blank=True, max_length=255)
     source_notes = models.TextField("Free text notes about source", blank=True)
     group_id = models.CharField("Group/set of sources collected on one trip/survey", max_length=255, blank=True)
@@ -147,6 +150,32 @@ class Library(models.Model):
         ('viralrna', 'Viral RNA'),
         ('other', 'Other'),
     )
+    ENRICH_METHOD = (
+        ('PCR', 'PCR'),
+        ('randomPCR', 'Random PCR'),
+        ('RT-PCR', 'RT-PCR'),
+        ('HMPR', 'HMPR'),
+        ('MF', 'MF'),
+        ('repfract', 'Repeat fractionation'),
+        ('sizefract', 'Size fractionation'),
+        ('MSLL', 'MSLL'),
+        ('cDNA', 'cDNA'),
+        ('ChIP', 'ChIP'),
+        ('Mnase', 'Dnase'),
+        ('hybrid'), 'Hybrid selection'),
+        ('restrict', 'Restriction digest'),
+        ('5-methyl', '5-methylcytidine antibody'),
+        ('MDBD2', 'MBD2 protein methyl-CpG binding domain'),
+        ('CAGE', 'CAGE'),
+        ('RACE', 'RACE'),
+        ('MDA', 'MDA'),
+        ('padlock', 'Padlock probes capture method'),
+        ('Oligo-dT', 'Oligo-dT'),
+        ('inverse', 'Inverse rRNA selection'),
+        ('random', 'Random'),
+        ('other', 'Other'),
+        ('unspec', 'Unspecified'),
+    )
     ENRICH_TARGET = (
         ('16S', '16S rNA'),
         ('18S', '18S rNA'),
@@ -161,13 +190,13 @@ class Library(models.Model):
     id = models.CharField("Library ID", primary_key=True, max_length=255)
     extract = models.ForeignKey(Extract)
     date = models.DateField("Date library was made")
-    protocol_ref = models.CharField("Publication describing library construction method", max_length=255)
-    protocol_note = models.TextField("Free text note briefly describing construction method/protocol used", blank=True)
     source = models.CharField("Type of material", choices=LIB_SOURCES, max_length=255)
     layout = models.CharField("Layout/construction method", choices=(('single', 'Single'),('paired','Paired')), max_length=255)
     type = models.CharField("Type of library", choices=(('amplicon','Amplicon'),('shotgun','Shotgun')), max_length=255)
-    repair_method = models.CharField("DNA repair method", max_length=255, default="none")
-    enrich_method = models.CharField("Library enrichment method", max_length=255, default="none")
+    protocol_ref = models.CharField("Publication describing library construction method", max_length=255)
+    protocol_note = models.TextField("Free text note briefly describing construction method/protocol used", blank=True)
+    repair_method = models.CharField("DNA repair method", max_length=255, default="None")
+    enrich_method = models.CharField("Library enrichment method", max_length=255, choices=ENRICH_METHOD)
     enrich_target = models.CharField("Any gene/s or other features targeted", max_length=255, blank=True, choices=ENRICH_TARGET)
     enrich_target_subfrag = models.CharField("Any target subfragment", max_length=255, blank=True)
     amp_method = models.CharField("Method/enzyme used to amplify target", max_length=255, blank=True)
@@ -221,6 +250,7 @@ class Analysis(models.Model):
     id = models.CharField("Analysis ID", primary_key=True, max_length=255)
     dataset = models.OneToOneField('tardis_portal.Dataset')
     note = models.TextField("temp text field")
+    """ More fields to come """
 
     def __unicode__(self):
         return "Analysis " + self.id
