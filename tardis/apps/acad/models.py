@@ -162,7 +162,7 @@ class Library(models.Model):
         ('cDNA', 'cDNA'),
         ('ChIP', 'ChIP'),
         ('Mnase', 'Dnase'),
-        ('hybrid'), 'Hybrid selection'),
+        ('hybrid', 'Hybrid selection'),
         ('restrict', 'Restriction digest'),
         ('5-methyl', '5-methylcytidine antibody'),
         ('MDBD2', 'MBD2 protein methyl-CpG binding domain'),
