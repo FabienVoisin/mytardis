@@ -248,6 +248,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'mustachejs',
     'tastypie',
+    'tardis.apps.acad',
 )
 
 JASMINE_TEST_DIRECTORY = path.abspath(path.join(path.dirname(__file__),
