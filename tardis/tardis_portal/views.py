@@ -3047,8 +3047,8 @@ class ExperimentSearchView(SearchView):
 
 @login_required
 def single_search(request):
-    search_query = FacetFixedSearchQuery(backend=HighlightSearchBackend())
-    sqs = SearchQuerySet(query=search_query)
+    #search_query = FacetFixedSearchQuery(backend=HighlightSearchBackend())
+    sqs = SearchQuerySet() #query=search_query)
     sqs.highlight()
 
     return ExperimentSearchView(
