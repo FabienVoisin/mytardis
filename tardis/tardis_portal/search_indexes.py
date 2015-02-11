@@ -52,9 +52,15 @@ logger = logging.getLogger(__name__)
 class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     experiment_id_stored = indexes.IntegerField(model_attr='id')
-    title = indexes.CharField(model_attr='title')
-    description = indexes.CharField(model_attr='description')
-    created_time = indexes.DateTimeField(model_attr='created_time')
+    experiment_title = indexes.CharField(model_attr='title')
+    experiment_description = indexes.CharField(model_attr='description')
+    experiment_created_time = indexes.DateTimeField(model_attr='created_time')
+    experiment_start_time = indexes.DateTimeField(model_attr='start_time', default=None)
+    experiment_end_time = indexes.DateTimeField(model_attr='end_time', default=None)
+    experiment_update_time = indexes.DateTimeField(model_attr='update_time', default=None)
+    experiment_institution_name = indexes.CharField(model_attr='institution_name', default=None)
+    experiment_creator=indexes.CharField(model_attr='created_by__username')
+    #experiment_authors = indexes.MultiValueField()
 
     def get_model(self):
         return Experiment
@@ -62,41 +68,27 @@ class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.filter(created_time__lte=datetime.datetime.now())
-    
+
 class DatasetIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    experiment_id_stored = indexes.IntegerField(model_attr='experiment__id')
-    description = indexes.CharField(model_attr='description')
+    experiment_id_stored = indexes.MultiValueField(indexed=True, stored=True) #indexes.IntegerField(model_attr='experiments', indexed=True)
+    dataset_id_stored = indexes.IntegerField(model_attr='id') #changed
+    dataset_description = indexes.CharField(model_attr='description')
+
+    def prepare_experiment_id_stored(self, obj):
+        return [exp.id for exp in obj.experiments.all()]
 
     def get_model(self):
         return Dataset
 
-    def index_queryset(self, using=None):
-        """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(created_time__lte=datetime.datetime.now())
-
 class DataFileIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True)
+    text = indexes.CharField(document=True, use_template=True)
     datafile_filename  = indexes.CharField(model_attr='filename')
+    experiment_id_stored = indexes.MultiValueField(indexed=True, stored=True)
+    dataset_id_stored = indexes.IntegerField(model_attr='dataset__id')
 
-    dataset_id_stored = indexes.IntegerField(model_attr='dataset__pk', indexed=True) #changed
-    dataset_description = indexes.CharField(model_attr='dataset__description')
+    def prepare_experiment_id_stored(self, obj):
+        return [exp.id for exp in obj.dataset.experiments.all()]
 
-    experiment_id_stored = indexes.IntegerField(model_attr='dataset__experiment__pk', indexed=True) # changed
-    experiment_description = indexes.CharField(model_attr='dataset__experiment__description')
-    experiment_title = indexes.CharField(model_attr='dataset__experiment__title')
-    experiment_created_time = indexes.DateTimeField(model_attr='dataset__experiment__created_time')
-    experiment_start_time = indexes.DateTimeField(model_attr='dataset__experiment__start_time', default=None)
-    experiment_end_time = indexes.DateTimeField(model_attr='dataset__experiment__end_time', default=None)
-    experiment_update_time = indexes.DateTimeField(model_attr='dataset__experiment__update_time', default=None)
-    experiment_institution_name = indexes.CharField(model_attr='dataset__experiment__institution_name', default=None)
-    experiment_creator=indexes.CharField(model_attr='dataset__experiment__created_by__username')
-    experiment_institution_name=indexes.CharField(model_attr='dataset__experiment__institution_name')
-    experiment_authors = indexes.MultiValueField()
-    
     def get_model(self):
         return DataFile
-
-    def index_queryset(self, using=None):
-        """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(created_time__lte=datetime.datetime.now())
