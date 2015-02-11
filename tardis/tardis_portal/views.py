@@ -1965,14 +1965,17 @@ def retrieve_group_list(request):
 
 def retrieve_field_list(request):
 
-    from tardis.tardis_portal.search_indexes import DatasetFileIndex
+    from tardis.tardis_portal.search_indexes import DataFileIndex
+    from tardis.tardis_portal.search_indexes import ExperimentIndex
+    from tardis.tardis_portal.search_indexes import DatasetIndex
 
     # Get all of the fields in the indexes
     #
     # TODO: these should be onl read from registered indexes
     #
-    allFields = DatasetFileIndex.fields.items()
-
+    
+    allFields = list(set(DataFileIndex.fields.items()+ExperimentIndex.fields.items()+DatasetIndex.fields.items()))
+    
     users = User.objects.all()
 
     usernames = [u.first_name + ' ' + u.last_name + ':username' for u in users]
