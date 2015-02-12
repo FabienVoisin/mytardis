@@ -354,7 +354,7 @@ $('#modal-metadata .submit-button').live('click', function() {
       <i class="icon-pencil"></i>
       Edit Dataset Description
     </a>
-    {% if has_delete_permissions %}
+    {% if has_delete_permissions and other_experiments|length == 1 %}
      <a class="btn btn-danger btn-mini" title="Delete Dataset" id="delete_dataset">
       <i class="icon-remove"></i>
       Delete Dataset
