@@ -354,6 +354,12 @@ $('#modal-metadata .submit-button').live('click', function() {
       <i class="icon-pencil"></i>
       Edit Dataset Description
     </a>
+    {% if has_delete_permissions %}
+     <a class="btn btn-danger btn-mini" title="Delete Dataset" id="delete_dataset">
+      <i class="icon-remove"></i>
+      Delete Dataset
+     </a>
+    {% endif %}
   </div>
   {% endif %}
   <h1>
@@ -722,6 +728,12 @@ $(document).bind('dragover', function (e) {
         //dropZone.removeClass('in hover');
 	hideDropzone();
     }, 100);
+});
+
+$("#delete_dataset").click(function() {
+    if (confirm("Are you sure you want to delete the dataset and its files?")) {
+	alert("Calling some backend stuff to check and delete");
+    }
 });
 </script>
 {% endblock finalscript %}

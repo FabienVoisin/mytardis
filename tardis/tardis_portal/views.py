@@ -562,6 +562,8 @@ def view_experiment(request, experiment_id,
     c['experiment'] = experiment
     c['has_write_permissions'] = \
         authz.has_write_permissions(request, experiment_id)
+    c['has_delete_permissions'] = \
+        authz.has_delete_permissions(request, experiment_id)
     c['has_change_permissions'] = \
         experiment_change_permissions(request.user, experiment)
     c['has_download_permissions'] = \
@@ -593,7 +595,7 @@ def view_experiment(request, experiment_id,
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
         {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
     ]
-    # do not load 'Transger Dataset' if user has no 'has_change_permissions'
+    # do not load 'Transfer Dataset' if user has no 'has_change_permissions'
     if c['has_change_permissions']:
         default_apps.append({'name': 'Transfer Datasets',
          'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
@@ -806,6 +808,8 @@ def view_dataset(request, dataset_id):
         authz.has_dataset_write(request, dataset_id),
         'has_change_permissions':
         dataset._has_change_perm(request.user),
+        'has_delete_permissions':
+        dataset._has_delete_perm(request.user),
         'from_experiment':
         get_experiment_referer(request, dataset_id),
         'other_experiments':
@@ -1297,8 +1301,9 @@ def retrieve_datafile_list(
         'has_write_permissions': has_write_permissions,
         'search_query': query,
         'params': params
-
         })
+    # One-off use of permission, otherwise, move to auth
+    c['has_delete_permissions'] = c['dataset']._has_delete_perm(request.user)
     _add_protocols_and_organizations(request, None, c)
     return HttpResponse(render_response_index(request, template_name, c))
 
