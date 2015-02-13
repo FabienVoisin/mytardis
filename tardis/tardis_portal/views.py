@@ -1078,6 +1078,17 @@ def edit_experiment(request, experiment_id,
     return HttpResponse(render_response_index(request, template, c))
 
 
+@permission_required('tardis_portal.delete_experiment')
+@authz.write_permissions_required
+@transaction.commit_on_success
+def delete_experiment(request, experiment_id):
+    experiment = Experiment.objects.get(id=experiment_id)
+    try:
+        experiment.delete()
+    except Exception as e:
+        return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+    return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+
 # todo complete....
 def login(request):
     '''
@@ -2841,6 +2852,17 @@ def edit_dataset_par(request, parameterset_id):
     else:
         return return_response_error(request)
 
+@login_required
+def delete_dataset(request, dataset_id):
+    if authz.has_dataset_delete(request, dataset_id):
+        dataset = Dataset.objects.get(id=dataset_id)
+        try:
+            dataset.delete()
+        except Exception as e:
+            return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+        return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+    else:
+        return return_response_error(request)
 
 @login_required
 def edit_datafile_par(request, parameterset_id):
@@ -2905,6 +2927,17 @@ def add_datafile_par(request, datafile_id):
     else:
         return return_response_error(request)
 
+@login_required
+def delete_datafile(request, dataset_id):
+    if authz.has_dataset_delete(request, dataset_id):
+        dataset = Dataset.objects.get(id=dataset_id)
+        try:
+            raise NotImplementedError
+        except Exception as e:
+            return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+        return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+    else:
+        return return_response_error(request)
 
 @login_required
 def add_dataset_par(request, dataset_id):

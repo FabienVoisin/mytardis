@@ -730,11 +730,24 @@ $(document).bind('dragover', function (e) {
     }, 100);
 });
 
+{% if has_write_permissions and has_change_permissions and has_delete_permissions and other_experiments|length == 1 %}
 $("#delete_dataset").click(function() {
     if (confirm("Are you sure you want to delete the dataset and its files?")) {
-	alert("Calling some backend stuff to check and delete");
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_dataset/{{ dataset.id }}',
+          success: function(data) {
+                  if (data.status == "success") {
+                      window.location = "{% url 'tardis.tardis_portal.views.view_experiment' other_experiments.0.id %}"
+                  } else {
+                      alert(data.message);
+                  }
+            }
+        });
     }
 });
+{% endif %}
 </script>
 {% endblock finalscript %}
 {% endblock %}

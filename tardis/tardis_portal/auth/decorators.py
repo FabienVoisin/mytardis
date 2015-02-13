@@ -130,6 +130,11 @@ def has_dataset_write(request, dataset_id):
     return any(has_experiment_write(request, experiment.id)
                for experiment in dataset.experiments.all())
 
+# Call _has_delete_perm in dataset
+def has_dataset_delete(request, dataset_id):
+    dataset = Dataset.objects.get(id=dataset_id)
+    return request.user.has_perm('tardis_acls.delete_dataset', dataset)
+
 def has_dataset_download_access(request, dataset_id):
     dataset = Dataset.objects.get(id=dataset_id)
     return any(has_experiment_download_access(request, experiment.id)

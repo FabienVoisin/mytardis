@@ -80,6 +80,12 @@ class Experiment(models.Model):
         from .hooks import publish_public_expt_rifcs
         publish_public_expt_rifcs(self)
 
+    def delete(self, *args, **kwargs):
+        # Dealing with many-to-many relationship, delete datasets
+        for ds in self.datasets.all():
+            ds.delete()
+        super(Experiment, self).delete(*args, **kwargs)
+
     def getParameterSets(self, schemaType=None):
         """Return the experiment parametersets associated with this
         experiment.

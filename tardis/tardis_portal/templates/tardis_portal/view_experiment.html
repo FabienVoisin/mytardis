@@ -455,11 +455,25 @@ var datasetTiles = (function() {
     return datasetTiles;
 })();
 
+{% if has_write_permissions and not experiment.public and has_change_permissions and has_delete_permissions %}
 $("#delete_experiment").click(function() {
     if (confirm("Are you sure you want to delete the experiment and its datasets?")) {
-	alert("Calling some backend stuff to check and delete");
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_experiment/{{ experiment.id }}',
+          success: function(data) {
+                  alert(JSON.stringify(data));
+                  if (data.status == "success") {
+                      window.location = "{% url 'tardis.tardis_portal.views.my_data' %}";
+                  } else {
+                      alert(data.message);
+                  }
+            }
+        });
     }
 });
+{% endif %}
 </script>
 
 {% endblock %}

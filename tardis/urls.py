@@ -152,6 +152,8 @@ ajax_urls = patterns(
     (r'^parameters/(?P<datafile_id>\d+)/$', 'retrieve_parameters'),
     (r'^datafile_details/(?P<datafile_id>\d+)/$',
      'display_datafile_details'),
+    (r'^delete_datafile/(?P<dataset_id>\d+)/$', #POST form with all selected files
+        'delete_datafile'),
     (r'^dataset_metadata/(?P<dataset_id>\d+)/$', 'retrieve_dataset_metadata'),
     (r'^experiment_metadata/(?P<experiment_id>\d+)/$',
         'retrieve_experiment_metadata'),
@@ -170,6 +172,8 @@ ajax_urls = patterns(
         'edit_datafile_par'),
     (r'^edit_dataset_parameters/(?P<parameterset_id>\d+)/$',
         'edit_dataset_par'),
+    (r'^delete_dataset/(?P<dataset_id>\d+)/$',
+        'delete_dataset'),
     (r'^edit_experiment_parameters/(?P<parameterset_id>\d+)/$',
         'edit_experiment_par'),
     (r'^add_datafile_parameters/(?P<datafile_id>\d+)/$',
@@ -183,6 +187,8 @@ ajax_urls = patterns(
     (r'^experiment/(?P<experiment_id>\d+)/share$', 'share'),
     (r'^experiment/(?P<experiment_id>\d+)/dataset-transfer$',
      'experiment_dataset_transfer'),
+    (r'^delete_experiment/(?P<experiment_id>\d+)/$',
+        'delete_experiment'),
     (r'^license/list$', 'retrieve_licenses'),
     (r'^json/', include(json_urls))
 )

@@ -166,7 +166,19 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
 <script type="text/javascript">
 $("#delete_selected").click(function() {
     if (confirm("Are you sure you want to delete selected files?")) {
-	alert("Calling some backend stuff to check and delete");
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_datafile/{{ dataset.id }}',
+          success: function(data) {
+                  alert(JSON.stringify(data));
+                  if (data.status == "success") {
+                      window.location.reload();
+                  } else {
+		      alert(data.message);
+		  }
+            }
+        });
     }
 });
 </script>
