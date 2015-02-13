@@ -2931,11 +2931,18 @@ def add_datafile_par(request, datafile_id):
 def delete_datafile(request, dataset_id):
     if authz.has_dataset_delete(request, dataset_id):
         dataset = Dataset.objects.get(id=dataset_id)
-        try:
-            raise NotImplementedError
-        except Exception as e:
-            return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
-        return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+        if 'datafile' in request.POST:
+            if len(request.POST.getlist('datafile')) > 0:
+                datafiles = request.POST.getlist('datafile')
+                try:
+                    for df in datafiles:
+                        dobj = DataFile.objects.get(id=df)
+                        dobj.delete()
+                except Exception as e:
+                    return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+                return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"status":"failed", "message": "No Datafiles were selected for deleting" }), mimetype='application/json')
     else:
         return return_response_error(request)
 

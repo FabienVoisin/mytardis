@@ -168,15 +168,15 @@ $("#delete_selected").click(function() {
     if (confirm("Are you sure you want to delete selected files?")) {
         $.ajax({
           headers: {'X-CSRFToken': '{{csrf_token}}'},
-          type: 'DELETE',
-          url: '/ajax/delete_datafile/{{ dataset.id }}',
+          type: 'POST',
+          url: '/ajax/delete_datafile/{{ dataset.id }}/',
+	  data: $("#datafile-download").serialize(),
           success: function(data) {
-                  alert(JSON.stringify(data));
-                  if (data.status == "success") {
-                      window.location.reload();
-                  } else {
-		      alert(data.message);
-		  }
+	      if (data.status == "success") {
+		  window.location.reload();
+	      } else {
+		  alert(data.message);
+	      }
             }
         });
     }
