@@ -156,3 +156,10 @@ class Dataset(models.Model):
                 # still zero, add default
                 self.storage_boxes.add(StorageBox.get_default_storage())
         return self.storage_boxes.all()[0]  # use first() with Django 1.6+
+
+    def delete(self, *args, **kwargs):
+        if self.immutable:
+            raise Exception('Dataset is immutable')
+        if Experiment.objects.filter(datasets__id=self.id).count() > 1:
+            raise Exception('Dataset is attached to more than one experiment')
+        super(Dataset, self).delete(*args, **kwargs)

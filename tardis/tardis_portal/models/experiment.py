@@ -81,6 +81,8 @@ class Experiment(models.Model):
         publish_public_expt_rifcs(self)
 
     def delete(self, *args, **kwargs):
+        if self.locked:
+            raise Exception('Experiment is immutable')
         # Dealing with many-to-many relationship, delete datasets
         for ds in self.datasets.all():
             ds.delete()
