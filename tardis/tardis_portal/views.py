@@ -1051,12 +1051,13 @@ def edit_experiment(request, experiment_id,
 
     """
     experiment = Experiment.objects.get(id=experiment_id)
+    d = ';' #delimiter used for separating authors. comma is used for separating first and last names
 
     c = Context({'subtitle': 'Edit Experiment',
                  'experiment_id': experiment_id, })
 
     if request.method == 'POST':
-        form = ExperimentForm(data=request.POST, instance=experiment, extra=0)
+        form = ExperimentForm(data=request.POST, instance=experiment, extra=0, delimiter=d)
         if form.is_valid():
             full_experiment = form.save(commit=False)
             experiment = full_experiment['experiment']
@@ -1071,7 +1072,7 @@ def edit_experiment(request, experiment_id,
         c['status'] = "Errors exist in form."
         c["error"] = 'true'
     else:
-        form = ExperimentForm(instance=experiment, extra=0)
+        form = ExperimentForm(instance=experiment, extra=0, delimiter=d)
 
     c['form'] = form
 
