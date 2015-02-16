@@ -741,7 +741,7 @@ $("#delete_dataset").click(function() {
                   if (data.status == "success") {
                       window.location = "{% url 'tardis.tardis_portal.views.view_experiment' other_experiments.0.id %}"
                   } else {
-                      alert(data.message);
+                      alert("Can't delete: " + data.message);
                   }
             }
         });

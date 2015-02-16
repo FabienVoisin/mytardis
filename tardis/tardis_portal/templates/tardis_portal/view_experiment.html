@@ -463,11 +463,10 @@ $("#delete_experiment").click(function() {
           type: 'DELETE',
           url: '/ajax/delete_experiment/{{ experiment.id }}',
           success: function(data) {
-                  alert(JSON.stringify(data));
                   if (data.status == "success") {
                       window.location = "{% url 'tardis.tardis_portal.views.my_data' %}";
                   } else {
-                      alert(data.message);
+                      alert("Can't delete: " + data.message);
                   }
             }
         });
