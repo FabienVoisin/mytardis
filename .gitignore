@@ -1,3 +1,4 @@
+.DS_Store
 *.conf
 *.wsgi
 tardis/settings.py
