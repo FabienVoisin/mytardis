@@ -40,6 +40,11 @@ from tardis.tardis_portal.shortcuts import render_error_message
 from tardis.tardis_portal.views import return_response_not_found, \
     return_response_error
 
+import datetime
+import threading
+import boto
+import pytz
+
 logger = logging.getLogger(__name__)
 
 
@@ -385,6 +390,32 @@ def _streaming_downloader(request, datafiles, rootdir, filename,
         return HttpResponseRedirect(redirect)
 
 
+_epoch = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
+
+def _streaming_tar_thread(directory, downloads, out):
+    tar = tarfile.open(fileobj=out, mode="w|")
+    for download in downloads:
+        tarobj = tarfile.TarInfo(name="%s/%s" % (directory, download["datafile"].filename))
+        tarobj.mode = 0644
+        tarobj.size = download["key"].size
+        timestamp = pytz.utc.localize(boto.utils.parse_ts(download["key"].last_modified))
+        tarobj.mtime = int((timestamp - _epoch).total_seconds())
+        tar.addfile(tarobj, download["key"])
+    tar.close()
+    out.close()
+
+
+def _external_streaming_tar(filename, directory, datafiles):
+    downloads = [{ "datafile" : datafile, "key" : datafile.get_file().key } for datafile in datafiles]
+    pipe_read, pipe_write = os.pipe()
+    pipe_read_file = os.fdopen(pipe_read, "rb")
+    pipe_write_file = os.fdopen(pipe_write, "wb")
+    threading.Thread(target=_streaming_tar_thread, args=(directory, downloads, pipe_write_file,)).start()
+    response = StreamingHttpResponse(pipe_read_file, content_type="application/tar")
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    return response
+
+
 @experiment_download_required
 def streaming_download_experiment(request, experiment_id, comptype='tgz',
                                   organization='deep-storage'):
@@ -394,8 +425,8 @@ def streaming_download_experiment(request, experiment_id, comptype='tgz',
 
     datafiles = DataFile.objects.filter(
         dataset__experiments__id=experiment_id)
-    return _streaming_downloader(request, datafiles, rootdir, filename,
-                                 comptype, organization)
+
+    return _external_streaming_tar(filename, rootdir, datafiles)
 
 
 @dataset_download_required
@@ -406,8 +437,8 @@ def streaming_download_dataset(request, dataset_id, comptype='tgz',
     filename = '%s-complete.tar' % rootdir
 
     datafiles = DataFile.objects.filter(dataset=dataset)
-    return _streaming_downloader(request, datafiles, rootdir, filename,
-                                 comptype, organization)
+
+    return _external_streaming_tar(filename, rootdir, datafiles)
 
 
 def streaming_download_datafiles(request):  # too complex # noqa
@@ -501,8 +532,8 @@ def streaming_download_datafiles(request):  # too complex # noqa
 
     filename = '%s-selection.tar' % experiment.title.replace(' ', '_')
     rootdir = '%s-selection' % experiment.title.replace(' ', '_')
-    return _streaming_downloader(request, df_set, rootdir, filename,
-                                 comptype, organization)
+
+    return _external_streaming_tar(filename, rootdir, df_set)
 
 
 @login_required
