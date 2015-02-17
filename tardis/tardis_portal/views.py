@@ -818,7 +818,6 @@ def view_dataset(request, dataset_id):
         doi_service = DatasetDOIService(dataset)
         c['doi_exp'] = dataset.get_first_experiment()
         c['doi'] = doi_service.get_doi()
-        logger.debug("We have doi of %s, %s" % (c['doi_exp'], c['doi']))
 
     _add_protocols_and_organizations(request, dataset, c)
     return HttpResponse(render_response_index(
@@ -981,7 +980,6 @@ def retrieve_experiment_metadata(request, experiment_id):
         from tardis.tardis_portal.ands_doi import ExperimentDOIService
         doi_service = ExperimentDOIService(experiment)
         c['doi'] = doi_service.get_doi()
-        logger.debug("We have doi of %s, %s" % (experiment.title, c['doi']))
 
     return HttpResponse(render_response_index(request,
                         'tardis_portal/ajax/experiment_metadata.html', c))
