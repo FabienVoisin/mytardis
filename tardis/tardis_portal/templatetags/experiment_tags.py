@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from django.template.defaultfilters import pluralize, filesizeformat
+from django.template.defaultfilters import pluralize, filesizeformat, stringfilter
 from django.contrib.humanize.templatetags.humanize import naturalday
 from tardis.tardis_portal.util import get_local_time
 
@@ -73,3 +73,14 @@ def experiment_size_badge(experiment):
         'label': str(size),
     })
 
+@register.filter
+@stringfilter
+def invert_parts(author, delimiter = ','):
+    """
+    Invert first and last names if they are separated by comma
+    """
+    if author.find(delimiter) > 0:
+        ns = [v.strip(' ') for v in author.split(delimiter)]
+        return "%s%s %s" % (ns[1], delimiter, ns[0])
+    else:
+        return author
