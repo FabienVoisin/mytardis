@@ -61,8 +61,8 @@ from form_utils import forms as formutils
 from registration.models import RegistrationProfile
 
 from tardis.tardis_portal import models
-from tardis.tardis_portal.fields import DelimitedMultiValueField
-from tardis.tardis_portal.widgets import DelimitedInput, Span, TextInput
+from tardis.tardis_portal.fields import MultiValueCommaSeparatedField
+from tardis.tardis_portal.widgets import CommaSeparatedInput, Span, TextInput
 from tardis.tardis_portal.models import UserProfile, UserAuthentication, \
     Experiment, License
 from tardis.tardis_portal.auth.localdb_auth \
@@ -396,9 +396,8 @@ class ExperimentForm(forms.ModelForm):
 
     def __init__(self, data=None, files=None, auto_id='%s', prefix=None,
                  initial=None, error_class=ErrorList, label_suffix=':',
-                 empty_permitted=False, instance=None, extra=0, delimiter=','):
+                 empty_permitted=False, instance=None, extra=0):
 
-        self.delimiter = delimiter
         super(ExperimentForm, self).__init__(data=data,
                                              files=files,
                                              auto_id=auto_id,
@@ -412,7 +411,7 @@ class ExperimentForm(forms.ModelForm):
         # fix up experiment form
         if instance and not data:
                 authors = instance.author_experiment_set.all()
-                self.initial['authors'] = ("%s " % self.delimiter).join([self._format_author(a)
+                self.initial['authors'] = ', '.join([self._format_author(a)
                                                      for a in authors])
 
         self.author_experiments = []
@@ -420,24 +419,13 @@ class ExperimentForm(forms.ModelForm):
         if data:
             self._update_authors(data)
 
-        if self.delimiter == ';':
-            widg=DelimitedInput(attrs={
-                    'placeholder': "eg. Florey, Howard W.; Schmidt, Brian "+
-                                   "(http://nla.gov.au/nla.party-1480342)",
-                    'delimiter': self.delimiter})
-            ht = "Semicolon-separated authors and optional URLs. First and last names are comma-seprated. Last name first."
-        else:
-            widg=DelimitedInput(attrs={
-                    'placeholder': "eg. Howard W. Florey, Brian Schmidt "+
-                                   "(http://nla.gov.au/nla.party-1480342)"})
-            ht = "Comma-separated authors and optional URLs"
-
         self.fields['authors'] = \
-            DelimitedMultiValueField([author.fields['author'] for
+            MultiValueCommaSeparatedField([author.fields['author'] for
                                         author in self.author_experiments],
-                widget=widg,
-                help_text=ht,
-                delimiter=self.delimiter)
+                widget=CommaSeparatedInput(attrs={
+                    'placeholder': "eg. Howard W. Florey, Brian Schmidt "+
+                                   "(http://nla.gov.au/nla.party-1480342)"}),
+                help_text="Comma-separated authors and optional URLs")
 
         for _, field in self.fields.items():
             field.widget.attrs['class'] = "span8"
@@ -472,7 +460,7 @@ class ExperimentForm(forms.ModelForm):
                     'author': author_str}
 
         return [build_dict(i, a)
-                for i, a in enumerate(data.get('authors').split(self.delimiter))]
+                for i, a in enumerate(data.get('authors').split(','))]
 
     def _update_authors(self, data):
         # For each author in the POST in a position

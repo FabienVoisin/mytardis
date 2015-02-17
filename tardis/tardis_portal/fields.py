@@ -32,11 +32,7 @@
 from django.forms.fields import MultiValueField
 
 
-class DelimitedMultiValueField(MultiValueField):
-
-    def __init__(self, *args, **kwargs):
-        self.delimiter = kwargs.pop('delimiter',',')
-        super(DelimitedMultiValueField, self).__init__(*args, **kwargs)
+class MultiValueCommaSeparatedField(MultiValueField):
 
     def compress(self, data_list):
-        return self.delimiter.join(data_list)
+        return ','.join(data_list)

@@ -3,26 +3,18 @@ from django.forms.util import flatatt
 from django.forms.widgets import TextInput, Widget
 
 
-class DelimitedInput(TextInput):
-    """
-        An extended TextInput widget for typing in a list of strings with delimter
-        The default delimter is comma
-    """
-    def __init__(self, attrs=None):
-        if attrs is not None:
-            self.delimiter = attrs.pop('delimiter', ',')
-        super(DelimitedInput, self).__init__(attrs)
+class CommaSeparatedInput(TextInput):
 
     def render(self, name, value, attrs=None):
         if isinstance(value, list):
-            value = ("%s " % self.delimiter).join(value)
-        return super(DelimitedInput, self).render(name, value, attrs)
+            value = ', '.join(value)
+        return super(CommaSeparatedInput, self).render(name, value, attrs)
 
     def value_from_datadict(self, data, files, name):
-        value = super(DelimitedInput, self).value_from_datadict(data,
+        value = super(CommaSeparatedInput, self).value_from_datadict(data,
                                                                      files,
                                                                      name)
-        return [v.strip(' ') for v in value.split(self.delimiter)]
+        return [v.strip(' ') for v in value.split(',')]
 
 
 class Label(Widget):
