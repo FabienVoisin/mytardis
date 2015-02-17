@@ -223,13 +223,6 @@ class Author_Experiment(models.Model):
         except StandardError:
             logger.exception('')
 
-    def get_inverted_name(self, delimiter=','):
-        if self.author.find(delimiter) > 0:
-            ns = [v.strip(' ') for v in self.author.split(delimiter)]
-            return "%s, %s" % (ns[1], ns[0])
-        else:
-            return self.author
-
     def __unicode__(self):
         return SafeUnicode(self.author) + ' | ' \
             + SafeUnicode(self.experiment.id) + ' | ' \
