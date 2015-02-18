@@ -1,2 +1,4 @@
 {{ object.title }}
 {{ object.description }}
+{{ object.publication_year}}
+{{ experiment_author }}

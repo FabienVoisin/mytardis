@@ -1,0 +1,1 @@
+{{ object.sample_notes }}

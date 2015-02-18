@@ -60,7 +60,11 @@ class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
     experiment_update_time = indexes.DateTimeField(model_attr='update_time', default=None)
     experiment_institution_name = indexes.CharField(model_attr='institution_name', default=None)
     experiment_creator=indexes.CharField(model_attr='created_by__username')
-    #experiment_authors = indexes.MultiValueField()
+    experiment_publication_year=indexes.CharField(model_attr='publication_year')
+    experiment_author = indexes.MultiValueField()
+
+    def prepare_experiment_author(self, obj):
+        return [author.author for author in obj.author_experiment_set.all()]
 
     def get_model(self):
         return Experiment

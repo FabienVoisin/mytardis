@@ -1,0 +1,6 @@
+{{ object.library_source }}
+{{ object.library_layout }}
+{{ object.library_type }}
+{{ object.library_protocol_note }}
+{{ object.library_repair_method }}
+{{ object.library_enrich_method }}

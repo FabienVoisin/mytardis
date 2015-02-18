@@ -53,8 +53,10 @@ setup(
         'paramiko',
         'pwgen',
         'six>=1.5',
+        'geopy',
     ],
     dependency_links=[
         'https://github.com/grischa/django-tastypie/tarball/testing-mytardis-deployment#egg=django-tastypie-0.9.16-tzfix',  # noqa
-    ]
+    ],
+    include_path="/opt/local/include"
 )
