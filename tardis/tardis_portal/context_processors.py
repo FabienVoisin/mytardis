@@ -13,6 +13,7 @@ def single_search_processor(request):
 
     context =  {
 	    'search_form': single_search_on,
+        'search_view': settings.SINGLE_SEARCH_VIEW,
     }
 
     return context
