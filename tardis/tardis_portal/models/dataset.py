@@ -161,5 +161,5 @@ class Dataset(models.Model):
         if self.immutable:
             raise Exception('Dataset is immutable')
         if Experiment.objects.filter(datasets__id=self.id).count() > 1:
-            raise Exception('Dataset is attached to more than one experiment')
+            raise Exception('Dataset %s is attached to more than one experiment' % self.description)
         super(Dataset, self).delete(*args, **kwargs)
