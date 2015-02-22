@@ -562,6 +562,8 @@ def view_experiment(request, experiment_id,
     c['experiment'] = experiment
     c['has_write_permissions'] = \
         authz.has_write_permissions(request, experiment_id)
+    c['has_delete_permissions'] = \
+        authz.has_delete_permissions(request, experiment_id)
     c['has_change_permissions'] = \
         experiment_change_permissions(request.user, experiment)
     c['has_download_permissions'] = \
@@ -593,7 +595,7 @@ def view_experiment(request, experiment_id,
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
         {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
     ]
-    # do not load 'Transger Dataset' if user has no 'has_change_permissions'
+    # do not load 'Transfer Dataset' if user has no 'has_change_permissions'
     if c['has_change_permissions']:
         default_apps.append({'name': 'Transfer Datasets',
          'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
@@ -806,6 +808,8 @@ def view_dataset(request, dataset_id):
         authz.has_dataset_write(request, dataset_id),
         'has_change_permissions':
         dataset._has_change_perm(request.user),
+        'has_delete_permissions':
+        dataset._has_delete_perm(request.user),
         'from_experiment':
         get_experiment_referer(request, dataset_id),
         'other_experiments':
@@ -1074,6 +1078,17 @@ def edit_experiment(request, experiment_id,
     return HttpResponse(render_response_index(request, template, c))
 
 
+@permission_required('tardis_portal.delete_experiment')
+@authz.write_permissions_required
+@transaction.commit_on_success
+def delete_experiment(request, experiment_id):
+    experiment = Experiment.objects.get(id=experiment_id)
+    try:
+        experiment.delete()
+    except Exception as e:
+        return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+    return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+
 # todo complete....
 def login(request):
     '''
@@ -1297,8 +1312,9 @@ def retrieve_datafile_list(
         'has_write_permissions': has_write_permissions,
         'search_query': query,
         'params': params
-
         })
+    # One-off use of permission, otherwise, move to auth
+    c['has_delete_permissions'] = c['dataset']._has_delete_perm(request.user)
     _add_protocols_and_organizations(request, None, c)
     return HttpResponse(render_response_index(request, template_name, c))
 
@@ -2836,6 +2852,17 @@ def edit_dataset_par(request, parameterset_id):
     else:
         return return_response_error(request)
 
+@login_required
+def delete_dataset(request, dataset_id):
+    if authz.has_dataset_delete(request, dataset_id):
+        dataset = Dataset.objects.get(id=dataset_id)
+        try:
+            dataset.delete()
+        except Exception as e:
+            return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+        return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+    else:
+        return return_response_error(request)
 
 @login_required
 def edit_datafile_par(request, parameterset_id):
@@ -2900,6 +2927,24 @@ def add_datafile_par(request, datafile_id):
     else:
         return return_response_error(request)
 
+@login_required
+def delete_datafile(request, dataset_id):
+    if authz.has_dataset_delete(request, dataset_id):
+        dataset = Dataset.objects.get(id=dataset_id)
+        if 'datafile' in request.POST:
+            if len(request.POST.getlist('datafile')) > 0:
+                datafiles = request.POST.getlist('datafile')
+                try:
+                    for df in datafiles:
+                        dobj = DataFile.objects.get(id=df)
+                        dobj.delete()
+                except Exception as e:
+                    return HttpResponse(json.dumps({"status":"failed", "message": str(e)}), mimetype='application/json')
+                return HttpResponse(json.dumps({"status":"success"}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"status":"failed", "message": "No Datafiles were selected for deleting" }), mimetype='application/json')
+    else:
+        return return_response_error(request)
 
 @login_required
 def add_dataset_par(request, dataset_id):

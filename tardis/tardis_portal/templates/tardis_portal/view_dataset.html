@@ -354,6 +354,12 @@ $('#modal-metadata .submit-button').live('click', function() {
       <i class="icon-pencil"></i>
       Edit Dataset Description
     </a>
+    {% if has_delete_permissions %}
+     <a class="btn btn-danger btn-mini" title="Delete Dataset" id="delete_dataset">
+      <i class="icon-remove"></i>
+      Delete Dataset
+     </a>
+    {% endif %}
   </div>
   {% endif %}
   <h1>
@@ -723,6 +729,25 @@ $(document).bind('dragover', function (e) {
 	hideDropzone();
     }, 100);
 });
+
+{% if has_write_permissions and has_change_permissions and has_delete_permissions %}
+$("#delete_dataset").click(function() {
+    if (confirm("Are you sure you want to delete the dataset and its files?")) {
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_dataset/{{ dataset.id }}',
+          success: function(data) {
+                  if (data.status == "success") {
+                      window.location = "{% url 'tardis.tardis_portal.views.view_experiment' other_experiments.0.id %}"
+                  } else {
+                      alert("Can't delete: " + data.message);
+                  }
+            }
+        });
+    }
+});
+{% endif %}
 </script>
 {% endblock finalscript %}
 {% endblock %}

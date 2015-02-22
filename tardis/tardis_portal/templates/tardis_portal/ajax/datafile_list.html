@@ -60,6 +60,12 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
       <i class="icon-download-alt"></i>
       Download Selected Files
     </button>
+  {% if has_write_permissions and has_delete_permissions %}
+    <button type="button" class="btn btn-mini download-selected" id="delete_selected">
+      <i class="icon-remove"></i>
+      Delete Selected Files
+    </button>
+  {% endif %}
     <input type="hidden" name="comptype" value="{{default_format}}"/>
     <input type="hidden" name="organization" value="{{default_organization}}"/>
 </div></td>
@@ -157,5 +163,23 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
 {# })(); #}
 {# </script> #}
 
-
+<script type="text/javascript">
+$("#delete_selected").click(function() {
+    if (confirm("Are you sure you want to delete selected files?")) {
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'POST',
+          url: '/ajax/delete_datafile/{{ dataset.id }}/',
+	  data: $("#datafile-download").serialize(),
+          success: function(data) {
+	      if (data.status == "success") {
+		  window.location.reload();
+	      } else {
+		  alert(data.message);
+	      }
+            }
+        });
+    }
+});
+</script>
 {{ paginator_block }}

@@ -238,6 +238,12 @@ $('#modal-metadata .submit-button').click(function() {
       <i class="icon-pencil"></i>
       Edit Experiment
     </a>
+    {% if has_delete_permissions %}
+     <a class="btn btn-mini btn-danger" title="Delete Experiment" id="delete_experiment">
+      <i class="icon-remove"></i>
+      Delete Experiment
+     </a>
+    {% endif %}
   </div>
   {% endif %}
   <h1>
@@ -448,6 +454,25 @@ var datasetTiles = (function() {
 
     return datasetTiles;
 })();
+
+{% if has_write_permissions and not experiment.public and has_change_permissions and has_delete_permissions %}
+$("#delete_experiment").click(function() {
+    if (confirm("Are you sure you want to delete the experiment and its datasets?")) {
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_experiment/{{ experiment.id }}',
+          success: function(data) {
+                  if (data.status == "success") {
+                      window.location = "{% url 'tardis.tardis_portal.views.my_data' %}";
+                  } else {
+                      alert("Can't delete: " + data.message);
+                  }
+            }
+        });
+    }
+});
+{% endif %}
 </script>
 
 {% endblock %}
