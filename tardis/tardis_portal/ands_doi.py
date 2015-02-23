@@ -145,7 +145,7 @@ class ExperimentDOIService(DOIService):
         datasets = self.obj.datasets.all()
         for ds in datasets:
             doi_url = settings.DOI_BASE_URL + ds.get_absolute_url()
-            doi_service = DatasetDOIService(ds)
+            doi_service = DatasetDOIService(ds, self.obj)
             doi_service.get_or_mint_doi(doi_url)
 
 class DatasetDOIService(DOIService):
@@ -153,9 +153,18 @@ class DatasetDOIService(DOIService):
     DOIService
 
     Mints DOIs using ANDS' Cite My Data service
-    POSTs DataCite XML to a web services endpoint
-    09/01/2015: Modified based on ands_doi.py, may be they can be merged later
+    It needs associated Experiment when it is constructed or priorly set
     """
+
+    def __init__(self, obj, ex = None):
+        if ex:
+            self.experiment = ex
+        else:
+            self.experiment = obj.experiment
+        if self.experiment is None:
+            raise Exception('Associated experiment has to be set explictly')
+
+        super(DatasetDOIService, self).__init__(obj)
 
     def get_doi(self):
         """
@@ -174,9 +183,11 @@ class DatasetDOIService(DOIService):
         ep = DatasetParameter(parameterset=paramset, name=self.doi_name,\
                                     string_value=doi)
         ep.save()
-        #if there has been no exception, turn self.obj.immutable = True
+        # if there has been no exception, turn self.obj.immutable = True,
+        # save experiment used during minting
         self.obj.immutable = True
-        self.obj.save(update_fields=['immutable'])
+        self.obj.experiment_id = self.experiment.id
+        self.obj.save(update_fields=['immutable', 'experiment'])
         return doi
 
     def _get_or_create_doi_parameterset(self):
@@ -196,7 +207,7 @@ class DatasetDOIService(DOIService):
         import os
         template = os.path.join(settings.DOI_TEMPLATE_DIR, 'default.xml')
 
-        ex = self.obj.get_first_experiment()
+        ex = self.experiment
         c = Context()
         c['title'] = self.obj.description
         c['institution_name'] = ex.institution_name

@@ -820,7 +820,7 @@ def view_dataset(request, dataset_id):
         from tardis.tardis_portal.ands_doi import DatasetDOIService
         # Citation needs to find out chronologically earliest parent experiment ex
         doi_service = DatasetDOIService(dataset)
-        c['doi_exp'] = dataset.get_first_experiment()
+        c['doi_exp'] = dataset.experiment
         c['doi'] = doi_service.get_doi()
 
     _add_protocols_and_organizations(request, dataset, c)
@@ -3310,6 +3310,7 @@ def add_dataset(request, experiment_id):
             dataset.save()
             experiment = Experiment.objects.get(id=experiment_id)
             dataset.experiments.add(experiment)
+            dataset.experiment_id = experiment_id
             dataset.save()
             return _redirect_303('tardis.tardis_portal.views.view_dataset',
                                  dataset.id)

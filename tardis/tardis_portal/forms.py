@@ -349,7 +349,7 @@ class DatasetForm(forms.ModelForm):
 
     class Meta:
         model = models.Dataset
-        exclude = ('experiments', 'immutable')
+        exclude = ('experiments', 'experiment', 'immutable')
 
 class Author_Experiment(forms.ModelForm):
 
