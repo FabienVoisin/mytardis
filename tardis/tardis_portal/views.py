@@ -1004,13 +1004,14 @@ def create_experiment(request,
 
     """
 
+    d = ';' #delimiter used for separating authors. comma is used for separating first and last names
     c = Context({
         'subtitle': 'Create Experiment',
         'user_id': request.user.id,
         })
 
     if request.method == 'POST':
-        form = ExperimentForm(request.POST)
+        form = ExperimentForm(request.POST, delimiter=d)
         if form.is_valid():
             full_experiment = form.save(commit=False)
 
@@ -1039,7 +1040,7 @@ def create_experiment(request,
         c['status'] = "Errors exist in form."
         c["error"] = 'true'
     else:
-        form = ExperimentForm(extra=1)
+        form = ExperimentForm(extra=1, delimiter=d)
 
     c['form'] = form
     c['default_institution'] = settings.DEFAULT_INSTITUTION
