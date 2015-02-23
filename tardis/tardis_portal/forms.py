@@ -398,7 +398,7 @@ class ExperimentForm(forms.ModelForm):
                  initial=None, error_class=ErrorList, label_suffix=':',
                  empty_permitted=False, instance=None, extra=0, delimiter=','):
 
-        self.delimiter = delimiter
+        self.delimiter = delimiter #all view functions which create ExperimentForm have to ensure using the same delimiter
         super(ExperimentForm, self).__init__(data=data,
                                              files=files,
                                              auto_id=auto_id,
