@@ -38,6 +38,8 @@ from tardis.tardis_portal.models.parameters import ParameterName
 from tardis.tardis_portal.models.parameters import Schema
 from tardis.tardis_portal.models.storage import StorageBox
 
+from tardis.apps.acad.models import Organism, Source, Sample, Extract, Library, Sequence, Processing, Analysis
+
 from tastypie import fields
 from tastypie.authentication import BasicAuthentication
 from tastypie.authentication import SessionAuthentication
@@ -346,6 +348,8 @@ class ACLAuthorization(Authorization):
             return False
         elif type(bundle.obj) == Schema:
             return False
+        elif type(bundle.obj) in [ Organism, Source, Sample, Extract, Library, Sequence, Processing, Analysis ]:
+            return bundle.request.user.has_perm('tardis_portal.change_dataset')
         raise NotImplementedError(type(bundle.obj))
 
     def delete_list(self, object_list, bundle):
@@ -870,3 +874,51 @@ class ReplicaResource(MyTardisModelResource):
             bundle.data['file_object'].close()
             del(bundle.data['file_object'])
         return bundle
+
+class OrganismResource(MyTardisModelResource):
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Organism.objects.all()
+
+class SourceResource(MyTardisModelResource):
+    organism = fields.ForeignKey(OrganismResource, 'organism')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Source.objects.all()
+
+class SampleResource(MyTardisModelResource):
+    source = fields.ForeignKey(SourceResource, 'source')
+    organism = fields.ForeignKey(OrganismResource, 'organism')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Sample.objects.all()
+
+class ExtractResource(MyTardisModelResource):
+    sample = fields.ForeignKey(SampleResource, 'sample')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Extract.objects.all()
+
+class LibraryResource(MyTardisModelResource):
+    extract = fields.ForeignKey(ExtractResource, 'extract')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Library.objects.all()
+
+class SequenceResource(MyTardisModelResource):
+    library = fields.OneToOneField(LibraryResource, 'library')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Sequence.objects.all()
+
+class AnalysisResource(MyTardisModelResource):
+    dataset = fields.ForeignKey(DatasetResource, 'dataset')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Analysis.objects.all()
+
+class ProcessingResource(MyTardisModelResource):
+    sequence = fields.OneToOneField(SequenceResource, 'sequence')
+    analysis = fields.ForeignKey(AnalysisResource, 'analysis')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Processing.objects.all()
