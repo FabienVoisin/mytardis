@@ -35,6 +35,10 @@
         <p>Category of sample: {{ i.get_sample_cat_display }}</p>
         <p>Sample details: {{ i.sample_details }}</p>
         <p>Environmental package: {{ i.get_env_package_display }}</p>
+        <p>Datasets:</p>
+        <ul>
+            <li><a href="{{ source.get_dataset.get_absolute_url }}">{{ source.get_dataset }}</a></li>
+        </ul>
     </div>
     {% endfor %}
 </div>
