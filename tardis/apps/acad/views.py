@@ -52,16 +52,16 @@ class AcadSearchView(SearchView):
         experiments = Experiment.objects.filter(pk__in=ids)\
                                         .order_by('-update_time')
 
-        results = []
-        for e in experiments:
-            result = {}
-            result['sr'] = e
-            result['dataset_hit'] = False
-            result['datafile_hit'] = False
-            result['experiment_hit'] = False
-            results.append(result)
+        #results = []
+        #for e in experiments:
+        #    result = {}
+        #    result['sr'] = e
+        #    result['dataset_hit'] = False
+        #    result['datafile_hit'] = False
+        #    result['experiment_hit'] = False
+        #    results.append(result)
 
-        extra['experiments'] = results
+        extra['experiments'] = experiments
         
         source_results=self.results.facet('source_id_stored')
         source_facets = source_results.facet_counts()

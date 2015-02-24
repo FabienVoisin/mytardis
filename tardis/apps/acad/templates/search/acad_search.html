@@ -1,15 +1,14 @@
 {%extends "tardis_portal/portal_template.html" %}
 {% load experimentstats %}
+{% load experiment_tags %}
 
 {% block content %}
-<div id = "content">
-  <div class="post">
-    <div class = "entry">
+  <div class="row-fluid">
+    <div class="span7">
         <h1 class="title">Search Results for <em>{{ search_query.query_string|default:"' '"}}</em></h1>
-      <strong>{{experiments|length}}</strong> Experiment{{experiments|length|pluralize}} | 
-      <strong>{{sources|length}}</strong> Source{{sources|length|pluralize}}
-      {% include "search/acad_search_result_list.html"%}
-    </div> <!-- entry -->
+      <h4 class="title"><strong>{{experiments|length}}</strong> Experiment{{experiments|length|pluralize}} | 
+      <strong>{{sources|length}}</strong> Source{{sources|length|pluralize}}</h4>
   </div> <!-- post -->
 </div> <!-- content -->
+      {% include "search/acad_search_result_list.html"%}
 {% endblock content%}
