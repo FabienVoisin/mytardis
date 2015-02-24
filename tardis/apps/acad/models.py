@@ -1,6 +1,4 @@
-# Django models based on MODC08 Metadata Schema v1.1
-# CF 21/11/14, 27/11/14, 15/12/14
-
+# Django models based on MODC08 Metadata Schema v1.2
 from django.db import models
 
 class Organism(models.Model):
@@ -58,6 +56,9 @@ class Source(models.Model):
     gender = models.CharField("Gender", choices=GENDERS, max_length=255)
     age_cat = models.CharField("Age category", choices=AGE_CATS, max_length=255)
     age_range = models.CharField("Estimated age range of source", max_length=255, blank=True)
+    env_biome = models.CharField("Broad ecological context of where source collected", max_length=255, blank=True)
+    env_feature = models.CharField("Geographic environmental features", max_length=255, blank=True)
+    env_material = models.CharField("Material in which source was embedded, or material displaced", max_length=255, blank=True)
     geoloc_continent = models.CharField("Continent", choices=CONTINENTS, max_length=255)
     geoloc_country = models.CharField("Country or sea", max_length=255)
     geoloc_locale = models.CharField("Town, city or other locality", max_length=255, blank=True)
@@ -66,9 +67,6 @@ class Source(models.Model):
     geo_depth = models.PositiveIntegerField("Geographic location depth", blank=True, null=True)
     geo_altitude = models.PositiveIntegerField("Geographic location altitude", blank=True, null=True)
     geo_elev = models.PositiveIntegerField("Geographic location elevation", blank=True, null=True)
-    env_biome = models.CharField("Broad ecological context of where source collected", max_length=255, blank=True)
-    env_feature = models.CharField("Geographic environmental features", max_length=255, blank=True)
-    env_material = models.CharField("Material in which source was embedded, or material displaced", max_length=255, blank=True)
     carbondate_years = models.PositiveIntegerField("Estimated age of source in radiocarbon years", blank=True, null=True)
     carbondate_error = models.PositiveIntegerField("Estimated carbon date error range", blank=True, null=True)
     carbondate_id = models.CharField("Centre + id reference for carbon dating", blank=True, max_length=255)
@@ -93,12 +91,38 @@ class Sample(models.Model):
         ('bone', 'Bone'),
         ('tooth', 'Tooth'),
         ('skin', 'Skin'),
-        ('tissue', 'Tissue'),
+        ('tissue', 'Tissue (all non-skin)'),
+        ('feather', 'Feather'),
+        ('horn', 'Horn'),
+        ('egg', 'Egg'),
+        ('sediment', 'Sediment'),
+        ('ice', 'Ice'),
+        ('hair', 'Hair'),
+        ('coprolite', 'Coprolite'),
+        ('insect', 'Insect'),
+        ('mollusc', 'Mollusc'),
+        ('vegetation', 'Vegetation'),
+        ('wood', 'Wood'),
+        ('seed', 'Seed (includes fruit)'),
+        ('other', 'Other'),
+        ('extractcontrol', 'Extraction control'),
     )
     ENV_PACKAGES = (
+        ('air', 'Air'),
+        ('built environment', 'Built environment'),
+        ('host-associated', 'Host associated'),
+        ('human-associated', 'Human associated'),
         ('human-skin', 'Human skin'),
         ('human-oral', 'Human oral'),
         ('human-gut', 'Human gut'),
+        ('human-vaginal', 'Human vaginal'),
+        ('microbial mat/biofilm', 'Microbial material/biofilm'),
+        ('misc environment', 'Misc environment'),
+        ('plant-associated', 'Plant associated'),
+        ('sediment', 'Sediment'),
+        ('soil', 'Soil'),
+        ('wastewater/sludge', 'Wastewater/sludge'),
+        ('water', 'Water'),
     )
 
     id = models.CharField("Sample id", primary_key=True, max_length=255)
@@ -205,11 +229,45 @@ class Library(models.Model):
         return "Library " + self.id + " " + str(self.date)
 
 class Sequence(models.Model):
+    SEQ_METHOD = (
+        ('POOLCLONE', 'Pooled clone sequencing'),
+        ('CLONE', 'Clone by clone sequencing'),
+        ('WGS', 'Whole genome shotgun sequencing'),
+        ('WGA', 'Whole genome amplification sequencing'),
+        ('WCS', 'Random chromosome sequencing'),
+        ('WXS', 'Random exon sequencing'),
+        ('AMPLICON', 'Amplicon sequencing'),
+        ('ChIP-Seq', 'Direct sequencing of chromatin immunoprecipitates'),
+        ('RNA-Seq', 'Whole transcriptome shotgun sequencing'),
+        ('MRE-Seq', 'Methylation-sensitive Restriction Enzyme sequencing strategy'),
+        ('MeDIP-Seq', 'Methylated DNA Immunoprecipitation Sequencing strategy'),
+        ('MBD-Seq', 'Direct sequencing of methylated fractions sequencing strategy'),
+        ('MNase-Seq', 'Direct sequencing following MNase digestion'),
+        ('DNase-Hypersensitivity', 'Sequencing of DNase-hypersensitive sites to identify regularatory elements'),
+        ('Bisulfite-Seq', 'Sequencing following treatment of DNA with bisulfite to determine methylation status'),
+        ('EST', 'Single pass sequencing of cDNA templates'),
+        ('FL-cDNA', 'Full-length sequencing of cDNA templates'),
+        ('miRNA-Seq', 'Micro RNA sequencing'),
+        ('ncRNA-Seq', 'Non-coding RNA sequencing'),
+        ('FINISHING', 'Sequencing intended to finish (close) gaps in existing coverage'),
+        ('CTS', 'Concatenated tag sequencing'),
+        ('Tn-Seq', 'Transposon RNA sequencing'),
+        ('VALIDATION', 'Validation sequencing'),
+        ('FAIRE-seq', 'Formaldehyde Assisted Isolation of Regulatory Elements sequencing'),
+        ('SELEX', 'Systematic Evolution of Ligands by EXponential enrichment sequencing'),
+        ('RIP-Seq', 'RNA-immunoprecipitation sequencing'),
+        ('ChIA-PET', 'Chromatin Interaction Analysis by Paired-End Tag sequencing'),
+        ('RAD-Seq', 'Restriction site Associated DNA sequencing'),
+    )
+
     id = models.CharField("Sequence ID", primary_key=True, max_length=255)
-    library = models.OneToOneField(Library)
+    library = models.ForeignKey(Library)
     date = models.DateField("Date sequence was run")
     centre = models.CharField("Centre/lab/organisation where sequencing was performed", default="ACAD", max_length=255)
-    method = models.CharField("Sequencing method used", max_length=255)
+    method = models.CharField("Sequencing method used", max_length=255, choices=SEQ_METHOD)
+    id = models.CharField("Sequence ID", primary_key=True, max_length=255)
+    date = models.DateField("Date sequence was run")
+    centre = models.CharField("Centre/lab/organisation where sequencing was performed", default="ACAD", max_length=255)
     tech = models.CharField("Machine/technology used to generate sequence", max_length=255)
     tech_chem = models.PositiveSmallIntegerField("Sequencer chemistry version")
     tech_options = models.CharField("Sequencing options", max_length=255, default="Default")
@@ -229,12 +287,14 @@ class Sequence(models.Model):
 
 class Processing(models.Model):
     id = models.CharField("Processing ID", primary_key=True, max_length=255)
-    sequence = models.OneToOneField(Sequence)
+    sequence = models.ForeignKey(Sequence)
     analysis = models.ForeignKey('Analysis')
     reference = models.CharField("Reference genome or library to which sequence was aligned", max_length=255)
     fold_coverage = models.DecimalField("Average fold coverage of reference sequence", max_digits=6, decimal_places=3, blank=True, null=True)
     percent_coverage = models.DecimalField("Percentage coverage of reference sequence", max_digits=6, decimal_places=3, blank=True, null=True)
     contigs = models.PositiveSmallIntegerField("Number of contiguous sequences", blank=True, null=True)
+    package = models.CharField("Software package primarily used in processing", max_length=255)
+    package_ver = models.CharField("Software package version number", max_length=255)
 
     def __unicode__(self):
         return "Processing " + self.id
@@ -249,8 +309,8 @@ class Analysis(models.Model):
 
     id = models.CharField("Analysis ID", primary_key=True, max_length=255)
     dataset = models.OneToOneField('tardis_portal.Dataset')
-    note = models.TextField("temp text field")
-    """ More fields to come """
+    package = models.CharField("Software package primarily used in analysis", max_length=255)
+    package_ver = models.CharField("Software package version number", max_length=255)
 
     def __unicode__(self):
         return "Analysis " + self.id
