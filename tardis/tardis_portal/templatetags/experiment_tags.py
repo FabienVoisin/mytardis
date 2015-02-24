@@ -77,10 +77,10 @@ def experiment_size_badge(experiment):
 @stringfilter
 def invert_parts(author, delimiter = ','):
     """
-    Invert first and last names if they are separated by comma
+    Inverts first and last names if they are separated by comma and removes delimiter
     """
     if author.find(delimiter) > 0:
         ns = [v.strip(' ') for v in author.split(delimiter)]
-        return "%s%s %s" % (ns[1], delimiter, ns[0])
+        return "%s %s" % (ns[1], ns[0])
     else:
         return author
