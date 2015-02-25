@@ -9,10 +9,10 @@
 	{% for exp in experiments %}
 	  <div class="accordion-group">
 	    <div class="accordion-heading">
-	      <div class="accordion-toggle" data-toggle="collapse"
+	      <div class="accordion-toggle" 
 		   onclick="$('#collapse{{exp.id}}').collapse('toggle');" >
-		<strong><a class="pull-left explink"
-			   href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a></strong>
+		<strong class="pull-left"><a class="explink"
+			   href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a>&nbsp;({{ exp.publication_year }})</strong>
 		<ul class="nav nav-pills badgelist">
 		  <li class="pull-right">
 		    {{ exp|experiment_public_access_badge }}
@@ -88,3 +88,58 @@
   </div> <!-- post -->
 </div> <!-- content -->
 {% endif %}
+{% if sources %}
+  <div class="row-fluid">
+    <div class="span7">
+      <div id="sources" class="mydata accordion">
+	{% for src in sources %}
+	  <div class="accordion-group">
+	    <div class="accordion-heading">
+	      <div class="accordion-toggle" 
+		   onclick="$('#collapse{{src.id}}').collapse('toggle');" >
+		<strong ><a class="explink"
+			   href="{{ src.id }}">{{ src.organism.get_common_name }}</a></strong>
+		<small><br>
+		<span >[&nbsp;{{ src.get_age_cat_display }}&nbsp;{{ src.get_gender_display }}&nbsp;aged&nbsp;{{ src.age_range }}&nbsp;years,&nbsp;carbon&nbsp;date&nbsp;{{src.carbondate_years}}&nbsp;&plusmn;&nbsp;{{src.carbondate_error}}&nbsp;]</span><br>
+		<span >Samples:{% for sample in src.sample_set.all %}{% if not forloop.first %},
+		{% endif %}
+		<span property="dc:author">{{ sample.get_sample_cat_display }}&nbsp;({{ sample.sample_details }})</span>{% empty %}&nbsp;{% endfor %}</span>
+		</small>
+	      </div>
+	    </div>
+	    <div id="collapse{{src.id}}"
+		 class="accordion-body collapse in">
+	      <div class="accordion-inner">
+		<p>{{src.source_details|default:""|bleach}}</p>
+		    <ul class="nav nav-list">
+		      <li class="nav-header dataset-list-header">Datasets from this source: </li>
+		{% for ds in src.get_datasets %}
+		  <li>
+		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
+		    {% for datafile in ds.get_images|slice:":5" %}
+		      {% if forloop.first %}
+			<ul class="thumbnails">
+		      {% endif %}
+		      <li>
+			<a class="thumbnail" href="{% url 'tardis.tardis_portal.download.view_datafile' datafile.id %}">{% url 'tardis.tardis_portal.iiif.download_image' datafile_id=datafile.id region='full' size=',50' rotation=0 quality='native' format='jpg' as thumbnail %}
+			<img alt="Thumbnail for Datafile #{{datafile.id}}"
+			     src="{{ thumbnail }}"
+			     onerror="$(this).hide()"/></a>
+		      </li>
+		      {% if forloop.last %}
+			</ul>
+		      {% endif %}
+		    {% endfor %}
+		  </li>
+		{% empty %}
+		  There are no datasets in this source
+		{% endfor %}
+		    </ul>
+	  </div>
+	{% endfor %}
+      </div> <!-- sources -->
+      <br/>
+  </div> <!-- row-fluid -->
+</div> <!-- span7 -->
+{% endif %}
+	

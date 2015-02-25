@@ -84,6 +84,12 @@ class Source(models.Model):
 
     def get_source_id(self):
         return self.id
+    
+    def get_datasets(self):
+        samples = Sample.objects.filter(source=self)
+        extracts = Extract.objects.filter(sample__in=samples)
+        libraries = Library.objects.filter(extract__in=extracts)
+        return [lib.sequence.processing.analysis.dataset for lib in libraries]
 
     class Meta:
         app_label = 'acad'
