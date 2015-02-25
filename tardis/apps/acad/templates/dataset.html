@@ -1,0 +1,50 @@
+{% extends "tardis_portal/portal_template.html" %}
+{% load linkify_pubid %}
+
+{% block content %}
+<h1>{{ dataset }}</h1>
+
+<ul class="nav nav-tabs">
+    {% for i in dataset.analysis.processing_set.all %}
+    <li {% if i == dataset.analysis.processing_set.all.0 %}class="active"{%endif%}><a href="#{{i.sequence.library.id}}" data-toggle="tab">{{i.sequence.library.id}}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="tab-content">
+    {% for i in dataset.analysis.processing_set.all %}
+    <div role="tabpanel" class="tab-pane {% if i == dataset.analysis.processing_set.all.0 %}active{% endif %}" id="{{ i.sequence.library.id }}">
+        {# Source #}
+        <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>
+        {# Extract #}
+        <p>Extraction method pubid: {% filter linkify_pubid %}{{ i.sequence.library.extract.protocol_ref }}{% endfilter %}
+        <p>Extraction method note: {{ i.sequence.library.extract.protocol_note }}</p>
+        <hr>
+
+        {# Library #}
+        <p>Type of material: {{ i.sequence.library.get_source_display }}, source id: {{ i.sequence.library.extract.sample.source }}</p>
+        <p>Layout: {{ i.sequence.library.get_layout_display }}</p>
+        {% if i.sequence.library.enrich_target %}<p>Enrich target: {{i.sequence.library.get_enrich_target_display}}</p>{%endif%}
+        {% if i.sequence.library.amp_method %}<p>Method/enzyme used to amplify target: {{ i.sequence.library.amp_method }}</p>{% endif %}
+
+        {# Sequence #}
+        <p>Sequencing method: {{ i.sequence.method }}</p>
+        <p>Sequencer used: {{ i.sequence.tech }} (chemistry version {{i.sequence.tech_chem}})
+        <p>Demultiplexed using: {{ i.sequence.demulti_prog }} version {{ i.sequence.demulti_prog_ver }} with options <code>{{ i.sequence.demulti_prog_opt }}</code></p>
+        {% if i.sequence.error_rate %}<p>Estimated error rate: 1 x 10<sup>{{i.sequence.error_rate}}</sup></p>{% endif %}
+
+        {# Processing #}
+        <p>Aligned to: {{ i.reference }}
+        {% if i.fold_coverage %}<p>Average fold coverage: {{ i.fold_coverage}}x{%endif%}
+        <p>Percentage coverage of reference sequence: {{ i.percent_coverage }}</p>
+        <p>Number of contiguous sequences: {{ i.contigs }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Analysis</h2>
+<p>Here is the note from analysis record:</p>
+<blockquote>
+{{ dataset.analysis.note }}
+</blockquote>
+
+{% endblock content %}

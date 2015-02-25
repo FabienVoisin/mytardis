@@ -1,6 +1,7 @@
 # Django models based on MODC08 Metadata Schema v1.1
 # CF 21/11/14, 27/11/14, 15/12/14
 
+from tardis.tardis_portal.models import Dataset
 from django.db import models
 
 class Organism(models.Model):
@@ -90,6 +91,10 @@ class Source(models.Model):
         extracts = Extract.objects.filter(sample__in=samples)
         libraries = Library.objects.filter(extract__in=extracts)
         return [lib.sequence.processing.analysis.dataset for lib in libraries]
+
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('source_detail', args=[str(self.id)])
 
     class Meta:
         app_label = 'acad'
