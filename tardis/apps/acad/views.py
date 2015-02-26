@@ -118,7 +118,7 @@ def dataset(request, id):
     return render(request, 'dataset.html', context)
 
 def source_index(request):
-    context = {'source_list': Source.objects.all()}
+    context = {'sources': Source.objects.all()}
     return render(request, 'source/index.html', context)
 
 def source_detail(request, id):

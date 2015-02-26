@@ -95,6 +95,11 @@
             <ul class="nav">
               <li><a href="{% url 'tardis.tardis_portal.views.index' %}">Home</a></li>
               <li><a href="{% url 'tardis.tardis_portal.views.about' %}">About</a></li>
+              {% if navbar_extras %}
+              {% for display_name, view_path in navbar_extras.items %}
+              <li><a href="{% url view_path %}">{{ display_name }}</a></li>
+              {% endfor %}
+              {% endif %}
               <li><a href="{% url 'tardis.tardis_portal.views.my_data' %}">My Data</a></li>
               <li><a href="{% url 'tardis.tardis_portal.views.public_data' %}">Public Data</a></li>
               <li><a href="{% url 'tardis.tardis_portal.views.stats' %}">Stats</a></li>
