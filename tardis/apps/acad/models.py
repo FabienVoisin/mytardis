@@ -88,7 +88,9 @@ class Source(models.Model):
         samples = Sample.objects.filter(source=self)
         extracts = Extract.objects.filter(sample__in=samples)
         libraries = Library.objects.filter(extract__in=extracts)
-        return [lib.sequence.processing.analysis.dataset for lib in libraries]
+        sequences = Sequence.objects.filter(library__in=libraries)
+        processings = Processing.objects.filter(sequence__in=sequences)
+        return [proc.analysis.dataset for proc in processings]
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse

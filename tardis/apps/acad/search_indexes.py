@@ -44,22 +44,13 @@ class SourceIndex(indexes.SearchIndex, indexes.Indexable):
         return "%s,%s" % (obj.geoloc_lat, obj.geoloc_lon)
     
     def prepare_source_geoloc_continent(self, obj):
-        for continent in Source.CONTINENTS:
-            if continent[0]==obj.geoloc_continent:
-                return continent[1]
-        return obj.geoloc_continent
+        return obj.get_geoloc_continent_display()
     
     def prepare_source_gender(self, obj):
-        for gender in Source.GENDERS:
-            if gender[0]==obj.gender:
-                return gender[1]
-        return obj.gender
+        return obj.get_gender_display()
 
     def prepare_source_age_cat(self, obj):
-        for cat in Source.AGE_CATS:
-            if cat[0]==obj.age_cat:
-                return cat[1]
-        return obj.age_cat
+        return obj.get_age_cat_display()
     
     def get_model(self):
         return Source
@@ -80,16 +71,10 @@ class SampleIndex(indexes.SearchIndex, indexes.Indexable):
     sample_notes=indexes.CharField(model_attr='sample_notes')
 
     def prepare_sample_cat(self, obj):
-        for cat in Sample.SAMPLE_CATS:
-            if cat[0]==obj.sample_cat:
-                return cat[1]
-        return obj.sample_cat
+        return obj.get_sample_cat_display()
 
     def prepare_sample_env_package(self, obj):
-        for env in Sample.ENV_PACKAGES:
-            if env[0]==obj.env_package:
-                return env[1]
-        return obj.env_package
+        return obj.get_env_package_display()
 
     def get_model(self):
         return Sample
@@ -125,22 +110,16 @@ class LibraryIndex(indexes.SearchIndex, indexes.Indexable):
     library_amp_method=indexes.CharField(model_attr='amp_method')
 
     def prepare_library_source(self, obj):
-        for src in Library.LIB_SOURCES:
-            if src[0]==obj.source:
-                return src[1]
-        return obj.source
+        return obj.get_source_display()
 
     def prepare_library_enrich_method(self, obj):
-        for method in Library.ENRICH_METHOD:
-            if method[0]==obj.enrich_method:
-                return method[1]
-        return obj.enrich_method
+        return obj.get_enrich_method_display()
 
     def prepare_library_enrich_target(self, obj):
-        for target in Library.ENRICH_TARGET:
-            if target[0]==obj.enrich_target:
-                return target[1]
-        return obj.enrich_target
+        return obj.get_enrich_target_display()
+
+    def prepare_library_type(self, obj):
+        return obj.get_type_display()
 
     def get_model(self):
         return Library
@@ -166,6 +145,9 @@ class SequenceIndex(indexes.SearchIndex, indexes.Indexable):
     sequence_demulti_prog_ver=indexes.CharField(model_attr='demulti_prog_ver')
     sequence_demulti_prog_opt=indexes.CharField(model_attr='demulti_prog_opt')
 
+    def prepare_sequence_method(self, obj):
+        return obj.get_method_display()
+
     def get_model(self):
         return Sequence
 
@@ -181,12 +163,21 @@ class ProcessingIndex(indexes.SearchIndex, indexes.Indexable):
     processing_fold_coverage=indexes.DecimalField(model_attr='fold_coverage')
     processing_percent_coverage=indexes.DecimalField(model_attr='percent_coverage')
     processing_contigs=indexes.IntegerField(model_attr='contigs')
-    analysis_note=indexes.CharField(model_attr='analysis__note')
-    experiment_id_stored=indexes.MultiValueField(indexed=True, stored=True)
-
-    def prepare_experiment_id_stored(self, obj):
-        return [exp.id for exp in obj.analysis.dataset.experiments.all()]
     
     def get_model(self):
         return Processing
     
+class AnalysisIndex(indexes.SearchIndex, indexes.Indexable):
+    text=indexes.CharField(document=True, use_template=True)
+    analysis_id_stored=indexes.CharField(model_attr='id')
+    source_id_stored=indexes.MultiValueField(indexed=True, stored=True)
+    experiment_id_stored=indexes.MultiValueField(indexed=True, stored=True)
+
+    def prepare_source_id_stored(self, obj):
+        return [processing.sequence.library.extract.sample.source.id for processing in obj.processing_set.all()]
+
+    def prepare_experiment_id_stored(self, obj):
+        return [exp.id for exp in obj.dataset.experiments.all()]
+
+    def get_model(self):
+        return Analysis
