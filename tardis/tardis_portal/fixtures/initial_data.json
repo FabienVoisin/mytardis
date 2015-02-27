@@ -44,7 +44,7 @@
     "url": "", 
     "experiment": 1, 
     "order": 0, 
-    "author": "Some Guy"
+    "author": "Lastname, Firstname"
   }
 },
 {
@@ -54,7 +54,7 @@
     "url": "", 
     "experiment": 1, 
     "order": 1, 
-    "author": "Some Other Guy"
+    "author": "Lastname2, Firstname2"
   }
 },
 {
