@@ -135,14 +135,17 @@
     "sequence": "Sequence1234", 
     "analysis": "Analysis1234", 
     "fold_coverage": "0.009", 
-    "percent_coverage": "0.09"
+    "percent_coverage": "0.09",
+    "package": "Qiime",
+    "package_ver": "1.5"
   }
 },
 {
   "pk": "Analysis1234", 
   "model": "acad.analysis", 
   "fields": {
-    "note": "This is a made-up analysis note.", 
+    "package": "Qiime",
+    "package_ver": "1.5",
     "dataset": 1
   }
 }
