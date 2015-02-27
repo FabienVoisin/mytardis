@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from haystack.views import SearchView
 from haystack.query import SearchQuerySet
-from tardis.apps.acad.forms import RawSearchForm
+from tardis.apps.acad.forms import RawSearchForm, AdvancedSearchForm
 from tardis.tardis_portal.views import SearchQueryString
 from tardis.tardis_portal.auth import decorators as authz
 import logging
 from django.shortcuts import render, get_object_or_404
+from django.template import Context
+from django.http import HttpResponseRedirect, HttpResponse,\
+    HttpResponseForbidden, HttpResponseNotFound
 from tardis.tardis_portal.models import Experiment, ExperimentParameter, \
     DatafileParameter, DatasetParameter, ObjectACL, DataFile, \
     DatafileParameterSet, ParameterName, GroupAdmin, Schema, \
@@ -100,7 +103,6 @@ class AcadSearchView(SearchView):
         return render_response_index(self.request, self.template, context)
 
 
-@login_required
 def single_search(request):
     #search_query = FacetFixedSearchQuery(backend=HighlightSearchBackend())
     sqs = SearchQuerySet() #query=search_query)
@@ -110,6 +112,36 @@ def single_search(request):
         template='search/acad_search.html',
         searchqueryset=sqs,
         form_class=RawSearchForm,
+    ).__call__(request)
+
+def search_source(request):
+
+    """Either show the search source form or the result of the search
+    source query.
+
+    """
+
+    if len(request.GET) == 0:
+        c = Context({'searchForm': AdvancedSearchForm()})
+        url = 'search/advanced_search_form.html'
+        return HttpResponse(render_response_search(request, url, c))
+
+    #form = __getSearchExperimentForm(request)
+    #experiments = __processExperimentParameters(request, form)
+
+    # check if the submitted form is valid
+    #if experiments is not None:
+    #    bodyclass = 'list'
+    #else:
+    #    return __forwardToSearchExperimentFormPage(request)
+
+    sqs = SearchQuerySet() #query=search_query)
+    sqs.highlight()
+
+    return AcadSearchView(
+        template='search/acad_search.html',
+        searchqueryset=sqs,
+        form_class=AdvancedSearchForm,
     ).__call__(request)
 
 def dataset(request, id):

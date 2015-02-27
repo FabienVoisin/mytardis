@@ -1,0 +1,15 @@
+{%extends "tardis_portal/portal_template.html" %}
+{% block content %}
+            <form id="searchbox" method="get"
+                class="navbar-search pull-left"
+                action="/search/">
+              <textarea id="id_q" autocomplete="off" name="q" style="width: 900px;" rows="4"
+                   placeholder="Type your query here..."></textarea>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-info btn-large">
+      <i class="icon-search icon-large"></i> Search
+    </button>
+  </div>
+
+            </form>
+{% endblock content %}

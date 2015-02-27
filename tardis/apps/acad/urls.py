@@ -5,4 +5,5 @@ urlpatterns = patterns('',
     url(r'^dataset/(?P<id>\w+)/$', views.dataset, name='dataset'),
     url(r'^source/$', views.source_index, name='source_index'),
     url(r'^source/(?P<id>\w+)/$', views.source_detail, name='source_detail'),
+    url(r'^search/$', views.search_source, name='search_source'),
 )
