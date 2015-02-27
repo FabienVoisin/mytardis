@@ -1,51 +1,133 @@
 {% extends "tardis_portal/portal_template.html" %}
+{% block script %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+{% endblock script %}
+
+{% block style %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+{% endblock style %}
+
 {% block content %}
-<h1>{{ source }}</h1>
+<div class="page-header">
+  <h4>Source</h4>
+
+<h1><span property="dc:title">{{ source }}</span></h1>
+</div>
 
 <div id="map" style="height: 300px; width: 300px; float: right"></div>
-
-<p>Source ID: {{ source.id }}</p>
-<p>Collection date: {{ source.date|date:"c"}}</p>
-<p>Organism: <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ source.organism.get_organism_id }}">{{ source.organism }}</a>
-<p>Source details: {{ source.source_details }}</p>
-<p>Gender: {{ source.get_gender_display }}</p>
-<p>Age category: {{ source.get_age_cat_display }}</p>
-<p>Age range: {{ source.age_range }}</p>
-<p>Continent: {{ source.get_geoloc_continent_display }}</p>
-<p>Country: {{ source.geoloc_country }}</p>
-<p>Locale: {{ source.geoloc_locale }}</p>
-{%if source.geoloc_lat or source.geoloc_lon %}<p>Lat/lon: {{source.geoloc_lat}}, {{source.geoloc_lon|default_if_none:"138.596434"}}{%endif%}
-<p>Biome: {{ source.env_biome }}</p>
-<p>Env feature: {{ source.env_feature }}</p>
-{% if source.carbondate_id %}<p>Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</p>{% endif %}
-
+<div class="row-fluid">
+  <div class="span7">
+<div id="source_details_left" class="dl-horizontal pull-left">
+  <dl>
+    <dt>Source ID:</dt>
+    <dd>{{ source.id }}</dd>
+  </dl>
+  <dl>
+    <dt>Collection date:</dt>
+    <dd>{{ source.date|date:"c"}}</dd>
+  </dl>
+  <dl>
+    <dt>Organism:</dt>
+    <dd><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ source.organism.get_organism_id }}">{{ source.organism }}</a></dd>
+  </dl>
+  <dl>
+    <dt>Source details:</dt>
+    <dd>{{ source.source_details }}</dd>
+  </dl>
+  <dl>
+    <dt>Gender:</dt>
+    <dd>{{ source.get_gender_display }}</dd>
+  </dl>
+  <dl>
+    <dt>Age category:</dt>
+    <dd>{{ source.get_age_cat_display }}</dd>
+  </dl>
+  <dl>
+    <dt>Age range:</dt>
+    <dd>{{ source.age_range|default:"&nbsp;" }}</dd>
+  </dl>
+ </div>
+<div id="source_details_left" class="dl-horizontal pull-right">
+  <dl>
+    <dt>Continent:</dt>
+    <dd>{{ source.get_geoloc_continent_display|default:"&nbsp;" }}</dd>
+  </dl>
+  <dl>
+    <dt>Country:</dt>
+    <dd>{{ source.geoloc_country }}</dd>
+  </dl>
+  <dl>
+    <dt>Locale:</dt>
+    <dd>{{ source.geoloc_locale }}</dd>
+  </dl>
+  {%if source.geoloc_lat or source.geoloc_lon %}
+  <dl>
+    <dt>Lat/lon:</dt>
+    <dd>{{source.geoloc_lat}}, {{source.geoloc_lon|default_if_none:"138.596434"}}</dd>
+  </dl>
+  {%endif%}
+  <dl>
+    <dt>Biome:</dt>
+    <dd>{{ source.env_biome|default:"&nbsp;" }}</dd>
+  </dl>
+  <dl>
+    <dt>Env feature:</dt>
+    <dd>{{ source.env_feature|default:"&nbsp;" }}</dd>
+  </dl>
+  {% if source.carbondate_id %}
+  <dl>
+    <dt>Carbon date:</dt>
+    <dd>{{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</dd>
+  </dl>
+  {% endif %}
+</div>
+</div>
+</div>
 {% if samples %}
-<h2>Samples</h2>
+<h3>Samples</h3>
 
-<ul class="nav nav-tabs">
-    {% for i in samples %}
-    <li{%if i == samples.0 %} class="active"{%endif%}><a data-toggle="tab" href="#{{i.get_id}}">{{ i }}</a></li>
+<ul class="nav nav-pills">
+    {% for sample in samples %}
+    <li{%if forloop.first %} class="active"{%endif%}><a data-toggle="tab" href="#{{sample.get_id}}">{{ sample }}</a></li>
     {% endfor %}
 </ul>
 
 <div class="tab-content">
-    {% for i in samples %}
-    <div role="tabpanel" class="tab-pane{%if i == samples.0 %} active{%endif%}" id="{{i.get_id}}">
-        <p>Collection date: {{ i.date }}</p>
-        <p>Category of sample: {{ i.get_sample_cat_display }}</p>
-        <p>Sample details: {{ i.sample_details }}</p>
-        <p>Environmental package: {{ i.get_env_package_display }}</p>
-        <p>Datasets:</p>
-        <ul>
-            <li><a href="{{ source.get_dataset.get_absolute_url }}">{{ source.get_dataset }}</a></li>
-        </ul>
+    {% for sample in samples %}
+    <div role="tabpanel" class="tab-pane{%if forloop.first %} active{%endif%}" id="{{sample.get_id}}">
+      <div id="source_details" class="dl-horizontal">
+	    <dl>
+	      <dt style="width:150px">Collection date:</dt>
+	      <dd style="margin-left: 160px">{{ sample.date }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Category of sample:</dt>
+	      <dd style="margin-left: 160px">{{ sample.get_sample_cat_display }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Sample details:</dt>
+	      <dd style="margin-left: 160px">{{ sample.sample_details }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Environmental package:</dt>
+	      <dd style="margin-left: 160px">{{ sample.get_env_package_display }}</dd>
+	    </dl>
+      
+	    <dl>
+	      <dt style="width:150px">Datasets:</dt>
+	      <dd style="margin-left: 160px"><ul>
+	      {% for dataset in sample.get_datasets %}
+            <li><a href="{{ dataset.get_absolute_url }}">{{ dataset }}</a></li>
+          {% endfor %}
+        </ul></dd>
+	    </dl>
+      </div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
 
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+{%if source.geoloc_lat or source.geoloc_lon %}
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 
@@ -61,5 +143,5 @@
             fillOpacity: 0.25
         }).addTo(map);
 </script>
-
+{% endif %}
 {% endblock %}

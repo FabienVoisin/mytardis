@@ -157,6 +157,13 @@ class Sample(models.Model):
     def get_id(self):
         return self.id
 
+    def get_datasets(self):
+        extracts = Extract.objects.filter(sample=self)
+        libraries = Library.objects.filter(extract__in=extracts)
+        sequences = Sequence.objects.filter(library__in=libraries)
+        processings = Processing.objects.filter(sequence__in=sequences)
+        return [proc.analysis.dataset for proc in processings]
+
     class Meta:
         app_label = 'acad'
 
