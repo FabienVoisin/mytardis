@@ -1,0 +1,17 @@
+{% load capture %}
+{% if doi %}
+<div class="row-fluid">
+    <small>
+    {% for author in doi_exp.author_experiment_set.all %}{% capture as creator_span %}
+    <span property="dc:creator" style="white-space: nowrap;">
+      {{ author.author }}</span>{% endcapture %}{% if not forloop.first %};
+      {% endif %}
+      {{ creator_span }}{% endfor %}
+    </small>
+    ({{ doi_exp.publication_year }}):
+    {{ doi_exp.title }}.
+    {{ doi_exp.institution_name }}.
+    {{ rtype }}.
+    http://dx.doi.org/{{ doi }}</a>
+</div>
+{% endif %}

@@ -414,6 +414,8 @@ $('#modal-metadata .submit-button').live('click', function() {
   </p>
 </div>
 
+{% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}
+
 <div class="row-fluid" >
   <div class="span8">
     {% block dataset_content_preview %}

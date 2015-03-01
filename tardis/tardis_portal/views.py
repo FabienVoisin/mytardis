@@ -816,6 +816,13 @@ def view_dataset(request, dataset_id):
         authz.get_accessible_experiments_for_dataset(request, dataset_id),
         'upload_method': upload_method
     })
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import DatasetDOIService
+        # Citation needs to find out chronologically earliest parent experiment ex
+        doi_service = DatasetDOIService(dataset)
+        c['doi_exp'] = dataset.experiment
+        c['doi'] = doi_service.get_doi()
+
     _add_protocols_and_organizations(request, dataset, c)
     return HttpResponse(render_response_index(
         request, 'tardis_portal/view_dataset.html', c))
@@ -973,6 +980,11 @@ def retrieve_experiment_metadata(request, experiment_id):
     c = Context({'experiment': experiment,
                  'parametersets': parametersets,
                  'has_write_permissions': has_write_permissions})
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import ExperimentDOIService
+        doi_service = ExperimentDOIService(experiment)
+        c['doi'] = doi_service.get_doi()
+
     return HttpResponse(render_response_index(request,
                         'tardis_portal/ajax/experiment_metadata.html', c))
 
@@ -992,13 +1004,14 @@ def create_experiment(request,
 
     """
 
+    d = ';' #delimiter used for separating authors. comma is used for separating first and last names
     c = Context({
         'subtitle': 'Create Experiment',
         'user_id': request.user.id,
         })
 
     if request.method == 'POST':
-        form = ExperimentForm(request.POST)
+        form = ExperimentForm(request.POST, delimiter=d)
         if form.is_valid():
             full_experiment = form.save(commit=False)
 
@@ -1027,7 +1040,7 @@ def create_experiment(request,
         c['status'] = "Errors exist in form."
         c["error"] = 'true'
     else:
-        form = ExperimentForm(extra=1)
+        form = ExperimentForm(extra=1, delimiter=d)
 
     c['form'] = form
     c['default_institution'] = settings.DEFAULT_INSTITUTION
@@ -3298,6 +3311,7 @@ def add_dataset(request, experiment_id):
             dataset.save()
             experiment = Experiment.objects.get(id=experiment_id)
             dataset.experiments.add(experiment)
+            dataset.experiment_id = experiment_id
             dataset.save()
             return _redirect_303('tardis.tardis_portal.views.view_dataset',
                                  dataset.id)

@@ -18,8 +18,11 @@ logger = logging.getLogger(__name__)
 class Dataset(models.Model):
     """Class to link datasets to experiments
 
-    :attribute experiment: a forign key to the
+    :attribute experiments: a forign key to the
        :class:`tardis.tardis_portal.models.Experiment`
+    :attribute experiment: a forign key to the
+       :class:`tardis.tardis_portal.models.Experiment`, whose
+       information is used in displaying citation for dataset
     :attribute facility: the foreign key to the facility that generated
         this data
     :attribute instrument: the foreign key to the instrument that generated
@@ -30,6 +33,7 @@ class Dataset(models.Model):
     """
 
     experiments = models.ManyToManyField(Experiment, related_name='datasets')
+    experiment = models.ForeignKey(Experiment, null=True)
     description = models.TextField(blank=True)
     directory = DirectoryField(blank=True, null=True)
     immutable = models.BooleanField(default=False)

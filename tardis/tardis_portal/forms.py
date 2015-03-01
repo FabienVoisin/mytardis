@@ -349,7 +349,7 @@ class DatasetForm(forms.ModelForm):
 
     class Meta:
         model = models.Dataset
-        exclude = ('experiments', 'immutable')
+        exclude = ('experiments', 'experiment', 'immutable')
 
 class Author_Experiment(forms.ModelForm):
 
@@ -398,6 +398,7 @@ class ExperimentForm(forms.ModelForm):
                  initial=None, error_class=ErrorList, label_suffix=':',
                  empty_permitted=False, instance=None, extra=0):
 
+        self.delimiter = delimiter #all view functions which create ExperimentForm have to ensure using the same delimiter
         super(ExperimentForm, self).__init__(data=data,
                                              files=files,
                                              auto_id=auto_id,
