@@ -905,7 +905,7 @@ class LibraryResource(MyTardisModelResource):
         queryset = Library.objects.all()
 
 class SequenceResource(MyTardisModelResource):
-    library = fields.OneToOneField(LibraryResource, 'library')
+    library = fields.ForeignKey(LibraryResource, 'library')
 
     class Meta(MyTardisModelResource.Meta):
         queryset = Sequence.objects.all()
@@ -917,7 +917,7 @@ class AnalysisResource(MyTardisModelResource):
         queryset = Analysis.objects.all()
 
 class ProcessingResource(MyTardisModelResource):
-    sequence = fields.OneToOneField(SequenceResource, 'sequence')
+    sequence = fields.ForeignKey(SequenceResource, 'sequence')
     analysis = fields.ForeignKey(AnalysisResource, 'analysis')
 
     class Meta(MyTardisModelResource.Meta):
