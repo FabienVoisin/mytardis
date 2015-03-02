@@ -59,7 +59,11 @@ class DOIService(object):
         base_url = settings.DOI_MINT_URL
         app_id = settings.DOI_APP_ID
         mint_url = "%s?app_id=%s&url=%s" % (base_url, app_id, url)
-        post_data = {'xml': self._datacite_xml()}
+        datacite_xml = self._datacite_xml()
+        post_data = {'xml': datacite_xml}
+
+        if hasattr(settings, 'DOI_DEBUG_XML') and settings.DOI_DEBUG_XML:
+            logger.info("Minting DOI with DataCite XML: %s" % datacite_xml)
 
         if hasattr(settings, 'DOI_SHARED_SECRET') and settings.DOI_SHARED_SECRET:
             post_data['shared_secret'] = settings.DOI_SHARED_SECRET
@@ -133,11 +137,21 @@ class ExperimentDOIService(DOIService):
         template = os.path.join(settings.DOI_TEMPLATE_DIR, 'default.xml')
 
         ex = self.obj
+
         c = Context()
         c['title'] = ex.title
         c['institution_name'] = ex.institution_name
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
+        c['resource_type'] = 'Collection'
+        c['description'] = ex.description
+        if ex.license:
+            c['rights_name'] = ex.license.name
+            c['rights_url'] = ex.license.url
+        c['num_datasets'] = ex.datasets.all().count()
+        c['num_files'] = ex.get_datafiles().count()
+        c['data_size'] = ex.get_size()
+
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml
 
@@ -208,10 +222,18 @@ class DatasetDOIService(DOIService):
         template = os.path.join(settings.DOI_TEMPLATE_DIR, 'default.xml')
 
         ex = self.experiment
+
         c = Context()
         c['title'] = self.obj.description
         c['institution_name'] = ex.institution_name
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
+        c['resource_type'] = 'Dataset'
+        if ex.license:
+            c['rights_name'] = ex.license.name
+            c['rights_url'] = ex.license.url
+        c['num_files'] = self.obj.datafile_set.count()
+        c['data_size'] = self.obj.get_size()
+
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml
