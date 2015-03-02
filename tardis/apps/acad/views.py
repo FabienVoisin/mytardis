@@ -65,7 +65,7 @@ class AcadSearchView(SearchView):
         #    results.append(result)
 
         extra['experiments'] = experiments
-        
+
         source_results=self.results.facet('source_id_stored')
         source_facets = source_results.facet_counts()
         if source_facets:
@@ -79,9 +79,9 @@ class AcadSearchView(SearchView):
         for id in list(set(source_ids)):
             sources.extend(Source.objects.extra(where=["id LIKE '"+id+"'"]))
         sources.sort(key=lambda source: source.date, reverse=False)
-                                        
+
         extra['sources'] = sources
-        
+
         return extra
 
     # override SearchView's method in order to
@@ -143,11 +143,6 @@ def search_source(request):
         searchqueryset=sqs,
         form_class=AdvancedSearchForm,
     ).__call__(request)
-
-def dataset(request, id):
-    dataset = get_object_or_404(Dataset, pk=id)
-    context = {'dataset': dataset, 'analysis': dataset.analysis}
-    return render(request, 'dataset.html', context)
 
 def source_index(request):
     context = {'sources': Source.objects.all()}

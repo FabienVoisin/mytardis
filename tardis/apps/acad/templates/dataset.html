@@ -1,8 +1,7 @@
-{% extends "tardis_portal/portal_template.html" %}
+{# A setion of block content in view_dataset #}
 {% load linkify_pubid %}
 
-{% block content %}
-<h1>{{ dataset }}</h1>
+<h1>ACAD metadata</h1>
 
 <ul class="nav nav-tabs">
     {% for i in dataset.analysis.processing_set.all %}
@@ -42,9 +41,6 @@
 </div>
 
 <h2>Analysis</h2>
-<p>Here is the note from analysis record:</p>
 <blockquote>
-{{ dataset.analysis.note }}
+Software package {{ dataset.analysis.package }} ({{ dataset.analysis.package_ver }})
 </blockquote>
-
-{% endblock content %}

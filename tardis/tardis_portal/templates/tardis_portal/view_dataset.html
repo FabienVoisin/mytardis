@@ -412,8 +412,6 @@ $('#modal-metadata .submit-button').live('click', function() {
   <div class="span8">
     {% block dataset_content_preview %}
     <div class="row-fluid" style="margin-bottom: 20px">
-    <h3>Analysis</h3>
-    <p>Analysis note: <blockquote>{{ dataset.analysis.note }}</blockquote></p>
     <h3>Preview Images</h3>
     <div class="info-box">
     {% if dataset.get_images.count > 0 %}
@@ -575,6 +573,9 @@ margin-top: 20px;
       </div>
   </div>
 </div>
+
+{# This is acad template inserted into mytardis template #}
+{% include "dataset.html" %}
 
 {% block finalscript %}
 <script type="text/javascript">
