@@ -149,6 +149,9 @@ class DataFile(models.Model):
     def get_download_url(self):
         return '/api/v1/dataset_file/%d/download' % self.id
 
+    def get_s3_url(self):
+        return 'http://genome.ucsc.edu/goldenPath/help/test.bed'
+
     def get_file(self):
         return self.file_object
 
@@ -197,6 +200,13 @@ class DataFile(models.Model):
         mimetype = self.get_mimetype()
         return mimetype.startswith('image/') \
             and mimetype not in ('image/x-icon', 'image/img')
+
+    def is_genome(self):
+        '''
+        returns True if it's a gemoe file?
+        '''
+        suffix = path.splitext(self.filename)[-1].upper()
+        return suffix in ('.VCF', '.BAM', '.FASTA')
 
     def get_image_data(self):
         from .parameters import DatafileParameter
