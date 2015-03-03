@@ -410,6 +410,12 @@ $('#modal-metadata .submit-button').live('click', function() {
 
 <div class="row-fluid" >
   <div class="span8">
+    <div class="row-fluid" style="margin-bottom: 20px">
+    {# This is acad template inserted into mytardis template #}
+    {% include "dataset.html" %}
+    </div>
+
+    {% comment %}
     {% block dataset_content_preview %}
     <div class="row-fluid" style="margin-bottom: 20px">
     <h3>Preview Images</h3>
@@ -461,6 +467,7 @@ $('#modal-metadata .submit-button').live('click', function() {
     <div id="metadata-pane" class="row-fluid">
       {% include "tardis_portal/ajax/dataset_metadata.html" %}
     </div>
+    {% endcomment %}
     <div id="other-experiments-pane">
         <h3>Other Experiments</h3>
         <div class="info-box">
@@ -573,9 +580,6 @@ margin-top: 20px;
       </div>
   </div>
 </div>
-
-{# This is acad template inserted into mytardis template #}
-{% include "dataset.html" %}
 
 {% block finalscript %}
 <script type="text/javascript">
