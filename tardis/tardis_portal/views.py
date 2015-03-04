@@ -573,6 +573,11 @@ def view_experiment(request, experiment_id,
                 {'name': experiment.title,
                  'link': experiment.get_absolute_url()}]
 
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import ExperimentDOIService
+        doi_service = ExperimentDOIService(experiment)
+        c['doi'] = doi_service.get_doi()
+
     if 'status' in request.POST:
         c['status'] = request.POST['status']
     if 'error' in request.POST:

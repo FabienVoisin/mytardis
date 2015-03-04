@@ -64,6 +64,15 @@
   </dl>
   {% endblock license %}
 
+  {% if doi %}
+  {% block doi %}
+  <dl>
+    <dt>DOI</dt>
+    <dd>{{ doi }}</dd>
+  </dl>
+  {% endblock %}
+  {% endif %}
+
   {% block extra_info %}
   {% endblock extra_info %}
 
