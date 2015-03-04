@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resource xmlns="http://datacite.org/schema/kernel-2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://datacite.org/schema/kernel-2.1 http://schema.datacite.org/meta/kernel-2.1/metadata.xsd">
+<resource xmlns="http://datacite.org/schema/kernel-3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd">
     <identifier identifierType="DOI"></identifier>
     <creators>
         {% for creator_name in creator_names %}
@@ -11,8 +11,26 @@
     <titles>
         <title>{{ title }}</title>
     </titles>
-
     <publisher>{{ institution_name }}</publisher>
     <publicationYear>{{ publication_year }}</publicationYear>
+    {% if resource_type %}<resourceType resourceTypeGeneral="{{ resource_type }}" />{% endif %}
+    {% if description %}
+    <descriptions>
+        <description descriptionType="Abstract">
+        {{ description }}
+        </description>
+    </descriptions>
+    {% endif %}
+    {% if rights_url and rights_name %}
+    <rightsList>
+        <rights rightsURI="{{ rights_url }}">{{ rights_name }}</rights>
+    </rightsList>
+    {% endif %}
+    {% if num_files and data_size %}
+    <sizes>
+        {% if num_datasets %}<size>{{ num_datasets }} dataset{{ num_datasets|pluralize }}</size>{% endif %}
+        <size>{{ num_files }} file{{ num_files|pluralize }}</size>
+        <size>{{ data_size|filesizeformat }}</size>
+    </sizes>
+    {% endif %}
 </resource>
-
