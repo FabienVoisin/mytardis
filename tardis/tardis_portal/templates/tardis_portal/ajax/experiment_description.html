@@ -79,6 +79,7 @@
   {% block extra_content %}
   {% endblock extra_content %}
 
+  {% comment %}
   {% block experiment_admin %}
       {% block experiment_owners %}
       {% if experiment.get_owners %}
@@ -106,6 +107,7 @@
       {% endif %}
       {% endblock experiment_owners %}
   {% endblock experiment_admin %}
+  {% endcomment %}
 
   {% block downloads %}
   {% if has_download_permissions %}
