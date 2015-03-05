@@ -139,7 +139,7 @@ class SequenceIndex(indexes.SearchIndex, indexes.Indexable):
     sequence_tech_options=indexes.CharField(model_attr='tech_options')
     sequence_fileformat=indexes.CharField(model_attr='fileformat')
     sequence_qualscale=indexes.CharField(model_attr='qualscale')
-    sequence_error_rate=indexes.IntegerField(model_attr='error_rate')
+    sequence_error_rate=indexes.IntegerField(model_attr='error_rate', default=None)
     sequence_error_method=indexes.CharField(model_attr='error_method')
     sequence_demulti_prog=indexes.CharField(model_attr='demulti_prog')
     sequence_demulti_prog_ver=indexes.CharField(model_attr='demulti_prog_ver')
@@ -160,9 +160,9 @@ class ProcessingIndex(indexes.SearchIndex, indexes.Indexable):
     sample_id_stored=indexes.CharField(model_attr='sequence__library__extract__sample__id')
     source_id_stored=indexes.CharField(model_attr='sequence__library__extract__sample__source__id')
     processing_reference=indexes.CharField(model_attr='reference')
-    processing_fold_coverage=indexes.DecimalField(model_attr='fold_coverage')
-    processing_percent_coverage=indexes.DecimalField(model_attr='percent_coverage')
-    processing_contigs=indexes.IntegerField(model_attr='contigs')
+    processing_fold_coverage=indexes.DecimalField(model_attr='fold_coverage', default=None)
+    processing_percent_coverage=indexes.DecimalField(model_attr='percent_coverage', default=None)
+    processing_contigs=indexes.IntegerField(model_attr='contigs', default=None)
     
     def get_model(self):
         return Processing
