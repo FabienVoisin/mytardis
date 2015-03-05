@@ -596,9 +596,12 @@ def view_experiment(request, experiment_id,
          'viewfn': 'tardis.tardis_portal.views.experiment_description'},
         {'name': 'Metadata',
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
-        {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
     ]
-    # do not load 'Transger Dataset' if user has no 'has_change_permissions'
+    # Only show Sharing tab if user is authenticated -- so anonymous end users
+    # will not see this tab for public experiments
+    if request.user.is_authenticated():
+        default_apps.append({'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'})
+    # Only show Transfer Datasets tab if user 'has_change_permissions'
     if c['has_change_permissions']:
         default_apps.append({'name': 'Transfer Datasets',
          'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
