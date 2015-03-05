@@ -75,11 +75,24 @@ class AcadSearchView(SearchView):
                               for f in source_facets if int(f[1]) > 0]
         else:
             source_ids = []
-        sources=[]
-        for id in list(set(source_ids)):
-            sources.extend(Source.objects.extra(where=["id LIKE '"+id+"'"]))
-        sources.sort(key=lambda source: source.date, reverse=False)
-
+        source_id_string=(",").join(["'"+s+"'" for s in set(source_ids)])
+        sources=Source.objects.extra(where=["lower(id) IN (%s)" % source_id_string], order_by=["-date"])
+        logger.info("sources %s " % sources)
+        if self.form.cleaned_data['gender'] and self.form.cleaned_data['gender'] != "All":
+            sources = sources.filter(gender=self.form.cleaned_data['gender'])
+        if self.form.cleaned_data['age'] and self.form.cleaned_data['age'] != "All":
+            sources = sources.filter(age_cat=self.form.cleaned_data['age'])
+            logger.info("filterd age %s sources %s " % (self.form.cleaned_data['age'], sources))
+        logger.info("filterd continent %s " % (self.form.cleaned_data.get('continent')))
+        if self.form.cleaned_data['continent'] and len(self.form.cleaned_data['continent'])>0:
+            sources = sources.filter(geoloc_continent__in=self.form.cleaned_data['continent'])
+        logger.info("filterd carbondate %s " % (self.form.cleaned_data['carbondate']))
+        carbon_date=self.form.cleaned_data['carbondate'].split(",")
+        sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
+        #    sqs = sqs.filter(source_geoloc_continent=self.cleaned_data['continent'])
+        #for id in list(set(source_ids)):
+        #    sources.extend(Source.objects.extra(where=["id LIKE '"+id+"'"]))
+        #sources.sort(key=lambda source: source.date, reverse=False)
         extra['sources'] = sources
 
         return extra
@@ -122,7 +135,7 @@ def search_source(request):
     """
 
     if len(request.GET) == 0:
-        c = Context({'searchForm': AdvancedSearchForm()})
+        c = Context({'searchForm': AdvancedSearchForm(), "gender_choices": Source.GENDERS, "age_cat_choices": Source.AGE_CATS, "continent_choices": Source.CONTINENTS})
         url = 'search/advanced_search_form.html'
         return HttpResponse(render_response_search(request, url, c))
 

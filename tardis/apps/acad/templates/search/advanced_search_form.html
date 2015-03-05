@@ -1,15 +1,66 @@
 {%extends "tardis_portal/portal_template.html" %}
+{% load staticfiles %}
+{% block script %}
+<script src="{% static 'bootstrap-slider/js/bootstrap-slider.min.js' %}"></script>
+{% endblock script %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'bootstrap-slider/css/bootstrap-slider.min.css' %}" />
+{% endblock style %}
 {% block content %}
-            <form id="searchbox" method="get"
-                class="navbar-search pull-left"
-                action="/search/">
-              <textarea id="id_q" autocomplete="off" name="q" style="width: 900px;" rows="4"
-                   placeholder="Type your query here..."></textarea>
+<form id="searchbox" method="get"
+    class="navbar-search pull-left"
+    action=".">
+  <textarea id="id_q" autocomplete="off" name="q" style="width: 900px;" rows="4"
+       placeholder="Type your query here..."></textarea>
+  <div class="well">Lucene search box above...</div>
+  <div class="form-group">
+    <label for="genderinput"class="control-label">Gender:</label>
+    <select class="form-control" id="genderinput" name="gender">
+	  <option>All</option>
+		{% for gender in gender_choices %}
+		<option value="{{ gender.0 }}">{{ gender.1 }}</option>
+		{% endfor %}
+	</select>
+  </div>
+  <div class="form-group">
+    <label for="ageinput">Age Category:</label>
+    <select class="form-control" id="ageinput" name="age">
+	  <option>All</option>
+		{% for age_cat in age_cat_choices %}
+		<option value="{{ age_cat.0 }}">{{ age_cat.1 }}</option>
+		{% endfor %}
+	</select>
+  </div>
+  <div class="form-group">
+    <label for="continentinput">Continent:</label>
+		{% for continent in continent_choices %}
+		<label class="checkbox-inline">
+		  <input type="checkbox" id="continentinput{{ continent.0 }}" name="continent" value="{{ continent.0 }}">{{ continent.1 }}
+		</label>
+		{% endfor %}
+  </div>
+    <div class="well">
+		Carbon Date:&nbsp;<b>1000 years</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="carbondateinput" name="carbondate" class="span4" value="" type="text" data-slider-min="1000" data-slider-max="15000" data-slider-step="100" data-slider-value="[1000,15000]" data-slider-enabled="false"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>15000 years&nbsp;&nbsp;<input id="carbondateinput-enabled" type="checkbox"/> Enabled</b>
+	</div>
   <div class="form-actions">
     <button type="submit" class="btn btn-info btn-large">
       <i class="icon-search icon-large"></i> Search
     </button>
   </div>
+</form>
+<script>
+var slider=new Slider('#carbondateinput', {tooltip: 'always'});
+$("#carbondateinput-enabled").click(function() {
+	if(this.checked) {
+		// Without JQuery
+		slider.enable();
+	}
+	else {
+		// Without JQuery
+		slider.disable();
+	}
+});
 
-            </form>
+</script>
 {% endblock content %}
