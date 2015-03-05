@@ -805,6 +805,7 @@ def view_dataset(request, dataset_id):
 
     c = Context({
         'dataset': dataset,
+        'subtitle': dataset.description,
         'datafiles': get_datafiles_page(),
         'parametersets': dataset.getParameterSets()
                                 .exclude(schema__hidden=True),

@@ -391,6 +391,7 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% endif %}
 
   {% endif %}
+  {% comment %}
   {% if dataset.immutable %}
   <h4 style="padding-top: 4px">
       <small>
@@ -398,6 +399,7 @@ $('#modal-metadata .submit-button').live('click', function() {
       </small>
   </h4>
   {% endif %}
+  {% endcomment %}
 
     <p class="pull-right">
     {{ dataset|dataset_experiments_badge}}&nbsp;
