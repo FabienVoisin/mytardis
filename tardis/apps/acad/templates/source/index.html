@@ -52,6 +52,7 @@
 		    <ul class="nav nav-list">
 		      <li class="nav-header dataset-list-header">Datasets from this source: </li>
 		{% for ds in src.get_datasets %}
+		  {% if ds.id in dataset_ids %}
 		  <li>
 		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
 		    {% for datafile in ds.get_images|slice:":5" %}
@@ -69,6 +70,7 @@
 		      {% endif %}
 		    {% endfor %}
 		  </li>
+		  {% endif %}
 		{% empty %}
 		  There are no datasets in this source
 		{% endfor %}
@@ -83,6 +85,11 @@
   <div class="span5"><div id="map" style="height: 500px"></div>
   </div> 
 </div> <!-- row-fluid -->
+{% else %}
+      <p class="alert alert-info">
+	No sources have been published yet.
+      </p>
+
 {% endif %}
 </div>
 <script>

@@ -41,7 +41,7 @@
 		{% endfor %}
   </div>
     <div class="well">
-		Carbon Date:&nbsp;<b>1000 years</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="carbondateinput" name="carbondate" class="span4" value="" type="text" data-slider-min="1000" data-slider-max="15000" data-slider-step="100" data-slider-value="[1000,15000]" data-slider-enabled="false"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>15000 years&nbsp;&nbsp;<input id="carbondateinput-enabled" type="checkbox"/> Enabled</b>
+		Carbon Date:&nbsp;<b>1000 years</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="carbondateinput" name="carbondate" class="span4" value="" type="text" data-slider-min="1000" data-slider-max="150000" data-slider-step="100" data-slider-value="[1000,150000]"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>150000 years
 	</div>
   <div class="form-actions">
     <button type="submit" class="btn btn-info btn-large">
@@ -51,16 +51,6 @@
 </form>
 <script>
 var slider=new Slider('#carbondateinput', {tooltip: 'always'});
-$("#carbondateinput-enabled").click(function() {
-	if(this.checked) {
-		// Without JQuery
-		slider.enable();
-	}
-	else {
-		// Without JQuery
-		slider.disable();
-	}
-});
 
 </script>
 {% endblock content %}

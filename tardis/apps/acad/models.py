@@ -84,13 +84,16 @@ class Source(models.Model):
     def get_source_id(self):
         return self.id
     
-    def get_datasets(self):
+    def get_datasets(self, accssible_dataset_ids=None):
         samples = Sample.objects.filter(source=self)
         extracts = Extract.objects.filter(sample__in=samples)
         libraries = Library.objects.filter(extract__in=extracts)
         sequences = Sequence.objects.filter(library__in=libraries)
         processings = Processing.objects.filter(sequence__in=sequences)
-        return list(set([proc.analysis.dataset for proc in processings]))
+        if accssible_dataset_ids is not None:
+            return list(set([proc.analysis.dataset for proc in processings if proc.analysis.dataset.id in accssible_dataset_ids]))
+        else:
+            return list(set([proc.analysis.dataset for proc in processings]))
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
@@ -157,12 +160,15 @@ class Sample(models.Model):
     def get_id(self):
         return self.id
 
-    def get_datasets(self):
+    def get_datasets(self, accssible_dataset_ids=None):
         extracts = Extract.objects.filter(sample=self)
         libraries = Library.objects.filter(extract__in=extracts)
         sequences = Sequence.objects.filter(library__in=libraries)
         processings = Processing.objects.filter(sequence__in=sequences)
-        return list(set([proc.analysis.dataset for proc in processings]))
+        if accssible_dataset_ids is not None:
+            return list(set([proc.analysis.dataset for proc in processings if proc.analysis.dataset.id in accssible_dataset_ids]))
+        else:
+            return list(set([proc.analysis.dataset for proc in processings]))
 
     class Meta:
         app_label = 'acad'

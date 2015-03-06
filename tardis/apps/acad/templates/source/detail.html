@@ -117,7 +117,9 @@
 	      <dt style="width:150px">Datasets:</dt>
 	      <dd style="margin-left: 160px"><ul>
 	      {% for dataset in sample.get_datasets %}
+	        {% if dataset.id in dataset_ids %}
             <li><a href="{{ dataset.get_absolute_url }}">{{ dataset }}</a></li>
+            {% endif %}
           {% endfor %}
         </ul></dd>
 	    </dl>

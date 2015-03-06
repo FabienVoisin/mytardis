@@ -8,7 +8,7 @@ import logging
 from django.shortcuts import render, get_object_or_404
 from django.template import Context
 from django.http import HttpResponseRedirect, HttpResponse,\
-    HttpResponseForbidden, HttpResponseNotFound
+    HttpResponseForbidden, HttpResponseNotFound, Http404
 from tardis.tardis_portal.models import Experiment, ExperimentParameter, \
     DatafileParameter, DatasetParameter, ObjectACL, DataFile, \
     DatafileParameterSet, ParameterName, GroupAdmin, Schema, \
@@ -54,7 +54,11 @@ class AcadSearchView(SearchView):
         ids = list(set(experiment_ids) & set(access_list))
         experiments = Experiment.objects.filter(pk__in=ids)\
                                         .order_by('-update_time')
-
+                                        
+        #dataset_access_list=Dataset.objects.filter(experiments__pk__in=access_list)
+        dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
+        logger.info("access_list %s dataset_ids %s"%(access_list, dataset_ids))
+        
         #results = []
         #for e in experiments:
         #    result = {}
@@ -65,6 +69,7 @@ class AcadSearchView(SearchView):
         #    results.append(result)
 
         extra['experiments'] = experiments
+        extra['dataset_ids'] = dataset_ids
 
         source_results=self.results.facet('source_id_stored')
         source_facets = source_results.facet_counts()
@@ -86,14 +91,20 @@ class AcadSearchView(SearchView):
         logger.info("filterd continent %s " % (self.form.cleaned_data.get('continent')))
         if self.form.cleaned_data['continent'] and len(self.form.cleaned_data['continent'])>0:
             sources = sources.filter(geoloc_continent__in=self.form.cleaned_data['continent'])
-        logger.info("filterd carbondate %s " % (self.form.cleaned_data['carbondate']))
-        carbon_date=self.form.cleaned_data['carbondate'].split(",")
-        sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
+        if self.form.cleaned_data['carbondate'] != "1000,150000":
+            logger.info("filterd carbondate %s " % (self.form.cleaned_data['carbondate']))
+            carbon_date=self.form.cleaned_data['carbondate'].split(",")
+            sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
+        valid_sources=[]
+        for source in sources:
+            logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
+            if len(source.get_datasets(dataset_ids))>0:
+                valid_sources.append(source)
         #    sqs = sqs.filter(source_geoloc_continent=self.cleaned_data['continent'])
         #for id in list(set(source_ids)):
         #    sources.extend(Source.objects.extra(where=["id LIKE '"+id+"'"]))
         #sources.sort(key=lambda source: source.date, reverse=False)
-        extra['sources'] = sources
+        extra['sources'] = valid_sources
 
         return extra
 
@@ -158,11 +169,41 @@ def search_source(request):
     ).__call__(request)
 
 def source_index(request):
-    context = {'sources': Source.objects.all()}
+    access_list = []
+    if request.user.is_authenticated():
+        access_list.extend(
+            [e.pk for e in
+             authz.get_accessible_experiments(request)])
+
+    access_list.extend(
+        [e.pk for e in Experiment.objects.exclude(
+            public_access=Experiment.PUBLIC_ACCESS_NONE)])
+
+    dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
+    valid_sources=[]
+    for source in Source.objects.all():
+        #logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
+        if len(source.get_datasets(dataset_ids))>0:
+            valid_sources.append(source)
+    context = {'sources': valid_sources, 'dataset_ids': dataset_ids}
     return render(request, 'source/index.html', context)
 
 def source_detail(request, id):
     source = get_object_or_404(Source, pk=id)
+    access_list = []
+    if request.user.is_authenticated():
+        access_list.extend(
+            [e.pk for e in
+             authz.get_accessible_experiments(request)])
+
+    access_list.extend(
+        [e.pk for e in Experiment.objects.exclude(
+            public_access=Experiment.PUBLIC_ACCESS_NONE)])
+
+    dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
+    if len(source.get_datasets(dataset_ids))==0:
+        #logger.error("Intruder trying to get access, stop it")
+        return HttpResponseNotFound('<h1>Source not accessible</h1>')
     samples = source.sample_set.all()
-    context = {'source': source, 'samples': samples}
+    context = {'source': source, 'samples': samples, 'dataset_ids': dataset_ids}
     return render(request, 'source/detail.html', context)

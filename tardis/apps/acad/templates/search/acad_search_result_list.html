@@ -114,6 +114,7 @@
 		    <ul class="nav nav-list">
 		      <li class="nav-header dataset-list-header">Datasets from this source: </li>
 		{% for ds in src.get_datasets %}
+		  {% if ds.id in dataset_ids %}
 		  <li>
 		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
 		    {% for datafile in ds.get_images|slice:":5" %}
@@ -131,8 +132,7 @@
 		      {% endif %}
 		    {% endfor %}
 		  </li>
-		{% empty %}
-		  There are no datasets in this source
+		  {% endif %}
 		{% endfor %}
 		    </ul>
 	  </div>
