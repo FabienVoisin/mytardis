@@ -3,13 +3,13 @@
 
 <ul class="nav nav-tabs">
     {% for i in dataset.analysis.processing_set.all %}
-    <li {% if i == dataset.analysis.processing_set.all.0 %}class="active"{%endif%}><a href="#{{i.sequence.library.id}}" data-toggle="tab">{{i.sequence.library.id}}</a></li>
+    <li {% if i == dataset.analysis.processing_set.all.0 %}class="active"{%endif%}><a href="#{{i.id}}" data-toggle="tab">{{i.id}}</a></li>
     {% endfor %}
 </ul>
 
 <div class="tab-content">
     {% for i in dataset.analysis.processing_set.all %}
-    <div role="tabpanel" class="tab-pane {% if i == dataset.analysis.processing_set.all.0 %}active{% endif %}" id="{{ i.sequence.library.id }}">
+    <div role="tabpanel" class="tab-pane {% if i == dataset.analysis.processing_set.all.0 %}active{% endif %}" id="{{ i.id }}">
         {# Source #}
         <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>, source {{ i.sequence.library.extract.sample }}</p>
 
