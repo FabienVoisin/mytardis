@@ -90,7 +90,7 @@ class Source(models.Model):
         libraries = Library.objects.filter(extract__in=extracts)
         sequences = Sequence.objects.filter(library__in=libraries)
         processings = Processing.objects.filter(sequence__in=sequences)
-        return [proc.analysis.dataset for proc in processings]
+        return list(set([proc.analysis.dataset for proc in processings]))
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
@@ -162,7 +162,7 @@ class Sample(models.Model):
         libraries = Library.objects.filter(extract__in=extracts)
         sequences = Sequence.objects.filter(library__in=libraries)
         processings = Processing.objects.filter(sequence__in=sequences)
-        return [proc.analysis.dataset for proc in processings]
+        return list(set([proc.analysis.dataset for proc in processings]))
 
     class Meta:
         app_label = 'acad'
