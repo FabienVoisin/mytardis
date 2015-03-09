@@ -28,6 +28,7 @@ from tardis.tardis_portal.models.datafile import DataFile
 from tardis.tardis_portal.models.datafile import DataFileObject
 from tardis.tardis_portal.models.dataset import Dataset
 from tardis.tardis_portal.models.experiment import Experiment
+from tardis.tardis_portal.models.experiment import Author_Experiment
 from tardis.tardis_portal.models.parameters import DatafileParameter
 from tardis.tardis_portal.models.parameters import DatafileParameterSet
 from tardis.tardis_portal.models.parameters import DatasetParameter
@@ -348,7 +349,7 @@ class ACLAuthorization(Authorization):
             return False
         elif type(bundle.obj) == Schema:
             return False
-        elif type(bundle.obj) in [ Organism, Source, Sample, Extract, Library, Sequence, Processing, Analysis ]:
+        elif type(bundle.obj) in [ Author_Experiment, Organism, Source, Sample, Extract, Library, Sequence, Processing, Analysis ]:
             return bundle.request.user.has_perm('tardis_portal.change_dataset')
         raise NotImplementedError(type(bundle.obj))
 
@@ -874,6 +875,12 @@ class ReplicaResource(MyTardisModelResource):
             bundle.data['file_object'].close()
             del(bundle.data['file_object'])
         return bundle
+
+class AuthorExperimentResource(MyTardisModelResource):
+    experiment = fields.ForeignKey(ExperimentResource, 'experiment')
+
+    class Meta(MyTardisModelResource.Meta):
+        queryset = Author_Experiment.objects.all()
 
 class OrganismResource(MyTardisModelResource):
     class Meta(MyTardisModelResource.Meta):

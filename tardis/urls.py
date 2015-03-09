@@ -253,6 +253,7 @@ display_urls = patterns(
 )
 
 # # API SECTION
+from tardis.tardis_portal.api import AuthorExperimentResource
 from tardis.tardis_portal.api import DatasetParameterSetResource
 from tardis.tardis_portal.api import DatasetParameterResource
 from tardis.tardis_portal.api import DatasetResource
@@ -280,6 +281,7 @@ from tardis.tardis_portal.api import OrganismResource
 
 from tastypie.api import Api
 v1_api = Api(api_name='v1')
+v1_api.register(AuthorExperimentResource())
 v1_api.register(DatasetParameterSetResource())
 v1_api.register(DatasetParameterResource())
 v1_api.register(DatasetResource())
