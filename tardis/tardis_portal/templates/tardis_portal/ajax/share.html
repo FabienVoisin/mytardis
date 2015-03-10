@@ -556,11 +556,13 @@ $(document).ready(function() {
               </dd>
             </dl>
         </p>
-        {% if is_owner and has_change_permissions %}
+        {% if is_owner %}
+         {% if has_change_permissions or public_access_metadata %}
         <a data-experiment_id="{{experiment.id}}" class="public_access_link btn btn-mini" title="Change">
           <i class="icon-cog"></i>
           Change Public Access
         </a>
+         {% endif %}
         {% endif %}
     </div>
     <hr/>

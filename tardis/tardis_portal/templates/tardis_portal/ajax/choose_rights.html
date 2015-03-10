@@ -134,6 +134,12 @@ $('#legal-section .cancel-button').live("click", function() {
 
 </form>
 <script type="text/javascript">
+{% if experiment.public_access > experiment.PUBLIC_ACCESS_NONE %}
+$( document ).ready(function() {
+    $("select[name='public_access'] option[value='{{experiment.PUBLIC_ACCESS_NONE}}']").remove();
+});
+{% endif %}
+
 $('form.experiment-rights').submit(function(evt) {
   evt.preventDefault();
   var form = $(evt.target);
