@@ -3150,6 +3150,7 @@ def share(request, experiment_id):
         experiment_change_permissions(request.user, experiment)
     if request.user.is_authenticated():
         c['is_owner'] = authz.has_experiment_ownership(request, experiment_id)
+    c['public_access_metadata'] = experiment.public_access == Experiment.PUBLIC_ACCESS_METADATA
 
     domain = Site.objects.get_current().domain
     public_link = experiment.public_access >= Experiment.PUBLIC_ACCESS_METADATA
