@@ -1,5 +1,5 @@
-# Django models based on MODC08 Metadata Schema v1.2
 from tardis.tardis_portal.models import Dataset
+# Django models based on MODC08 Metadata Schema v1.3
 from django.db import models
 
 class Organism(models.Model):
@@ -68,6 +68,7 @@ class Source(models.Model):
     geo_depth = models.PositiveIntegerField("Geographic location depth", blank=True, null=True)
     geo_altitude = models.PositiveIntegerField("Geographic location altitude", blank=True, null=True)
     geo_elev = models.PositiveIntegerField("Geographic location elevation", blank=True, null=True)
+    period = models.CharField("Technological period of source", blank=True, max_length=255)
     carbondate_years = models.PositiveIntegerField("Estimated age of source in radiocarbon years", blank=True, null=True)
     carbondate_error = models.PositiveIntegerField("Estimated carbon date error range", blank=True, null=True)
     carbondate_id = models.CharField("Centre + id reference for carbon dating", blank=True, max_length=255)
@@ -108,6 +109,7 @@ class Sample(models.Model):
         ('tooth', 'Tooth'),
         ('skin', 'Skin'),
         ('tissue', 'Tissue (all non-skin)'),
+        ('calculus', 'Calculus'),
         ('feather', 'Feather'),
         ('horn', 'Horn'),
         ('egg', 'Egg'),
