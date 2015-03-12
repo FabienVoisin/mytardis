@@ -1,6 +1,10 @@
-{{ object.library_source }}
-{{ object.library_layout }}
-{{ object.library_type }}
-{{ object.library_protocol_note }}
-{{ object.library_repair_method }}
-{{ object.library_enrich_method }}
+{{ object.id }}
+{{ object.source }}
+{{ object.layout }}
+{{ object.type }}
+{{ object.protocol_note }}
+{{ object.repair_method }}
+{{ object.enrich_method }}
+{{ object.enrich_target }}
+{{ object.enrich_target_subfrag }}
+{{ object.amp_method }}

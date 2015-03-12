@@ -1,1 +1,15 @@
+{{ object.id }}
+{{ object.organism.id }}
 {{ object.source_details }}
+{{ object.gender }}
+{{ object.age_cat }}
+{{ object.env_biome }}
+{{ object.env_feature }}
+{{ object.env_material }}
+{{ object.geoloc_continent }}
+{{ object.geoloc_country }}
+{{ object.geoloc_locale }}
+{{ object.period }}
+{{ object.source_notes }}
+{{ object.group_id }}
+{{ object.collectedby }}

@@ -5,7 +5,7 @@
 {% block content %}
   <div class="row-fluid">
     <div class="span7">
-        <h1 class="title">Search Results for <em>{{ search_query.query_string|default:"' '"}}</em></h1>
+        <h1 class="title">Search Results for <em>{{ query_string|default:"' '"}}</em></h1>
       <h4 class="title"><strong>{{experiments|length}}</strong> Experiment{{experiments|length|pluralize}} | 
       <strong>{{sources|length}}</strong> Source{{sources|length|pluralize}}</h4>
   </div> <!-- post -->

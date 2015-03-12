@@ -30,7 +30,10 @@ class AcadSearchView(SearchView):
         # Results may contain Experiments, Datasets and DataFiles.
         # Group them into experiments, noting whether or not the search
         # hits were in the Dataset(s) or DataFile(s)
+        logger.info("self.__dict__ %s"%self.__dict__)
+        logger.info("self.form.__dict__ %s"%self.form.__dict__)
         logger.info("self.results %s"%self.results)
+        extra['query_string'] = self.form.query_string
         exp_results=self.results.facet('experiment_id_stored')
         exp_facets = exp_results.facet_counts()
         if exp_facets:
@@ -71,10 +74,10 @@ class AcadSearchView(SearchView):
         extra['experiments'] = experiments
         extra['dataset_ids'] = dataset_ids
 
-        source_results=self.results.facet('source_id_stored')
+        source_results=self.results.facet('source_id')
         source_facets = source_results.facet_counts()
         if source_facets:
-            source_facets = source_facets['fields']['source_id_stored']
+            source_facets = source_facets['fields']['source_id']
             #logger.info(source_facets)
             source_ids = [f[0]
                               for f in source_facets if int(f[1]) > 0]
@@ -83,18 +86,18 @@ class AcadSearchView(SearchView):
         source_id_string=(",").join(["'"+s+"'" for s in set(source_ids)])
         sources=Source.objects.extra(where=["lower(id) IN (%s)" % source_id_string], order_by=["-date"])
         logger.info("sources %s " % sources)
-        if self.form.cleaned_data['gender'] and self.form.cleaned_data['gender'] != "All":
-            sources = sources.filter(gender=self.form.cleaned_data['gender'])
-        if self.form.cleaned_data['age'] and self.form.cleaned_data['age'] != "All":
-            sources = sources.filter(age_cat=self.form.cleaned_data['age'])
-            logger.info("filterd age %s sources %s " % (self.form.cleaned_data['age'], sources))
-        logger.info("filterd continent %s " % (self.form.cleaned_data.get('continent')))
-        if self.form.cleaned_data['continent'] and len(self.form.cleaned_data['continent'])>0:
-            sources = sources.filter(geoloc_continent__in=self.form.cleaned_data['continent'])
-        if self.form.cleaned_data['carbondate'] != "1000,150000":
-            logger.info("filterd carbondate %s " % (self.form.cleaned_data['carbondate']))
-            carbon_date=self.form.cleaned_data['carbondate'].split(",")
-            sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
+        #if self.form.cleaned_data['gender'] and self.form.cleaned_data['gender'] != "All":
+        #    sources = sources.filter(gender=self.form.cleaned_data['gender'])
+        #if self.form.cleaned_data['age'] and self.form.cleaned_data['age'] != "All":
+        #    sources = sources.filter(age_cat=self.form.cleaned_data['age'])
+        #    logger.info("filterd age %s sources %s " % (self.form.cleaned_data['age'], sources))
+        #logger.info("filterd continent %s " % (self.form.cleaned_data.get('continent')))
+        #if self.form.cleaned_data['continent'] and len(self.form.cleaned_data['continent'])>0:
+        #    sources = sources.filter(geoloc_continent__in=self.form.cleaned_data['continent'])
+        #if self.form.cleaned_data['carbondate'] != "1000,150000":
+        #    logger.info("filterd carbondate %s " % (self.form.cleaned_data['carbondate']))
+        #    carbon_date=self.form.cleaned_data['carbondate'].split(",")
+        #    sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
         valid_sources=[]
         for source in sources:
             logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
