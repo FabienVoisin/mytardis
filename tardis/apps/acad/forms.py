@@ -29,17 +29,17 @@ class AdvancedSearchForm(SearchForm):
         logger.info("%s %s %s %s %s" % (self.cleaned_data['q'],self.cleaned_data['gender'],self.cleaned_data['age'],self.cleaned_data['continent'], self.cleaned_data['carbondate']))
         query = self.cleaned_data['q']
         if self.cleaned_data['gender'] and self.cleaned_data['gender'] != "All":
-            query = "%s %s source_gender:%s" % (query, "and" if len(query)>0 else "", self.cleaned_data['gender'])
+            query = "%s%ssource_gender:%s" % (query, " AND " if len(query)>0 else "", self.cleaned_data['gender'])
         if self.cleaned_data['age'] and self.cleaned_data['age'] != "All":
-            query = "%s %s source_age_cat:%s" % (query, "and" if len(query)>0 else "", self.cleaned_data['age'])
+            query = "%s%ssource_age_cat:%s" % (query, " AND " if len(query)>0 else "", self.cleaned_data['age'])
         if self.cleaned_data['continent'] and len(self.cleaned_data['continent'])>0:
             cont_query=""
             for cont in self.cleaned_data['continent']:
-                cont_query="%s %s source_geoloc_continent:%s" % (cont_query, "or" if len(cont_query)>0 else "", cont)
-            query = "%s %s (%s)" % (query, "and" if len(query)>0 else "", cont_query)
+                cont_query="%s%ssource_geoloc_continent:%s" % (cont_query, " OR " if len(cont_query)>0 else "", cont)
+            query = "%s%s(%s)" % (query, " AND " if len(query)>0 else "", cont_query)
         if self.cleaned_data['carbondate'] and self.cleaned_data['carbondate'] != "1000,150000":
             carbon_date=self.cleaned_data['carbondate'].split(",")
-            query = "%s %s source_carbondate_years:[%s to %s]" % (query, "and" if len(query)>0 else "", carbon_date[0], carbon_date[1])
+            query = "%s%ssource_carbondate_years:[%s TO %s]" % (query, " AND " if len(query)>0 else "", carbon_date[0], carbon_date[1])
         logger.info("query %s" % query)
         self.query_string=query
         # NOTE: end_offset = 1 is just a quick hack way to stop haystack getting lots of search
