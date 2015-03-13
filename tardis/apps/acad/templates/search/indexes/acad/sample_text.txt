@@ -1,0 +1,6 @@
+{{ object.id }}
+{{ object.sample_cat }}
+{{ object.sample_details }}
+{{ object.group_id }}
+{{ object.collectedby }}
+{{ object.sample_notes }}

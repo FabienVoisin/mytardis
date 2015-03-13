@@ -121,7 +121,7 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
     {% endif %}
 
   </td>
-  <td style="width: 110px">
+  <td style="width: 135px">
     <div class="btn-group pull-right">
       {% if has_download_permissions %}
       <a  class="btn"
@@ -142,6 +142,12 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
          class="datafile-info-toggle metadata_hidden btn" href="/ajax/datafile_details/{{datafile.id}}/">
           <i class="icon-list"></i>
       </a>
+      {% if datafile.is_genome %}
+      <a title="Open in genome browser" class="btn"
+          target="_blank" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&hgt.customText=http://{{ request.get_host }}{{ datafile.get_download_url }}"><i class="icon-share"></i>
+      </a>
+       {% endif %}
+
     </div>
   </td>
 </tr>

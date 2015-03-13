@@ -198,6 +198,13 @@ class DataFile(models.Model):
         return mimetype.startswith('image/') \
             and mimetype not in ('image/x-icon', 'image/img')
 
+    def is_genome(self):
+        '''
+        returns True if it's a gemoe file?
+        '''
+        suffix = path.splitext(self.filename)[-1].upper()
+        return suffix in ('.VCF', '.BAM')
+
     def get_image_data(self):
         from .parameters import DatafileParameter
 

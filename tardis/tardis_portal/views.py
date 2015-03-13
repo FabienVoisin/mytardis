@@ -575,6 +575,11 @@ def view_experiment(request, experiment_id,
                 {'name': experiment.title,
                  'link': experiment.get_absolute_url()}]
 
+    if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+        from tardis.tardis_portal.ands_doi import ExperimentDOIService
+        doi_service = ExperimentDOIService(experiment)
+        c['doi'] = doi_service.get_doi()
+
     if 'status' in request.POST:
         c['status'] = request.POST['status']
     if 'error' in request.POST:
@@ -593,9 +598,12 @@ def view_experiment(request, experiment_id,
          'viewfn': 'tardis.tardis_portal.views.experiment_description'},
         {'name': 'Metadata',
          'viewfn': 'tardis.tardis_portal.views.retrieve_experiment_metadata'},
-        {'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'},
     ]
-    # do not load 'Transfer Dataset' if user has no 'has_change_permissions'
+    # Only show Sharing tab if user is authenticated -- so anonymous end users
+    # will not see this tab for public experiments
+    if request.user.is_authenticated():
+        default_apps.append({'name': 'Sharing', 'viewfn': 'tardis.tardis_portal.views.share'})
+    # Only show Transfer Datasets tab if user 'has_change_permissions'
     if c['has_change_permissions']:
         default_apps.append({'name': 'Transfer Datasets',
          'viewfn': 'tardis.tardis_portal.views.experiment_dataset_transfer'})
@@ -799,6 +807,7 @@ def view_dataset(request, dataset_id):
 
     c = Context({
         'dataset': dataset,
+        'subtitle': dataset.description,
         'datafiles': get_datafiles_page(),
         'parametersets': dataset.getParameterSets()
                                 .exclude(schema__hidden=True),
@@ -1995,14 +2004,17 @@ def retrieve_group_list(request):
 
 def retrieve_field_list(request):
 
-    from tardis.tardis_portal.search_indexes import DatasetFileIndex
+    from tardis.tardis_portal.search_indexes import DataFileIndex
+    from tardis.tardis_portal.search_indexes import ExperimentIndex
+    from tardis.tardis_portal.search_indexes import DatasetIndex
 
     # Get all of the fields in the indexes
     #
     # TODO: these should be onl read from registered indexes
     #
-    allFields = DatasetFileIndex.fields.items()
-
+    
+    allFields = list(set(DataFileIndex.fields.items()+ExperimentIndex.fields.items()+DatasetIndex.fields.items()))
+    
     users = User.objects.all()
 
     usernames = [u.first_name + ' ' + u.last_name + ':username' for u in users]
@@ -3106,8 +3118,8 @@ class ExperimentSearchView(SearchView):
 
 @login_required
 def single_search(request):
-    search_query = FacetFixedSearchQuery(backend=HighlightSearchBackend())
-    sqs = SearchQuerySet(query=search_query)
+    #search_query = FacetFixedSearchQuery(backend=HighlightSearchBackend())
+    sqs = SearchQuerySet() #query=search_query)
     sqs.highlight()
 
     return ExperimentSearchView(

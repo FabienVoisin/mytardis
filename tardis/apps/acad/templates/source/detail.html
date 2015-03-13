@@ -1,0 +1,149 @@
+{% extends "tardis_portal/portal_template.html" %}
+{% block script %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+{% endblock script %}
+
+{% block style %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+{% endblock style %}
+
+{% block content %}
+<div class="page-header">
+  <h4>Source</h4>
+
+<h1><span property="dc:title">{{ source }}</span></h1>
+</div>
+
+<div id="map" style="height: 300px; width: 300px; float: right"></div>
+<div class="row-fluid">
+  <div class="span7">
+<div id="source_details_left" class="dl-horizontal pull-left">
+  <dl>
+    <dt>Source ID:</dt>
+    <dd>{{ source.id }}</dd>
+  </dl>
+  <dl>
+    <dt>Collection date:</dt>
+    <dd>{{ source.date|date:"c"}}</dd>
+  </dl>
+  <dl>
+    <dt>Organism:</dt>
+    <dd><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ source.organism.get_organism_id }}">{{ source.organism }}</a></dd>
+  </dl>
+  <dl>
+    <dt>Source details:</dt>
+    <dd>{{ source.source_details }}</dd>
+  </dl>
+  <dl>
+    <dt>Gender:</dt>
+    <dd>{{ source.get_gender_display }}</dd>
+  </dl>
+  <dl>
+    <dt>Age category:</dt>
+    <dd>{{ source.get_age_cat_display }}</dd>
+  </dl>
+  <dl>
+    <dt>Age range:</dt>
+    <dd>{{ source.age_range|default:"&nbsp;" }}</dd>
+  </dl>
+ </div>
+<div id="source_details_left" class="dl-horizontal pull-right">
+  <dl>
+    <dt>Continent:</dt>
+    <dd>{{ source.get_geoloc_continent_display|default:"&nbsp;" }}</dd>
+  </dl>
+  <dl>
+    <dt>Country:</dt>
+    <dd>{{ source.geoloc_country }}</dd>
+  </dl>
+  <dl>
+    <dt>Locale:</dt>
+    <dd>{{ source.geoloc_locale }}</dd>
+  </dl>
+  {%if source.geoloc_lat or source.geoloc_lon %}
+  <dl>
+    <dt>Lat/lon:</dt>
+    <dd>{{source.geoloc_lat}}, {{source.geoloc_lon|default_if_none:"138.596434"}}</dd>
+  </dl>
+  {%endif%}
+  <dl>
+    <dt>Biome:</dt>
+    <dd>{{ source.env_biome|default:"&nbsp;" }}</dd>
+  </dl>
+  <dl>
+    <dt>Env feature:</dt>
+    <dd>{{ source.env_feature|default:"&nbsp;" }}</dd>
+  </dl>
+  {% if source.carbondate_id %}
+  <dl>
+    <dt>Carbon date:</dt>
+    <dd>{{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</dd>
+  </dl>
+  {% endif %}
+</div>
+</div>
+</div>
+{% if samples %}
+<h3>Samples</h3>
+
+<ul class="nav nav-pills">
+    {% for sample in samples %}
+    <li{%if forloop.first %} class="active"{%endif%}><a data-toggle="tab" href="#{{sample.get_id}}">{{ sample }}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="tab-content">
+    {% for sample in samples %}
+    <div role="tabpanel" class="tab-pane{%if forloop.first %} active{%endif%}" id="{{sample.get_id}}">
+      <div id="source_details" class="dl-horizontal">
+	    <dl>
+	      <dt style="width:150px">Collection date:</dt>
+	      <dd style="margin-left: 160px">{{ sample.date }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Category of sample:</dt>
+	      <dd style="margin-left: 160px">{{ sample.get_sample_cat_display }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Sample details:</dt>
+	      <dd style="margin-left: 160px">{{ sample.sample_details }}</dd>
+	    </dl>
+	    <dl>
+	      <dt style="width:150px">Environmental package:</dt>
+	      <dd style="margin-left: 160px">{{ sample.get_env_package_display }}</dd>
+	    </dl>
+      
+	    <dl>
+	      <dt style="width:150px">Datasets:</dt>
+	      <dd style="margin-left: 160px"><ul>
+	      {% for dataset in sample.get_datasets %}
+	        {% if dataset.id in dataset_ids %}
+            <li><a href="{{ dataset.get_absolute_url }}">{{ dataset }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul></dd>
+	    </dl>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{%if source.geoloc_lat or source.geoloc_lon %}
+<script>
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+
+    var map = L.map('map').setView([{{ source.geoloc_lat|default:"-33" }}, {{source.geoloc_lon|default_if_none:"138.596434"}} ], 7).addLayer(layer);
+
+    L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}])
+        .addTo(map)
+        .bindPopup('{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}')
+
+    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon|default_if_none:"138.596434"}}], 100000, {
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: 0.25
+        }).addTo(map);
+</script>
+{% endif %}
+{% endblock %}

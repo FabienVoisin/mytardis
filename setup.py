@@ -26,11 +26,11 @@ setup(
         'django-registration==1.0',
         'django-extensions==1.1.1',
         'django-form-utils==0.2.0',
-        'django-haystack==1.2.7',
+        'django-haystack==2.3.1',
         'django-bootstrap-form==2.0.6',
         'celery>=3.0.21',           # Delayed tasks and queues
         'django-celery>=3.0.17',
-        'pysolr==2.1.0-beta',
+        'elasticsearch==1.3.0',
         'beautifulsoup4==4.2.1',
         'south==0.8.1',
         'httplib2==0.8',
@@ -53,8 +53,10 @@ setup(
         'paramiko',
         'pwgen',
         'six>=1.5',
+        'geopy',
     ],
     dependency_links=[
         'https://github.com/grischa/django-tastypie/tarball/testing-mytardis-deployment#egg=django-tastypie-0.9.16-tzfix',  # noqa
-    ]
+    ],
+    include_path="/opt/local/include"
 )

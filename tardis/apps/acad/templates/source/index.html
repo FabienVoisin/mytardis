@@ -1,0 +1,126 @@
+{% extends "tardis_portal/portal_template.html" %}
+{% load bleach_tag %}
+{% block script %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+{% endblock script %}
+
+{% block style %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+{% endblock style %}
+
+{% block content %}
+<div id="content">
+  <div class="row-fluid">
+    <div class="span7">
+      <h2 class="visible-phone">Sources</h2>
+      <div class="pull-left">
+	<h2 class="hidden-phone" style="text-align: center">Sources</h2>
+      </div>
+      <div class="pull-right">
+	<button class="btn btn-success btn-mini"
+		onclick="$('#sources .accordion-body').collapse('hide');" >
+	Collapse all</button>
+	<button class="btn btn-success btn-mini"
+		onclick="$('#sources .accordion-body').collapse('show');" >
+	Expand all</button>
+      </div>
+	</div>
+  </div>
+{% if sources %}
+  <div class="row-fluid">
+    <div class="span7">
+      <div id="sources" class="mydata accordion">
+	{% for src in sources %}
+	  <div class="accordion-group">
+	    <div class="accordion-heading">
+	      <div class="accordion-toggle" 
+		   onclick="$('#collapse{{src.id}}').collapse('toggle');" >
+		<strong ><a class="explink"
+			   href="{% url 'tardis.apps.acad.views.source_detail' src.id %}">{{ src.organism.get_common_name }}</a></strong>
+		<small><br>
+		<span >[&nbsp;{{ src.get_age_cat_display }}&nbsp;{{ src.get_gender_display }}&nbsp;aged&nbsp;{{ src.age_range }}&nbsp;years,&nbsp;carbon&nbsp;date&nbsp;{{src.carbondate_years}}&nbsp;&plusmn;&nbsp;{{src.carbondate_error}}&nbsp;]</span><br>
+		<span >Samples:{% for sample in src.sample_set.all %}{% if not forloop.first %},
+		{% endif %}
+		<span property="dc:author">{{ sample.get_sample_cat_display }}&nbsp;({{ sample.sample_details }})</span>{% empty %}&nbsp;{% endfor %}</span>
+		</small>
+	      </div>
+	    </div>
+	    <div id="collapse{{src.id}}"
+		 class="accordion-body collapse in">
+	      <div class="accordion-inner">
+		<p>{{src.source_details|default:""|bleach}}</p>
+		    <ul class="nav nav-list">
+		      <li class="nav-header dataset-list-header">Datasets from this source: </li>
+		{% for ds in src.get_datasets %}
+		  {% if ds.id in dataset_ids %}
+		  <li>
+		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
+		    {% for datafile in ds.get_images|slice:":5" %}
+		      {% if forloop.first %}
+			<ul class="thumbnails">
+		      {% endif %}
+		      <li>
+			<a class="thumbnail" href="{% url 'tardis.tardis_portal.download.view_datafile' datafile.id %}">{% url 'tardis.tardis_portal.iiif.download_image' datafile_id=datafile.id region='full' size=',50' rotation=0 quality='native' format='jpg' as thumbnail %}
+			<img alt="Thumbnail for Datafile #{{datafile.id}}"
+			     src="{{ thumbnail }}"
+			     onerror="$(this).hide()"/></a>
+		      </li>
+		      {% if forloop.last %}
+			</ul>
+		      {% endif %}
+		    {% endfor %}
+		  </li>
+		  {% endif %}
+		{% empty %}
+		  There are no datasets in this source
+		{% endfor %}
+		    </ul>
+	  </div>
+	  </div>
+	  </div>
+	{% endfor %}
+      </div> <!-- sources -->
+  </div> <!-- span7 -->
+   
+  <div class="span5"><div id="map" style="height: 500px"></div>
+  </div> 
+</div> <!-- row-fluid -->
+{% else %}
+      <p class="alert alert-info">
+	No sources have been published yet.
+      </p>
+
+{% endif %}
+</div>
+<script>
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+
+    var map = L.map('map').setView([0, 0], 2).addLayer(layer);
+    var markerArray=new Array();
+    {% for source in sources %}
+    {%if source.geoloc_lat and source.geoloc_lon %}
+    L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}])
+        .addTo(map)
+        .bindPopup('<a href="{{ source.get_absolute_url }}">{{ source }}</a>');
+    markerArray.push(L.latLng({{ source.geoloc_lat }}, {{ source.geoloc_lon}}));
+    {% endif %}
+    {% endfor %}
+    var bounds = L.latLngBounds(markerArray);
+    map.fitBounds(bounds);
+</script>
+{% endblock %}
+<!-- 
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<div id="map" style="height: 500px"></div>
+<script>
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+
+    var map = L.map('map').setView([0, 0], 2).addLayer(layer);
+
+    {% for i in source_list %}
+    L.marker([{{ i.geoloc_lat }}, {{ i.geoloc_lon}}])
+        .addTo(map)
+        .bindPopup('<a href="{{ i.get_absolute_url }}">{{ i }}</a>')
+    {% endfor %}
+</script>
+ -->

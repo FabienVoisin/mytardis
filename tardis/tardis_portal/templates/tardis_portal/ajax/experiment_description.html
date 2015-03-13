@@ -64,12 +64,22 @@
   </dl>
   {% endblock license %}
 
+  {% if doi %}
+  {% block doi %}
+  <dl>
+    <dt>DOI</dt>
+    <dd>{{ doi }}</dd>
+  </dl>
+  {% endblock %}
+  {% endif %}
+
   {% block extra_info %}
   {% endblock extra_info %}
 
   {% block extra_content %}
   {% endblock extra_content %}
 
+  {% comment %}
   {% block experiment_admin %}
       {% block experiment_owners %}
       {% if experiment.get_owners %}
@@ -97,6 +107,7 @@
       {% endif %}
       {% endblock experiment_owners %}
   {% endblock experiment_admin %}
+  {% endcomment %}
 
   {% block downloads %}
   {% if has_download_permissions %}

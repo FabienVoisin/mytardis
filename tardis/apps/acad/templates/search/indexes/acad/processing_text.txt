@@ -1,0 +1,6 @@
+{{ object.id }}
+{{ object.reference }}
+{{ object.fold_coverage }}
+{{ object.percent_coverage }}
+{{ object.contigs }}
+{{ object.package }}

@@ -1,0 +1,9 @@
+{{ object.id }}
+{{ object.centre }}
+{{ object.method }}
+{{ object.tech }}
+{{ object.tech_options }}
+{{ object.fileformat }}
+{{ object.qualscale }}
+{{ object.error_method }}
+{{ object.demulti_prog }}

@@ -1,0 +1,10 @@
+{{ object.id }}
+{{ object.source }}
+{{ object.layout }}
+{{ object.type }}
+{{ object.protocol_note }}
+{{ object.repair_method }}
+{{ object.enrich_method }}
+{{ object.enrich_target }}
+{{ object.enrich_target_subfrag }}
+{{ object.amp_method }}
