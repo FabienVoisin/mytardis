@@ -88,6 +88,7 @@ class DOIService(object):
         if rj['response']['responsecode'] == 'MT001':
             return rj['response']['doi']
         else:
+            logger.error('unrecognised response: %s' % json.dumps(rj, sort_keys=True, indent=2, separators=(",", ": ")))
             raise Exception('unrecognised response: %s' % json.dumps(rj, sort_keys=True, indent=2, separators=(",", ": ")))
 
 class ExperimentDOIService(DOIService):
