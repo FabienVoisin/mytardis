@@ -63,6 +63,7 @@
   "fields": {
     "description": "Dataset 1234", 
     "storage_boxes": [], 
+    "experiment": 1,
     "instrument": null, 
     "experiments": [
       1
