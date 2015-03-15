@@ -30,9 +30,9 @@ class AcadSearchView(SearchView):
         # Results may contain Experiments, Datasets and DataFiles.
         # Group them into experiments, noting whether or not the search
         # hits were in the Dataset(s) or DataFile(s)
-        logger.info("self.__dict__ %s"%self.__dict__)
-        logger.info("self.form.__dict__ %s"%self.form.__dict__)
-        logger.info("self.results %s"%self.results)
+        logger.debug("self.__dict__ %s"%self.__dict__)
+        logger.debug("self.form.__dict__ %s"%self.form.__dict__)
+        logger.debug("self.results %s"%self.results)
         extra['query_string'] = self.form.query_string
         exp_results=self.results.facet('experiment_id_stored')
         exp_facets = exp_results.facet_counts()
@@ -60,7 +60,7 @@ class AcadSearchView(SearchView):
                                         
         #dataset_access_list=Dataset.objects.filter(experiments__pk__in=access_list)
         dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
-        logger.info("access_list %s dataset_ids %s"%(access_list, dataset_ids))
+        logger.debug("access_list %s dataset_ids %s"%(access_list, dataset_ids))
         
         #results = []
         #for e in experiments:
@@ -85,7 +85,7 @@ class AcadSearchView(SearchView):
             source_ids = []
         source_id_string=(",").join(["'"+s+"'" for s in set(source_ids)])
         sources=Source.objects.extra(where=["lower(id) IN (%s)" % source_id_string], order_by=["-date"])
-        logger.info("sources %s " % sources)
+        logger.debug("sources %s " % sources)
         #if self.form.cleaned_data['gender'] and self.form.cleaned_data['gender'] != "All":
         #    sources = sources.filter(gender=self.form.cleaned_data['gender'])
         #if self.form.cleaned_data['age'] and self.form.cleaned_data['age'] != "All":
@@ -100,7 +100,7 @@ class AcadSearchView(SearchView):
         #    sources = sources.filter(carbondate_years__range=(carbon_date[0], carbon_date[1]))
         valid_sources=[]
         for source in sources:
-            logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
+            logger.debug("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
             if len(source.get_datasets(dataset_ids))>0:
                 valid_sources.append(source)
         #    sqs = sqs.filter(source_geoloc_continent=self.cleaned_data['continent'])

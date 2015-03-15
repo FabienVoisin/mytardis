@@ -28,7 +28,7 @@ class AdvancedSearchForm(SearchForm):
     query_string=""
 
     def search(self):
-        logger.info("%s %s %s %s %s" % (self.cleaned_data['q'],self.cleaned_data['gender'],self.cleaned_data['age'],self.cleaned_data['continent'], self.cleaned_data['carbondate']))
+        logger.debug("%s %s %s %s %s" % (self.cleaned_data['q'],self.cleaned_data['gender'],self.cleaned_data['age'],self.cleaned_data['continent'], self.cleaned_data['carbondate']))
         query = self.cleaned_data['q']
         if self.cleaned_data['gender'] and self.cleaned_data['gender'] != "All":
             query = "%s%ssource_gender:%s" % (query, " AND " if len(query)>0 else "", self.cleaned_data['gender'])
@@ -42,7 +42,7 @@ class AdvancedSearchForm(SearchForm):
         if self.cleaned_data['carbondate'] and self.cleaned_data['carbondate'] != "1000,150000":
             carbon_date=self.cleaned_data['carbondate'].split(",")
             query = "%s%ssource_carbondate_years:[%s TO %s]" % (query, " AND " if len(query)>0 else "", carbon_date[0], carbon_date[1])
-        logger.info("query %s" % query)
+        logger.debug("query %s" % query)
         self.query_string=query
         # NOTE: end_offset = 1 is just a quick hack way to stop haystack getting lots of search
         # results even though we dont need them. Fix this to properly set rows=0
