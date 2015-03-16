@@ -70,7 +70,10 @@
     <dt>DOI</dt>
     <dd>{{ doi }}</dd>
   </dl>
-  {% endblock %}
+  <dl>
+    <dt>Please cite as</dt>
+    <dd>{% include "tardis_portal/doi/citation.html" with doi_exp=experiment rtype="Collection" %}</dd>
+  </dl>
   {% endif %}
 
   {% block extra_info %}
