@@ -650,6 +650,7 @@ class StorageBoxResource(MyTardisModelResource):
 class DatasetResource(MyTardisModelResource):
     experiments = fields.ToManyField(
         ExperimentResource, 'experiments', related_name='datasets')
+    experiment = fields.ForeignKey(ExperimentResource, 'experiment')
     parameter_sets = fields.ToManyField(
         DatasetParameterSetResource,
         'datasetparameterset_set',
