@@ -1,6 +1,6 @@
 [
     {
-        "pk": 10,
+        "pk": null,
         "model": "tardis_portal.schema",
         "fields": {
             "type": 1,
@@ -11,7 +11,7 @@
         }
     },
     {
-        "pk": 117,
+        "pk": null,
         "model": "tardis_portal.parametername",
         "fields": {
             "name": "doi",
