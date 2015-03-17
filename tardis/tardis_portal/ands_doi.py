@@ -10,6 +10,7 @@ from tardis.tardis_portal.models import ExperimentParameter, \
     DatasetParameter, DatasetParameterSet
 
 import requests, json
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -137,11 +138,17 @@ class ExperimentDOIService(DOIService):
         import os
         template = os.path.join(settings.DOI_TEMPLATE_DIR, 'default.xml')
 
+        if hasattr(settings, 'SITE_LONGTITLE'):
+            site_longtitle = settings.SITE_LONGTITLE
+        else:
+            site_longtitle = "MyTardis"
+
         ex = self.obj
 
         c = Context()
         c['title'] = ex.title
-        c['institution_name'] = ex.institution_name
+        c['contributors'] = [i.lstrip() for i in re.split(';', ex.institution_name)]
+        c['publisher'] = site_longtitle
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
         c['resource_type'] = 'Collection'
@@ -222,11 +229,17 @@ class DatasetDOIService(DOIService):
         import os
         template = os.path.join(settings.DOI_TEMPLATE_DIR, 'default.xml')
 
+        if hasattr(settings, 'SITE_LONGTITLE'):
+            site_longtitle = settings.SITE_LONGTITLE
+        else:
+            site_longtitle = "MyTardis"
+
         ex = self.experiment
 
         c = Context()
         c['title'] = self.obj.description
-        c['institution_name'] = ex.institution_name
+        c['contributors'] = [i.lstrip() for i in re.split(';', ex.institution_name)]
+        c['publisher'] = site_longtitle
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
         c['resource_type'] = 'Dataset'
