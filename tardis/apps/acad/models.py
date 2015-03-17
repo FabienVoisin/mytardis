@@ -3,7 +3,7 @@ from tardis.tardis_portal.models import Dataset
 from django.db import models
 
 class Organism(models.Model):
-    id = models.PositiveSmallIntegerField("NCBI taxonomy ID", primary_key=True)
+    id = models.PositiveIntegerField("NCBI taxonomy ID", primary_key=True)
     genus = models.CharField("Genus", max_length=255, blank=True)
     species = models.CharField("Species", max_length=255, blank=True)
     subspecies = models.CharField("Subspecies", max_length=255, blank=True)
@@ -84,7 +84,7 @@ class Source(models.Model):
 
     def get_source_id(self):
         return self.id
-    
+
     def get_datasets(self, accssible_dataset_ids=None):
         samples = Sample.objects.filter(source=self)
         extracts = Extract.objects.filter(sample__in=samples)
