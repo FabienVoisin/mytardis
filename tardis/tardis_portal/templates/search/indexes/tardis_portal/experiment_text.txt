@@ -1,4 +1,7 @@
 {{ object.title }}
 {{ object.description }}
-{{ object.publication_year}}
-{{ experiment_author }}
+{{ object.publication_year }}
+{{ object.institution_name }}
+{% for author in object.author_experiment_set.all %}
+{{ author.author }}
+{% endfor %}
