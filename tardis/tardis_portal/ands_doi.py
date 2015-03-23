@@ -111,14 +111,6 @@ class ExperimentDOIService(DOIService):
             self._mint_datasets()
         return doi
 
-    """
-    def _mint_doi(self, url):
-        doi = super(ExperimentDOIService, self)._mint_doi(url)
-        if doi:
-            self._mint_datasets()
-        return doi
-    """
-
     def _save_doi(self, doi):
         paramset = self._get_or_create_doi_parameterset()
         ep = ExperimentParameter(parameterset=paramset, name=self.doi_name,\
