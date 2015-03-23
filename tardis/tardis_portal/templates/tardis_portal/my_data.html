@@ -59,7 +59,7 @@
 	      <div class="accordion-toggle" data-toggle="collapse"
 		   onclick="$('#collapse{{exp.id}}').collapse('toggle');" >
 		<strong><a class="pull-left explink"
-			   href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a></strong>
+                href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}&nbsp;({{ exp.publication_year }})</a></strong>
 		<ul class="nav nav-pills badgelist">
 		  <li class="pull-right">
 		    {{ exp|experiment_public_access_badge }}
@@ -77,7 +77,7 @@
 		<small>
 		  {% for author in exp.author_experiment_set.all %}{% if not forloop.first %},
 		{% endif %}
-		<span property="dc:author">{{ author.author }}</span>{% empty %}&nbsp;{% endfor %}
+		<span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
 		</small>
 		<span class="pull-right">
 		  {% for dltype, dlurl in exp.get_download_urls.items %}

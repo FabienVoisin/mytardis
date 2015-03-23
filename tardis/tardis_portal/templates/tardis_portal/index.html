@@ -19,7 +19,7 @@
     {% endif %}
   </p>
   <div class="row-fluid">
-    <div class="span6">
+    <div class="span7">
       {% if is_authenticated %}
 	<h3>Your most recent experiments <small><strong>(<a href="{% url 'tardis.tardis_portal.views.my_data' %}">view all</a>)</strong></small></h3>
 	<div id="experiments" class="accordion">
@@ -29,7 +29,7 @@
 		  <div class="accordion-toggle" data-toggle="collapse"  data-parent="#experiments"
 		       onclick="$('#collapse{{exp.id}}').collapse('toggle');" >
 		    <strong><a class="pull-left explink"
-			       href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a></strong>
+                    href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a>&nbsp;({{ exp.publication_year }})</strong>
 		    <ul class="nav nav-pills badgelist">
 		      <li class="pull-right">
 			{{ exp|experiment_public_access_badge }}
@@ -46,7 +46,7 @@
 		    </ul>
 		    <small>
 		      {% for author in exp.author_experiment_set.all %}{% if not forloop.first %}, {% endif %}
-		      <span property="dc:author">{{ author.author }}</span>{% empty %}&nbsp;{% endfor %}
+		      <span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
 		    </small>
 		    <span class="pull-right">
 		      {% for dltype, dlurl in exp.get_download_urls.items %}
