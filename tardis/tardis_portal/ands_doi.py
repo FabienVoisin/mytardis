@@ -105,11 +105,19 @@ class ExperimentDOIService(DOIService):
             return doi_params[0].string_value
         return None
 
+    def get_or_mint_doi(self, url):
+        doi = super(ExperimentDOIService, self).get_or_mint_doi(url)
+        if doi:
+            self._mint_datasets()
+        return doi
+
+    """
     def _mint_doi(self, url):
         doi = super(ExperimentDOIService, self)._mint_doi(url)
         if doi:
             self._mint_datasets()
         return doi
+    """
 
     def _save_doi(self, doi):
         paramset = self._get_or_create_doi_parameterset()
@@ -242,6 +250,7 @@ class DatasetDOIService(DOIService):
         c['publisher'] = site_longtitle
         c['publication_year'] = ex.publication_year
         c['creator_names'] = [a.author for a in ex.author_experiment_set.all()]
+        c['parent_doi'] = ExperimentDOIService(ex).get_doi()
         c['resource_type'] = 'Dataset'
         if ex.license:
             c['rights_name'] = ex.license.name
