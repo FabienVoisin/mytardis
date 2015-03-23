@@ -40,10 +40,13 @@ from tardis.tardis_portal.shortcuts import render_error_message
 from tardis.tardis_portal.views import return_response_not_found, \
     return_response_error
 
+from tardis.apps.acad.models import Analysis
+
 import datetime
 import threading
 import boto
 import pytz
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -394,13 +397,26 @@ _epoch = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
 
 def _streaming_tar_thread(directory, downloads, out):
     tar = tarfile.open(fileobj=out, mode="w|")
+    datasets = set()
     for download in downloads:
+        datasets.add((download["datafile"].dataset_id, download["datafile"].dataset))
         tarobj = tarfile.TarInfo(name="%s/%s/%s" % (directory, download["datafile"].dataset, download["datafile"].filename))
         tarobj.mode = 0644
         tarobj.size = download["key"].size
         timestamp = pytz.utc.localize(boto.utils.parse_ts(download["key"].last_modified))
         tarobj.mtime = int((timestamp - _epoch).total_seconds())
         tar.addfile(tarobj, download["key"])
+    for dataset_id, dataset in datasets:
+        # should handle the possibility that no such metadata exists?
+        analysis = Analysis.objects.get(dataset=dataset_id)
+        # insert human-readable text file containing ACAD metadata
+        # perhaps generate from a template?
+        metadata = "insert the metadata here!\n"
+        tarobj = tarfile.TarInfo(name="%s/%s/metadata.txt" % (directory, dataset))
+        tarobj.mode = 0644
+        tarobj.size = len(metadata)
+        tarobj.mtime = int(time.time())
+        tar.addfile(tarobj, StringIO.StringIO(metadata))
     tar.close()
     out.close()
 
