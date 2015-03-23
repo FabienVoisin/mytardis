@@ -416,8 +416,6 @@ $('#modal-metadata .submit-button').live('click', function() {
   </p>
 </div>
 
-{% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}
-
 <div class="row-fluid" >
   <div class="span8">
     <div class="row-fluid" style="margin-bottom: 20px">
@@ -478,12 +476,15 @@ $('#modal-metadata .submit-button').live('click', function() {
       {% include "tardis_portal/ajax/dataset_metadata.html" %}
     </div>
     {% endcomment %}
+    <div class="row-fluid" style="margin-bottom: 20px">
+        <h3>Please cite as</h3>
+        {% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}
+    </div>
     <div id="other-experiments-pane">
-        <h3>Other Experiments</h3>
-        <div class="info-box">
+        <h3>Other experiments</h3>
         {% if other_experiments|length > 1 %}
         <div>
-        <em>This dataset also appears in these experiments.</em>
+        <em>This dataset also appears in these experiments:</em>
         </div>
         <br/>
         <div id="other-experiments-content">
@@ -502,7 +503,6 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% else %}
         <em>This dataset doesn't appear in any other experiments.</em>
         {% endif %}
-        </div>
     </div>
   </div>
   <hr class="visible-phone"/>

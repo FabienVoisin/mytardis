@@ -11,7 +11,7 @@
     {% for i in dataset.analysis.processing_set.all %}
     <div role="tabpanel" class="tab-pane {% if i == dataset.analysis.processing_set.all.0 %}active{% endif %}" id="{{ i.id }}">
         {# Source #}
-        <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>, source {{ i.sequence.library.extract.sample }}</p>
+        <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>, sample {{ i.sequence.library.extract.sample }}</p>
 
         {# Extract #}
         <p>Extraction: {{ i.sequence.library.extract.protocol_note }}
