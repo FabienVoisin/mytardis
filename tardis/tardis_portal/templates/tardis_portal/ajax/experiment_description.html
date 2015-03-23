@@ -37,12 +37,12 @@
   {% endblock start_end_time %}
 
   {% block license %}
+  {% if experiment.license_id %}
   <dl>
     <dt>Licensing</dt>
     <dd>
-      {% if experiment.license_id %}
         <div class="row-fluid">
-          <div class="span6">
+          <div class="span7">
             This experiment data and metadata is licensed under a
             <a rel="license"
                property="dc:license"
@@ -50,18 +50,14 @@
               {{ experiment.license.name }} licence</a>.
           </div>
           {% if experiment.license.image_url != None %}
-          <div class="span6">
+          <div class="span5">
             <img src="{{ experiment.license.image_url }}"/>
           </div>
           {% endif %}
         </div>
-      {% else %}
-        <abbr title="All rights reserved">
-          Unspecified
-        </abbr>
-      {% endif %}
     </dd>
   </dl>
+  {% endif %}
   {% endblock license %}
 
   {% if doi %}
