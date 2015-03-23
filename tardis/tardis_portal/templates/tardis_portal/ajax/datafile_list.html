@@ -59,7 +59,7 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
   <button type="submit" class="btn btn-mini download-selected">
       <i class="icon-download-alt"></i>
       Download Selected Files
-    </button>
+  </button><br>
   {% if has_write_permissions and has_delete_permissions %}
     <button type="button" class="btn btn-mini download-selected" id="delete_selected">
       <i class="icon-remove"></i>
@@ -123,13 +123,6 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
   </td>
   <td style="width: 135px">
     <div class="btn-group pull-right">
-      {% if has_download_permissions %}
-      <a  class="btn"
-          href="{{ datafile.get_download_url }}"
-          title="Download">
-          <i class="icon-download-alt icon-large"></i>
-      </a>
-      {% endif %}
       {% comment %}
       {% if has_write_permissions and not immutable %}
       <a title="Add Metadata" href="{% url 'tardis.tardis_portal.views.add_datafile_par' datafile.id %}"
@@ -138,7 +131,6 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
           <i class="icon-plus"></i>
        </a>
        {% endif %}
-
       <a id="datafile_metadata_toggle_{{datafile.id}}" title="Show/Hide Metadata"
          class="datafile-info-toggle metadata_hidden btn" href="/ajax/datafile_details/{{datafile.id}}/">
           <i class="icon-list"></i>
@@ -149,7 +141,13 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
           target="_blank" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&hgt.customText=http://{{ request.get_host }}{{ datafile.get_download_url }}"><i class="icon-share"></i>
       </a>
        {% endif %}
-
+      {% if has_download_permissions %}
+      <a  class="btn"
+          href="{{ datafile.get_download_url }}"
+          title="Download">
+          <i class="icon-download-alt icon-large"></i>
+      </a>
+      {% endif %}
     </div>
   </td>
 </tr>
