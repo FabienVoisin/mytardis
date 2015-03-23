@@ -117,7 +117,7 @@
 		 data-toggle="collapse"  data-parent="#experiments"
 		 onclick="$('#collapsepub{{exp.id}}').collapse('toggle');" >
 	      <strong><a class="pull-left explink"
-			 href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a></strong>
+                  href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a>&nbsp;({{ exp.publication_year }})</strong>
 	      <ul class="nav nav-pills badgelist">
 		<li class="pull-right">
 		  {{ exp|experiment_datafiles_badge }}
@@ -130,9 +130,9 @@
 		</li>
 	      </ul>
 	      <small>
-		{% for author in exp.author_experiment_set.all %}{% if not forloop.first %},
+		{% for author in exp.author_experiment_set.all %}{% if not forloop.first %};
 	      {% endif %}
-	      <span property="dc:author">{{ author.author }}</span>{% empty %}&nbsp;{% endfor %}
+	      <span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
 	      </small>
 	      <span class="pull-right">
 		{% if exp.public_download_allowed %}
