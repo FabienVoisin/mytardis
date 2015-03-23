@@ -3,6 +3,23 @@
 {% load humanize %}
 {% load bleach_tag %}
 {% if experiments %}
+  <div class="row-fluid" id="expsection">
+    <div class="span7">
+      <h2 class="visible-phone">Experiments</h2>
+      <div class="pull-right">
+	<button class="btn btn-success btn-mini"
+		onclick="$('#exps .accordion-body').collapse('hide');" >
+	Collapse all</button>
+	<button class="btn btn-success btn-mini"
+		onclick="$('#exps .accordion-body').collapse('show');" >
+	Expand all</button>
+      </div>
+      <div class="pull-left">
+	<h2 class="hidden-phone" style="text-align: center">Experiments</h2>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
   <div class="row-fluid">
     <div class="span7">
       <div id="exps" class="mydata accordion">
@@ -28,9 +45,9 @@
 		  </li>
 		</ul>
 		<small>
-		  {% for author in exp.author_experiment_set.all %}{% if not forloop.first %},
+		  {% for author in exp.author_experiment_set.all %}{% if not forloop.first %};
 		{% endif %}
-		<span property="dc:author">{{ author.author }}</span>{% empty %}&nbsp;{% endfor %}
+		<span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
 		</small>
 		<span class="pull-right">
 		  {% for dltype, dlurl in exp.get_download_urls.items %}
@@ -89,6 +106,23 @@
 </div> <!-- content -->
 {% endif %}
 {% if sources %}
+  <div class="row-fluid" id="sourcesection">
+    <div class="span7">
+      <h2 class="visible-phone">Sources</h2>
+      <div class="pull-right">
+	<button class="btn btn-success btn-mini"
+		onclick="$('#sources .accordion-body').collapse('hide');" >
+	Collapse all</button>
+	<button class="btn btn-success btn-mini"
+		onclick="$('#sources .accordion-body').collapse('show');" >
+	Expand all</button>
+      </div>
+      <div class="pull-left">
+	<h2 class="hidden-phone" style="text-align: center">Sources</h2>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
   <div class="row-fluid">
     <div class="span7">
       <div id="sources" class="mydata accordion">
@@ -98,19 +132,18 @@
 	      <div class="accordion-toggle" 
 		   onclick="$('#collapse{{src.id}}').collapse('toggle');" >
 		<strong ><a class="explink"
-			   href="{% url 'tardis.apps.acad.views.source_detail' src.id %}">{{ src.organism.get_common_name }}</a></strong>
+			   href="{% url 'tardis.apps.acad.views.source_detail' src.id %}">{{ src }}</a></strong>
 		<small><br>
-		<span >[&nbsp;{{ src.get_age_cat_display }}&nbsp;{{ src.get_gender_display }}&nbsp;aged&nbsp;{{ src.age_range }}&nbsp;years,&nbsp;carbon&nbsp;date&nbsp;{{src.carbondate_years}}&nbsp;&plusmn;&nbsp;{{src.carbondate_error}}&nbsp;]</span><br>
+		<span>{{ src.get_age_cat_display }}&nbsp;{{ src.get_gender_display|lower }}&nbsp;aged&nbsp;{{ src.age_range }}&nbsp;years,&nbsp;carbon&nbsp;date&nbsp;{{src.carbondate_years}}&nbsp;&plusmn;&nbsp;{{src.carbondate_error}}&nbsp;</span><br>
 		<span >Samples:{% for sample in src.sample_set.all %}{% if not forloop.first %},
 		{% endif %}
-		<span property="dc:author">{{ sample.get_sample_cat_display }}&nbsp;({{ sample.sample_details }})</span>{% empty %}&nbsp;{% endfor %}</span>
+		<span>{{ sample.get_sample_cat_display }}&nbsp;({{ sample.sample_details }})</span>{% empty %}&nbsp;{% endfor %}</span>
 		</small>
 	      </div>
 	    </div>
 	    <div id="collapse{{src.id}}"
 		 class="accordion-body collapse in">
 	      <div class="accordion-inner">
-		<p>{{src.source_details|default:""|bleach}}</p>
 		    <ul class="nav nav-list">
 		      <li class="nav-header dataset-list-header">Datasets from this source: </li>
 		{% for ds in src.get_datasets %}

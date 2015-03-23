@@ -6,8 +6,8 @@
   <div class="row-fluid">
     <div class="span7">
         <h1 class="title">Search Results for <em>{{ query_string|default:"' '"}}</em></h1>
-      <h4 class="title"><strong>{{experiments|length}}</strong> Experiment{{experiments|length|pluralize}} | 
-      <strong>{{sources|length}}</strong> Source{{sources|length|pluralize}}</h4>
+      <h4 class="title">{% if experiments %}<strong>{{experiments|length}}</strong> <a href="#expsection">Experiment{{experiments|length|pluralize}}</a>{% if sources %} | {% endif %}{% endif %}
+      {% if sources %}<strong>{{sources|length}}</strong> <a href="#sourcesection">Source{{sources|length|pluralize}}</a>{% endif %}</h4>
   </div> <!-- post -->
 </div> <!-- content -->
       {% include "search/acad_search_result_list.html"%}
