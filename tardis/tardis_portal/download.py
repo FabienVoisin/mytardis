@@ -395,7 +395,7 @@ _epoch = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
 def _streaming_tar_thread(directory, downloads, out):
     tar = tarfile.open(fileobj=out, mode="w|")
     for download in downloads:
-        tarobj = tarfile.TarInfo(name="%s/%s" % (directory, download["datafile"].filename))
+        tarobj = tarfile.TarInfo(name="%s/%s/%s" % (directory, download["datafile"].dataset, download["datafile"].filename))
         tarobj.mode = 0644
         tarobj.size = download["key"].size
         timestamp = pytz.utc.localize(boto.utils.parse_ts(download["key"].last_modified))
