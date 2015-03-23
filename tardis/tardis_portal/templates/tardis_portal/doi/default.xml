@@ -11,9 +11,14 @@
     <titles>
         <title>{{ title }}</title>
     </titles>
-    <publisher>{{ institution_name }}</publisher>
+    <publisher>{{ publisher }}</publisher>
     <publicationYear>{{ publication_year }}</publicationYear>
     {% if resource_type %}<resourceType resourceTypeGeneral="{{ resource_type }}" />{% endif %}
+    {% if parent_doi %}
+    <relatedIdentifiers>
+        <relatedIdentifier relatedIdentifierType="DOI" relationType="IsPartOf">{{ parent_doi }}</relatedIdentifier>
+    </relatedIdentifiers>
+    {% endif %}
     {% if description %}
     <descriptions>
         <description descriptionType="Abstract">
@@ -21,6 +26,13 @@
         </description>
     </descriptions>
     {% endif %}
+    <contributors>
+        {% for contributor in contributors %}
+        <contributor contributorType="ResearchGroup">
+            <contributorName>{{ contributor }}</contributorName>
+        </contributor>
+        {% endfor %}
+    </contributors>
     {% if rights_url and rights_name %}
     <rightsList>
         <rights rightsURI="{{ rights_url }}">{{ rights_name }}</rights>
