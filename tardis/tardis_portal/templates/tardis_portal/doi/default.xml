@@ -14,6 +14,11 @@
     <publisher>{{ publisher }}</publisher>
     <publicationYear>{{ publication_year }}</publicationYear>
     {% if resource_type %}<resourceType resourceTypeGeneral="{{ resource_type }}" />{% endif %}
+    {% if parent_doi %}
+    <relatedIdentifiers>
+        <relatedIdentifier relatedIdentifierType="DOI" relationType="IsPartOf">{{ parent_doi }}</relatedIdentifier>
+    </relatedIdentifiers>
+    {% endif %}
     {% if description %}
     <descriptions>
         <description descriptionType="Abstract">
