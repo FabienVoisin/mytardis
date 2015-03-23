@@ -4,6 +4,10 @@
 {% load experimentstats %}
 {% load bleach_tag %}
 
+{% block title %}
+<title>{{site_longtitle|default:'MyTardis Data Store'}}</title>
+{% endblock title %}
+
 {% block script %}
 {% endblock script %}
 
