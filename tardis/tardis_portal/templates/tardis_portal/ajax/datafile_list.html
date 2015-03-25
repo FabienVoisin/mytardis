@@ -56,6 +56,10 @@
 <td colspan="3">
 Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset_selector_none btn btn-mini">None</a>
 <div class="pull-right">
+  <button type="button" class="btn btn-mini download-selected" id="list_selected">
+      <i class="icon-list"></i>
+      Show Download URLs
+    </button>
   <button type="submit" class="btn btn-mini download-selected">
       <i class="icon-download-alt"></i>
       Download Selected Files
@@ -186,6 +190,30 @@ $("#delete_selected").click(function() {
             }
         });
     }
+});
+$("#list_selected").click(function() {
+	console.log($("#datafile-download").serialize());
+   $.ajax({
+     headers: {'X-CSRFToken': '{{csrf_token}}'},
+     type: 'GET',
+     url: '/ajax/get_datafile_urls/{{ dataset.id }}/',
+	 data: $("#datafile-download").serialize(),
+     success: function(data) {
+    	 console.log(data.urls);
+    	 htmlStr="";
+    	 url_prefix=$(location).attr('protocol')+"//"+$(location).attr('hostname');
+    	 if ($(location).attr('port'))
+    		 url_prefix+=":"+$(location).attr('port');
+    	 console.log(url_prefix);
+    	 $.each(data.urls, function(key, val){
+    		 console.log(val);
+    		 htmlStr+="<span>"+url_prefix+val+"</span><br>";
+    	 });
+    	 $('#urlsModalLabel').html('Download URLs');
+    	 $('#urlsModalMain').html(htmlStr);
+    	 $('#urlsDialog').modal('show');
+     }
+   });
 });
 </script>
 {{ paginator_block }}

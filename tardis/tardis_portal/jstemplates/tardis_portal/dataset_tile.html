@@ -18,13 +18,14 @@
 <div class="pull-left" style="margin-right: 10px">
 </div>
 <div class="pull-right" style="text-align: right">
-  <p class="js-required">
-    <a class="close" rel="tooltip" href="#"
-       style="float: none;" onclick="return false;"
-       title="Remove dataset from experiment">
-      &times;
-    </a>
-  </p>
+  <button type="button" class="btn btn-mini download-selected" onclick="javascript:list_selected('{{id}}');">
+      <i class="icon-list"></i>
+      Show Download URLs
+    </button>
+    <button type="button" class="btn btn-mini download-selected" onclick="javascript:delete_dataset('{{id}}');">
+      <i class="icon-remove"></i>
+      Delete Dateset
+    </button>
   <p>
       {{{ dataset_datafiles_badge }}}
   </p>

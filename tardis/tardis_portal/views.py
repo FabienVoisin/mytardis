@@ -2954,6 +2954,26 @@ def add_datafile_par(request, datafile_id):
         return return_response_error(request)
 
 @login_required
+def get_datafile_urls(request, dataset_id):
+    dataset = Dataset.objects.get(id=dataset_id)
+    urls=[]
+    logger.info('request.GET %s' % request.__dict__)
+    if 'datafile' in request.GET:
+        if len(request.GET.getlist('datafile')) > 0:
+            datafiles = request.GET.getlist('datafile')
+            for df in datafiles:
+                dobj = DataFile.objects.get(id=df)
+                urls.append(dobj.get_download_url())
+            return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"urls":[]}), mimetype='application/json')
+    else:
+        datafiles = dataset.datafile_set.all()
+        for df in datafiles:
+            urls.append(df.get_download_url())
+        return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
+
+@login_required
 def delete_datafile(request, dataset_id):
     if authz.has_dataset_delete(request, dataset_id):
         dataset = Dataset.objects.get(id=dataset_id)
