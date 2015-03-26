@@ -19,13 +19,13 @@
   <p>
     {% if not is_authenticated %}
       Please <a href="{% url 'tardis.tardis_portal.views.login' %}">login</a>
-      to see your experiment data.
+      to see your study data.
     {% endif %}
   </p>
   <div class="row-fluid">
     <div class="span7">
       {% if is_authenticated %}
-	<h3>Your most recent experiments <small><strong>(<a href="{% url 'tardis.tardis_portal.views.my_data' %}">view all</a>)</strong></small></h3>
+	<h3>Your most recent studies <small><strong>(<a href="{% url 'tardis.tardis_portal.views.my_data' %}">view all</a>)</strong></small></h3>
 	<div id="experiments" class="accordion">
 	  {% for exp in private_experiments %}
 	    <div class="accordion-group">
@@ -56,7 +56,7 @@
 		      {% for dltype, dlurl in exp.get_download_urls.items %}
 			{% if forloop.first %}
 			  <a class="dllink" href="{{dlurl}}"
-			     title="Download Entire Experiment as {{dltype}}">
+			     title="Download Entire Study as {{dltype}}">
 			    <i class="icon-download-alt"></i>
 			    <em>Download data as .{{dltype}}</em>
 			  </a>
@@ -73,7 +73,7 @@
 		    {% if forloop.first %}
 		      <ul class="nav nav-list">
 			{% with total=exp.datasets.all|length %}
-			  <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this experiment</li>
+			  <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this study</li>
 			{% endwith %}
 		      {% endif %}
 		      <li>
@@ -103,13 +103,13 @@
 	    {% empty %}
 	    <p>You have no data stored on this server.<br/>
 	    <a href="{% url 'tardis.tardis_portal.views.create_experiment' %}">Create
-	    a new experiment</a> and upload your data</p>
+	    a new study</a> and upload your data</p>
 	  {% endfor %}
 	  <br/>
       {% endif %}
 
       {% with total=public_experiments|length %}
-	<h3>The {{ total }} most recent public experiment{{total|pluralize}}</h3>
+	<h3>The {{ total }} most recent public stud{{total|pluralize:"y,ies"}}</h3>
       {% endwith %}
       {% if not is_authenticated %}
 	<div id="experiments" class="accordion">
@@ -144,7 +144,7 @@
 		  {% for dltype, dlurl in exp.get_download_urls.items %}
 		    {% if forloop.first %}
 		      <a class="dllink" href="{{dlurl}}"
-			 title="Download Entire Experiment as {{dltype}}">
+			 title="Download Entire Study as {{dltype}}">
 			<i class="icon-download-alt"></i>
 			<em>Download data as .{{dltype}}</em>
 		      </a>
@@ -162,7 +162,7 @@
 		{% if forloop.first %}
 		  <ul class="nav nav-list">
 		    {% with total=exp.datasets.all|length %}
-		      <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this experiment</li>
+		      <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this study</li>
 		    {% endwith %}
 		  {% endif %}
 		  <li>

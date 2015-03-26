@@ -230,18 +230,18 @@ $('#modal-metadata .submit-button').click(function() {
 </script>
 
 <div class="page-header">
-  <h4>Experiment</h4>
+  <h4>Study</h4>
   {% if has_write_permissions and not experiment.public and has_change_permissions %}
   <div class="pull-right">
-    <a class="btn btn-mini btn-warning" title="Edit Experiment"
+    <a class="btn btn-mini btn-warning" title="Edit Study"
        href="{{ experiment.get_edit_url }}">
       <i class="icon-pencil"></i>
-      Edit Experiment
+      Edit Study
     </a>
     {% if has_delete_permissions %}
-     <a class="btn btn-mini btn-danger" title="Delete Experiment" id="delete_experiment">
+     <a class="btn btn-mini btn-danger" title="Delete Study" id="delete_experiment">
       <i class="icon-remove"></i>
-      Delete Experiment
+      Delete Study
      </a>
     {% endif %}
   </div>
@@ -473,7 +473,7 @@ var datasetTiles = (function() {
 
 {% if has_write_permissions and not experiment.public and has_change_permissions and has_delete_permissions %}
 $("#delete_experiment").click(function() {
-    if (confirm("Are you sure you want to delete the experiment and its datasets?")) {
+    if (confirm("Are you sure you want to delete the study and its datasets?")) {
         $.ajax({
           headers: {'X-CSRFToken': '{{csrf_token}}'},
           type: 'DELETE',
