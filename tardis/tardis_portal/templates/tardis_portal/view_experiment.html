@@ -528,6 +528,50 @@ function list_selected(dataset_id) {
      }
    });
 }
+
+$(window).keydown(function(event) {
+	if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 
+	  //console.log("Hey! Ctrl+a event captured!");
+	  //console.log($('#urlsModalMain'));
+	  //$('#urlsModalMain').selText();
+	  //SelectText('urlsModalMain');
+	  selectElementText(document.getElementById("urlsModalMain"));
+	  event.preventDefault(); 
+	}
+});
+function selectElementText(el, win) {
+    win = win || window;
+    var doc = win.document, sel, range;
+    if (win.getSelection && doc.createRange) {
+        sel = win.getSelection();
+        range = doc.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (doc.body.createTextRange) {
+        range = doc.body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+    }
+}
+
+function SelectText(element) {
+    var doc = document
+        , text = doc.getElementById(element)
+        , range, selection
+    ;    
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();        
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
 </script>
 
 {% endblock %}

@@ -2953,7 +2953,7 @@ def add_datafile_par(request, datafile_id):
     else:
         return return_response_error(request)
 
-@login_required
+@authz.dataset_access_required
 def get_datafile_urls(request, dataset_id):
     dataset = Dataset.objects.get(id=dataset_id)
     urls=[]
