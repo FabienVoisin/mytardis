@@ -480,7 +480,7 @@ def experiment_index(request):
 def experiment_list_mine(request):
 
     c = Context({
-        'subtitle': 'My Experiments',
+        'subtitle': 'My Studies',
         'can_see_private': True,
         'experiments': authz.get_owned_experiments(request)
                             .order_by('-update_time'),
@@ -495,7 +495,7 @@ def experiment_list_mine(request):
 def experiment_list_shared(request):
 
     c = Context({
-        'subtitle': 'Shared Experiments',
+        'subtitle': 'Shared Studies',
         'can_see_private': True,
         'experiments': authz.get_shared_experiments(request)
                             .order_by('-update_time'),
@@ -511,7 +511,7 @@ def experiment_list_public(request):
     private_filter = Q(public_access=Experiment.PUBLIC_ACCESS_NONE)
 
     c = Context({
-        'subtitle': 'Public Experiments',
+        'subtitle': 'Public Studies',
         'can_see_private': False,
         'experiments': Experiment.objects.exclude(private_filter)
                                          .order_by('-update_time'),
@@ -1015,7 +1015,7 @@ def create_experiment(request,
 
     d = ';' #delimiter used for separating authors. comma is used for separating first and last names
     c = Context({
-        'subtitle': 'Create Experiment',
+        'subtitle': 'Create Study',
         'user_id': request.user.id,
         })
 
@@ -1041,7 +1041,7 @@ def create_experiment(request,
                             aclOwnershipType=ObjectACL.OWNER_OWNED)
             acl.save()
 
-            request.POST = {'status': "Experiment Created."}
+            request.POST = {'status': "Study Created."}
             return HttpResponseSeeAlso(reverse(
                 'tardis.tardis_portal.views.view_experiment',
                 args=[str(experiment.id)]) + "#created")
@@ -1075,7 +1075,7 @@ def edit_experiment(request, experiment_id,
     experiment = Experiment.objects.get(id=experiment_id)
     d = ';' #delimiter used for separating authors. comma is used for separating first and last names
 
-    c = Context({'subtitle': 'Edit Experiment',
+    c = Context({'subtitle': 'Edit Study',
                  'experiment_id': experiment_id, })
 
     if request.method == 'POST':
@@ -1086,7 +1086,7 @@ def edit_experiment(request, experiment_id,
             experiment.created_by = request.user
             full_experiment.save_m2m()
 
-            request.POST = {'status': "Experiment Saved."}
+            request.POST = {'status': "Study Saved."}
             return HttpResponseSeeAlso(reverse(
                 'tardis.tardis_portal.views.view_experiment',
                 args=[str(experiment.id)]) + "#saved")
@@ -1350,7 +1350,7 @@ def control_panel(request):
         experiments = experiments.order_by('title')
 
     c = Context({'experiments': experiments,
-                 'subtitle': 'Experiment Control Panel'})
+                 'subtitle': 'Study Control Panel'})
 
     return HttpResponse(render_response_index(request,
                         'tardis_portal/control_panel.html', c))
@@ -1388,7 +1388,7 @@ def search_experiment(request):
         result['datafile_hit'] = False
         result['experiment_hit'] = True
         results.append(result)
-    c = Context({'header': 'Search Experiment',
+    c = Context({'header': 'Search Study',
                  'experiments': results,
                  'bodyclass': bodyclass})
     url = 'tardis_portal/search_experiment_results.html'
@@ -1419,7 +1419,7 @@ def search_quick(request):
             logger.debug(experiments)
 
     c = Context({'submitted': get, 'experiments': experiments,
-                'subtitle': 'Search Experiments'})
+                'subtitle': 'Search Studies'})
     return HttpResponse(render_response_index(request,
                         'tardis_portal/search_experiment.html', c))
 
@@ -2283,7 +2283,7 @@ def add_experiment_access_user(request, experiment_id, username):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment (id=%d) does not exist.'
+        return HttpResponse('Study (id=%d) does not exist.'
                             % (experiment.id))
 
     acl = ObjectACL.objects.filter(
@@ -2328,7 +2328,7 @@ def remove_experiment_access_user(request, experiment_id, username):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment does not exist')
+        return HttpResponse('Study does not exist')
 
     acl = ObjectACL.objects.filter(
         content_type=experiment.get_ct(),
@@ -2556,7 +2556,7 @@ def add_experiment_access_group(request, experiment_id, groupname):
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
         transaction.rollback()
-        return HttpResponse('Experiment (id=%d) does not exist' %
+        return HttpResponse('Study (id=%d) does not exist' %
                             (experiment_id))
 
     try:
@@ -2611,7 +2611,7 @@ def remove_experiment_access_group(request, experiment_id, group_id):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment does not exist')
+        return HttpResponse('Study does not exist')
 
     acl = ObjectACL.objects.filter(
         content_type=experiment.get_ct(),
