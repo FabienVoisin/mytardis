@@ -33,7 +33,7 @@ class Dataset(models.Model):
     """
 
     experiments = models.ManyToManyField(Experiment, related_name='datasets')
-    experiment = models.ForeignKey(Experiment, null=True)
+    experiment = models.ForeignKey(Experiment, null=True, blank=True)
     description = models.TextField(blank=True)
     directory = DirectoryField(blank=True, null=True)
     immutable = models.BooleanField(default=False)
@@ -165,5 +165,5 @@ class Dataset(models.Model):
         if self.immutable:
             raise Exception('Dataset is immutable')
         if Experiment.objects.filter(datasets__id=self.id).count() > 1:
-            raise Exception('Dataset %s is attached to more than one experiment' % self.description)
+            raise Exception('Dataset %s is attached to more than one study' % self.description)
         super(Dataset, self).delete(*args, **kwargs)
