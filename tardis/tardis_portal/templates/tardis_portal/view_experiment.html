@@ -530,13 +530,15 @@ function list_selected(dataset_id) {
 }
 
 $(window).keydown(function(event) {
-	if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 
-	  //console.log("Hey! Ctrl+a event captured!");
-	  //console.log($('#urlsModalMain'));
-	  //$('#urlsModalMain').selText();
-	  //SelectText('urlsModalMain');
-	  selectElementText(document.getElementById("urlsModalMain"));
-	  event.preventDefault(); 
+	if ($("#urlsDialog").data('modal').isShown) {
+		if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 
+			  //console.log("Hey! Ctrl+a event captured!");
+			  //console.log($('#urlsModalMain'));
+			  //$('#urlsModalMain').selText();
+			  //SelectText('urlsModalMain');
+			  selectElementText(document.getElementById("urlsModalMain"));
+			  event.preventDefault(); 
+			}
 	}
 });
 function selectElementText(el, win) {
