@@ -43,7 +43,7 @@
     <dd>
         <div class="row-fluid">
           <div class="span7">
-            This experiment data and metadata is licensed under a
+            This study data and metadata is licensed under a
             <a rel="license"
                property="dc:license"
                href="{{ experiment.license.url }}">
@@ -118,7 +118,7 @@
       {% for p in protocol %}
         {% for o in organization %}
           <a class="btn btn-primary btn-mini" href="{{p.1}}{{o}}"
-             title="Download Entire Experiment as {{p.0|upper}} with {{o}} organization">
+             title="Download Entire Study as {{p.0|upper}} with {{o}} organization">
             <i class="icon-download-alt"></i>
             {% if o == default_organization %}
             {{p.0|upper}}
@@ -131,7 +131,7 @@
     {% else %}
       {% for p in protocol %}
         <a class="btn btn-primary btn-mini" href="{{p.1}}"
-           title="Download Entire Experiment as {{p.0|upper}}">
+           title="Download Entire Study as {{p.0|upper}}">
           <i class="icon-download-alt"></i>
           {{p.0|upper}}
         </a>

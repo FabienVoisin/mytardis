@@ -372,7 +372,7 @@ $('#modal-metadata .submit-button').live('click', function() {
   {% if from_experiment %}
   <h4 style="padding-top: 4px">
       <small>
-      From the experiment:
+      From the study:
       <a
          class="experiment-link"
          href="{{ from_experiment.get_absolute_url }}">
@@ -384,7 +384,7 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% if other_experiments|length == 1 %}
         <h4 style="padding-top: 4px">
             <small>
-            From the experiment:
+            From the study:
         {% for other_experiment in other_experiments %}
             <a
                class="experiment-link"
@@ -401,7 +401,7 @@ $('#modal-metadata .submit-button').live('click', function() {
   {% if dataset.immutable %}
   <h4 style="padding-top: 4px">
       <small>
-      This experiment has been set to immutable on creation (cannot be modified)
+      This study has been set to immutable on creation (cannot be modified)
       </small>
   </h4>
   {% endif %}
@@ -481,10 +481,10 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}
     </div>
     <div id="other-experiments-pane">
-        <h3>Other experiments</h3>
+        <h3>Other Studies</h3>
         {% if other_experiments|length > 1 %}
         <div>
-        <em>This dataset also appears in these experiments:</em>
+        <em>This dataset also appears in these studies.</em>
         </div>
         <br/>
         <div id="other-experiments-content">
@@ -501,7 +501,7 @@ $('#modal-metadata .submit-button').live('click', function() {
                 {% endfor %}
         </div>
         {% else %}
-        <em>This dataset doesn't appear in any other experiments.</em>
+        <em>This dataset doesn't appear in any other studies.</em>
         {% endif %}
     </div>
   </div>
@@ -534,7 +534,7 @@ $('#modal-metadata .submit-button').live('click', function() {
       {% for p in protocol %}
         {% for o in organization %}
           <a class="btn btn-primary btn-mini" href="{{p.1}}{{o}}"
-             title="Download Entire Experiment as {{p.0|upper}} with {{o}} organization">
+             title="Download Entire Study as {{p.0|upper}} with {{o}} organization">
             <i class="icon-download-alt"></i>
             {% if o == default_organization %}
             {{p.0|upper}}

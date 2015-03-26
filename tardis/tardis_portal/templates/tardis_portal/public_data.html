@@ -9,7 +9,7 @@
 <div id="content">
   <div class="row-fluid">
     <div class="span7">
-      <h2 class="visible-phone">Experiments</h2>
+      <h2 class="visible-phone">Studies</h2>
       <div class="pull-right">
         <a class="btn btn-primary"
            href="{% url 'tardis.tardis_portal.views.search_experiment' %}">
@@ -18,7 +18,7 @@
         </a>
       </div>
       <div class="pull-left">
-	<h2 class="hidden-phone" style="text-align: center">Experiments</h2>
+	<h2 class="hidden-phone" style="text-align: center">Studies</h2>
       </div>
     </div>
   </div>
@@ -26,12 +26,12 @@
     <div class="span7">
       {% if not public_experiments %}
       <p class="alert alert-info">
-	No experiments have been published yet.
+	No studies have been published yet.
       </p>
       {% else %}
       <div class="pull-left">
 	<h3><strong>{{ public_experiments.count }}</strong>
-	Public Experiment{{ public_experiments.count|pluralize}}
+	Public Stud{{ public_experiments.count|pluralize:"y,ies"}}
 	</h3>
       </div>
       <div class="pull-right">
@@ -75,7 +75,7 @@
 		  {% for dltype, dlurl in exp.get_download_urls.items %}
 		    {% if forloop.first %}
 		      <a class="dllink" href="{{dlurl}}"
-			 title="Download Entire Experiment as {{dltype}}">
+			 title="Download Entire Study as {{dltype}}">
 			<i class="icon-download-alt"></i>
 			<em>Download data as .{{dltype}}</em>
 		      </a>
@@ -92,7 +92,7 @@
 		{% for ds in exp.datasets.all|dictsortreversed:"id"|slice:":1" %}
 		  {% if forloop.first %}
 		    <ul class="nav nav-list">
-		      <li class="nav-header dataset-list-header">Latest dataset in this experiment</li>
+		      <li class="nav-header dataset-list-header">Latest dataset in this study</li>
 		  {% endif %}
 		  <li>
 		      <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
@@ -117,7 +117,7 @@
 		    </ul>
 		  {% endif %}
 		  {% empty %}
-		  There are no datasets in this experiment
+		  There are no datasets in this study
 		{% endfor %}
 	      </div>
 	    </div>

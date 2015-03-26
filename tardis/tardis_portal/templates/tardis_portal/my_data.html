@@ -9,7 +9,7 @@
 <div id="content">
   <div class="row-fluid">
     <div class="span7">
-      <h2 class="visible-phone">Experiments</h2>
+      <h2 class="visible-phone">Studies</h2>
       <div class="pull-right">
         {% if perms.tardis_portal.add_experiment %}
         <a class="btn btn-warning"
@@ -20,7 +20,7 @@
         {% endif %}
       </div>
       <div class="pull-left">
-	<h2 class="hidden-phone" style="text-align: center">Experiments</h2>
+	<h2 class="hidden-phone" style="text-align: center">Studies</h2>
       </div>
     </div>
   </div>
@@ -28,14 +28,14 @@
     <div class="span7">
       {% if not shared_experiments and not owned_experiments %}
       <p class="alert alert-info">
-	You do not have access to any private experiments.
-      Add your own experiments or browse the public experiments.</p>
+	You do not have access to any private studies.
+      Add your own studies or browse the public studies.</p>
       {% endif %}
 
       {% if owned_experiments %}
       <div class="pull-left">
 	<h3><strong>{{ owned_experiments.count }}</strong>
-	Experiment{{ owned_experiments.count|pluralize}} You Own
+	Stud{{ owned_experiments.count|pluralize:"y,ies"}} You Own
 	</h3>
       </div>
       <div class="pull-right">
@@ -78,7 +78,7 @@
 		  {% for dltype, dlurl in exp.get_download_urls.items %}
 		    {% if forloop.first %}
 		      <a class="dllink" href="{{dlurl}}"
-			 title="Download Entire Experiment as {{dltype}}">
+			 title="Download Entire Study as {{dltype}}">
 			<i class="icon-download-alt"></i>
 			<em>Download data as .{{dltype}}</em>
 		      </a>
@@ -94,7 +94,7 @@
 		{% for ds in exp.datasets.all|dictsortreversed:"id"|slice:":1" %}
 		  {% if forloop.first %}
 		    <ul class="nav nav-list">
-		      <li class="nav-header dataset-list-header">Latest dataset in this experiment</li>
+		      <li class="nav-header dataset-list-header">Latest dataset in this study</li>
 		  {% endif %}
 		  <li>
 		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
@@ -117,15 +117,15 @@
 		    </ul>
 		  {% endif %}
 		  {% empty %}
-		  There are no datasets in this experiment
+		  There are no datasets in this study
 		{% endfor %}
 	      </div>
 	    </div>
 	  </div>
 	  {% empty %}
-	  <p>You do not own any Experiment on this server.<br/>
+	  <p>You do not own any Study on this server.<br/>
 	  <a href="{% url 'tardis.tardis_portal.views.create_experiment' %}">Create
-	  a new experiment</a> and upload your data</p>
+	  a new study</a> and upload your data</p>
 	{% endfor %}
       </div>
       <br/>
@@ -134,7 +134,7 @@
     {% if shared_experiments %}
       <div class="pull-left">
 	<h3><strong>{{ shared_experiments.count }}</strong>
-	Shared Experiment{{ shared_experiments.count|pluralize }}</h3>
+	Shared Stud{{ shared_experiments.count|pluralize:"y,ies" }}</h3>
       </div>
       <div class="pull-right">
 	<button class="btn btn-success btn-mini"
@@ -173,7 +173,7 @@
 		{% for dltype, dlurl in exp.get_download_urls.items %}
 		  {% if forloop.first %}
 		    <a class="dllink" href="{{dlurl}}"
-		       title="Download Entire Experiment as {{dltype}}">
+		       title="Download Entire Study as {{dltype}}">
 		      <i class="icon-download-alt"></i>
 		      <em>Download data as .{{dltype}}</em>
 		    </a>
@@ -192,7 +192,7 @@
 		{% endif %}
 		<li>
 		    <span class="pull-left" >
-		      Latest dataset in this experiment<br/>
+		      Latest dataset in this study<br/>
 		      <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
 		    </span>
 		    {% for datafile in ds.get_images|slice:":5" %}
