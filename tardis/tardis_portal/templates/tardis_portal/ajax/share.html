@@ -594,7 +594,7 @@ $(document).ready(function() {
         {% if public_link %}
         <p>This study can be viewed by everybody with the link below:</p>
             <br/>
-        <p><div class="copylink">{{domain}}{{experiment.get_absolute_url}}</div><br/></p>
+        <p><div class="copylink">{{request.get_host}}{{experiment.get_absolute_url}}</div><br/></p>
             {% if experiment.public_access == experiment.PUBLIC_ACCESS_METADATA %}
                 <p>This study has been set to <em>'metadata only'</em>. Registered users must be explicitly allowed to access files. Alternately, a temporary link can be created and privately shared for direct access.</p>
             {% endif %}
