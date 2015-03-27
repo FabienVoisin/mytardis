@@ -506,11 +506,12 @@ function delete_dataset(dataset_id) {
         });
     }
 }
-function list_selected(dataset_id) {
+$('#show_dataset_urls').click(function() {
    $.ajax({
      headers: {'X-CSRFToken': '{{csrf_token}}'},
      type: 'GET',
-     url: '/ajax/get_datafile_urls/'+dataset_id+'/',
+     url: '/ajax/get_dataset_urls/{{ experiment.id }}/',
+     data: $("#dataset-download").serialize(),
      success: function(data) {
     	 console.log(data.urls);
     	 htmlStr="";
@@ -527,7 +528,7 @@ function list_selected(dataset_id) {
     	 $('#urlsDialog').modal('show');
      }
    });
-}
+});
 
 $(window).keydown(function(event) {
 	if ($("#urlsDialog").data('modal').isShown) {

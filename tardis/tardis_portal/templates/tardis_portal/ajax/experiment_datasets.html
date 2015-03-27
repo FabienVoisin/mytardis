@@ -11,6 +11,9 @@
         <i class="icon-download-alt"></i>
         Download Selected
       </button>
+      <button type="button" title="Show Download URLs" data-toggle="tooltip" data-placement="top" class="btn btn-mini download-selected" id="show_dataset_urls">
+        <i class="icon-list"></i>
+      </button>
       <input type="hidden" name="comptype" value="{{default_format}}"/>
       <input type="hidden" name="organization" value="{{default_organization}}"/>
     {% endif %}
@@ -33,7 +36,7 @@
 <br/>
 
 <div id="experiment_datasets">
-  <form method="POST" action="{% url 'tardis.tardis_portal.download.streaming_download_datafiles' %}" target="_blank">{% csrf_token %}
+  <form method="POST" id="dataset-download" action="{% url 'tardis.tardis_portal.download.streaming_download_datafiles' %}" target="_blank">{% csrf_token %}
     <input type="hidden" name="expid" value="{{experiment.id}}"/>
     {{ action_bar }}
 

@@ -844,6 +844,27 @@ def experiment_datasets(request, experiment_id):
         request, experiment_id=experiment_id,
         template_name='tardis_portal/ajax/experiment_datasets.html')
 
+@never_cache
+@authz.experiment_access_required
+def get_dataset_urls(request, experiment_id):
+    experiment = Experiment.objects.get(id=experiment_id)
+    urls=[]
+    logger.info('request.GET %s' % request.__dict__)
+    logger.info('comp type %s' % request.GET['comptype'])
+    if 'dataset' in request.GET:
+        if len(request.GET.getlist('dataset')) > 0:
+            datasets = request.GET.getlist('dataset')
+            for ds in datasets:
+                dobj = Dataset.objects.get(id=ds)
+                urls.append(dobj.get_download_urls()[request.GET['comptype']])
+            return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"urls":[]}), mimetype='application/json')
+    else:
+        datasets = experiment.datasets.all()
+        for ds in datasets:
+            urls.append(ds.get_download_urls()[request.GET['comptype']])
+        return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
 
 @never_cache  # too complex # noqa
 @authz.dataset_access_required
@@ -2957,7 +2978,7 @@ def add_datafile_par(request, datafile_id):
 def get_datafile_urls(request, dataset_id):
     dataset = Dataset.objects.get(id=dataset_id)
     urls=[]
-    logger.info('request.GET %s' % request.__dict__)
+    #logger.debug('request.GET %s' % request.__dict__)
     if 'datafile' in request.GET:
         if len(request.GET.getlist('datafile')) > 0:
             datafiles = request.GET.getlist('datafile')
