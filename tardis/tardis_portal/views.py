@@ -126,7 +126,7 @@ from tardis.tardis_portal.models.jti import JTI
 logger = logging.getLogger(__name__)
 
 
-def get_dataset_info(dataset, include_thumbnail=False, exclude=None):  # too complex # noqa
+def get_dataset_info(dataset, experiment, include_thumbnail=False, exclude=None):  # too complex # noqa
     obj = model_to_dict(dataset)
     if exclude is None or 'datafiles' not in exclude or 'file_count' \
        not in exclude:
@@ -160,6 +160,9 @@ def get_dataset_info(dataset, include_thumbnail=False, exclude=None):  # too com
                 if ns in schemas:
                     obj["datasettype"] = schemas[ns].name
                     break
+    if experiment:
+        obj['locked']=experiment.locked
+    logger.info('obj %s' % obj)
     return obj
 
 
@@ -902,7 +905,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
     # Update this experiment to add it to more experiments
     if request.method == 'PUT':
         # Obviously you can't do this if you don't own the dataset
-        if not can_update():
+        if not can_update() or experiment.locked == True:
             return HttpResponseForbidden()
         data = json.loads(request.body)
         # Detect if any experiments are new, and add the dataset to them
@@ -922,7 +925,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
                 return HttpResponseMethodNotAllowed(allow="GET PUT")
             return HttpResponseMethodNotAllowed(allow="GET")
         # Cannot remove if this is the last experiment
-        if not can_delete() or dataset.experiments.count() < 2:
+        if not can_delete() or dataset.experiments.count() < 2 or experiment.locked:
             return HttpResponseForbidden()
         dataset.experiments.remove(experiment)
         dataset.save()
@@ -930,7 +933,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
     has_download_permissions = \
         authz.has_dataset_download_access(request, dataset_id)
 
-    return HttpResponse(json.dumps(get_dataset_info(dataset,
+    return HttpResponse(json.dumps(get_dataset_info(dataset, experiment,
                                                     has_download_permissions)),
                         mimetype='application/json')
 
@@ -947,7 +950,7 @@ def experiment_datasets_json(request, experiment_id):
         authz.has_experiment_download_access(request, experiment_id)
 
     objects = [
-        get_dataset_info(ds, include_thumbnail=has_download_permissions,
+        get_dataset_info(ds, experiment, include_thumbnail=has_download_permissions,
                          exclude=['datafiles'])
         for ds in experiment.datasets.all()]
 

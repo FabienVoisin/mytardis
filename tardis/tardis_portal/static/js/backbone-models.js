@@ -124,11 +124,11 @@ var MyTardis = (function(){
 	addTile: function(tile) {
             var newModel = tile.model.clone();
             this.collection.add(newModel);
-            newModel.save().done(function() {
-		tile.trigger('tile:copy', tile, this);
+            newModel.save({wait: true}).done(function() {
+            	tile.trigger('tile:copy', tile, this);
             });
 	},
-
+	
 	_enableDragDrop: function() {
             // Context should be a MyTardis.DatasetTiles instance
             $(this.el).find('.datasets').sortable({
@@ -293,12 +293,19 @@ var MyTardis = (function(){
 	canRemove: function() {
             if (_.isUndefined(isLoggedIn) || !isLoggedIn())
 		return false;
-            return this.model.attributes.experiments.length > 1
+            //console.log(this.model.attributes)
+            return this.model.attributes.experiments.length > 1 && !this.model.attributes.locked
 	},
 	remove: function() {
             // Request the model be removed
             // Note: The server may decline to do so.
-            this.model.destroy({ wait: true });
+            this.model.destroy({ wait: true, error: function(model, response) {
+            	  //console.log(response)
+            	  if (response.status==403) {
+            		  window.alert("You are not allowed to remove a dataset from a public study.")
+            		  return;
+            	  }
+            }});
             this.trigger('tile:remove', this);
 	}
     });
