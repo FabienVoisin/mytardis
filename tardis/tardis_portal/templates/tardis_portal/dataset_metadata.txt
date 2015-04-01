@@ -1,0 +1,7 @@
+{{ dataset }}
+
+{{ dataset.analysis }}
+
+{% for i in dataset.analysis.processing_set.all %}
+{{ i.id }}
+{% endfor %}

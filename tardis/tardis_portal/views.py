@@ -3463,3 +3463,8 @@ def rcauth(request):
         del request.session['jws']
         django_logout(request)
         raise PermissionDenied  # Error: Security cookie has expired
+
+def view_dataset_metadata(request, dataset_id):
+    dataset = Dataset.objects.get(pk=dataset_id)
+    context = {'dataset': dataset}
+    return render(request, 'tardis_portal/dataset_metadata.txt', context, content_type='text/plain')
