@@ -18,9 +18,9 @@
       {{ creator_span }}{% endfor %}
     </small>
     ({{ doi_exp.publication_year }}):
-    <span style="font-style: italic;">{{ doi_exp.title }}</span>.
+    <span style="font-style: italic;">{% if rtype == "Dataset" %}{{ dataset.description }}{% else %}{{ doi_exp.title }}{% endif %}</span>.
     {{ site_longtitle }}.
     {{ rtype }}.
-    <a href="http://dx.doi.org/{{ doi }}">http://dx.doi.org/{{ doi }}</a>
+    {% filter linkify_pubid %}doi:{{ doi }}{% endfilter %}
 </div>
 {% endif %}
