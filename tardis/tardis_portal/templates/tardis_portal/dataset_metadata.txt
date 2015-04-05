@@ -1,14 +1,16 @@
-{% load linkify_pubid %}
-Dataset {{ dataset }}
+{% load linkify_pubid %}Dataset {{ dataset }}
 
 {% if doi %}Please cite as:
-{%filter striptags%}{% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}{%endfilter%}{% endif %}
+{% for author in doi_exp.author_experiment_set.all %}{%if not forloop.first%}; {%endif%}{{author.author}}{% endfor %} ({{ doi_exp.publication_year }}): {{ dataset.description }}. {{ site_longtitle }}. Dataset. http://dx.doi.org/{{doi}}{% endif %}
 
 {% if dataset.experiment.license %}This dataset and metadata is licensed under a {{ dataset.experiment.license }} licence ({{dataset.experiment.license.url}}){% endif %}
 
-{{ dataset.analysis.processing_set.count }} pipeline{{ dataset.analysis.processing_set.count|pluralize }} in this dataset: {% for i in dataset.analysis.processing_set.all %}{% if not forloop.first %}, {% endif %}{{i.id}}{%endfor%}
-{% for i in dataset.analysis.processing_set.all %}
+Analysed using: {{ dataset.analysis.package }} version {{ dataset.analysis.package_ver }}
 
+----
+
+{{ dataset.analysis.processing_set.count }} pipeline{{ dataset.analysis.processing_set.count|pluralize }} in this dataset: {% for i in dataset.analysis.processing_set.all %}{% if not forloop.first %}; {% endif %}{{i.id}}{%endfor%}
+{% for i in dataset.analysis.processing_set.all %}
 # {{ i.id }}
 
 From source: {{ i.sequence.library.extract.sample.source }}, sample {{ i.sequence.library.extract.sample }}
@@ -40,4 +42,34 @@ Aligned to: {{ i.reference }}
 {% if i.contigs %}Number of contigs: {{ i.contigs }}{%endif%}
 {% endfor %}
 
-Analysed using: {{ dataset.analysis.package }} version {{ dataset.analysis.package_ver }}
+----
+
+{{ sources.count }} source{{ sources.count|pluralize }} in this dataset: {% for source in sources %}{% if not forloop.first %}; {% endif %}{{ source }}{%endfor%}
+
+{% for source in sources %}
+# {{ source }}
+
+Source ID: {{ source.id }}
+Collection date: {{ source.date|date:"c"}}
+Organism: {{ source.organism }} (NCBI taxonomy ID {{ source.organism.id }})
+Source details: {{ source.source_details }}
+Gender: {{ source.get_gender_display }}
+Age: {{ source.get_age_cat_display }}
+Age range: {% if source.age_range %}{{ source.age_range }}{% endif %}
+
+Continent: {{ source.get_geoloc_continent_display }}
+Country: {{ source.geoloc_country }}
+Locale: {{ source.geoloc_locale }}
+{%if source.geoloc_lat or source.geoloc_lon %}Lat/lon: {{source.geoloc_lat}}, {{source.geoloc_lon}}{%endif%}
+Biome: {{ source.env_biome }}
+Env feature: {{ source.env_feature }}
+{% if source.carbondate_id %}Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} ± {{ source.carbondate_error }}{% endif %}
+
+{% for sample in samples %}{% if sample in source.sample_set.all %}## {{ sample }}
+
+Collection date: {{ sample.date|date:"c" }}
+Sample category: {{ sample.get_sample_cat_display }}
+Sample details: {{ sample.sample_details }}
+Environmental package: {{ sample.get_env_package_display }}
+{% endif %}{% endfor %}
+{% endfor %}
