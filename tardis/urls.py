@@ -37,7 +37,7 @@ core_urls = patterns(
     (r'^stats/$', 'stats'),
     (r'^help/$', 'user_guide'),
     url(r'^dataset_metadata/(?P<dataset_id>\w+)/$', 'view_dataset_metadata', name='view_dataset_metadata'),
-    r'^robots\.txt$', lambda r: HttpResponse(
+    (r'^robots\.txt$', lambda r: HttpResponse(
         "User-agent: *\nDisallow: /download/\nDisallow: /stats/",
         mimetype="text/plain"))
 )
