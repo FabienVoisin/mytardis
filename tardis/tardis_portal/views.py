@@ -3467,7 +3467,11 @@ def rcauth(request):
 def view_dataset_metadata(request, dataset_id):
     dataset = Dataset.objects.get(pk=dataset_id)
     context = {'dataset': dataset}
+    from tardis.apps.acad.models import Source, Sample
+    context['sources'] = Source.objects.filter(sample__extract__library__sequence__processing__analysis__dataset=dataset)
+    context['samples'] = Sample.objects.filter(extract__library__sequence__processing__analysis__dataset=dataset)
     if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
         from tardis.tardis_portal.ands_doi import DatasetDOIService
-        c['doi'] = DatasetDOIService(dataset).get_doi()
+        context['doi'] = DatasetDOIService(dataset).get_doi()
+        context['doi_exp'] = dataset.experiment
     return render(request, 'tardis_portal/dataset_metadata.txt', context, content_type='text/plain')
