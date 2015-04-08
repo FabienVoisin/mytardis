@@ -406,12 +406,18 @@ def _streaming_tar_thread(directory, downloads, out):
         timestamp = pytz.utc.localize(boto.utils.parse_ts(download["key"].last_modified))
         tarobj.mtime = int((timestamp - _epoch).total_seconds())
         tar.addfile(tarobj, download["key"])
-    for dataset_id, dataset in datasets:
-        # should handle the possibility that no such metadata exists?
-        analysis = Analysis.objects.get(dataset=dataset_id)
-        # insert human-readable text file containing ACAD metadata
-        # perhaps generate from a template?
-        metadata = "insert the metadata here!\n"
+    for dataset in datasets:
+        context = {'dataset': dataset}
+        from tardis.apps.acad.models import Source, Sample
+        context['sources'] = Source.objects.filter(sample__extract__library__sequence__processing__analysis__dataset=dataset)
+        context['samples'] = Sample.objects.filter(extract__library__sequence__processing__analysis__dataset=dataset)
+        if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
+            from tardis.tardis_portal.ands_doi import DatasetDOIService
+            context['doi'] = DatasetDOIService(dataset).get_doi()
+            context['doi_exp'] = dataset.experiment
+        from django.template.loader import render_to_string
+        metadata = render_to_string('tardis_portal/dataset_metadata.txt', context)
+
         tarobj = tarfile.TarInfo(name="%s/%s/metadata.txt" % (directory, dataset))
         tarobj.mode = 0644
         tarobj.size = len(metadata)
