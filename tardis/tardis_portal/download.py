@@ -416,7 +416,7 @@ def _streaming_tar_thread(directory, downloads, out):
             context['doi'] = DatasetDOIService(dataset).get_doi()
             context['doi_exp'] = dataset.experiment
         from django.template.loader import render_to_string
-        metadata = render_to_string('tardis_portal/dataset_metadata.txt', context)
+        metadata = render_to_string('tardis_portal/dataset_metadata.txt', context).encode("utf8")
 
         tarobj = tarfile.TarInfo(name="%s/%s/metadata.txt" % (directory, dataset))
         tarobj.mode = 0644
