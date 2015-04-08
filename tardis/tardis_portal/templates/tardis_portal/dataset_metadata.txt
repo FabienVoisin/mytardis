@@ -15,24 +15,31 @@ Analysed using: {{ dataset.analysis.package }} version {{ dataset.analysis.packa
 
 From source: {{ i.sequence.library.extract.sample.source }}, sample {{ i.sequence.library.extract.sample }}
 
-Extraction: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %})
+Extraction: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %}) ({{ i.sequence.library.extract.date|date:"c"}})
 
 ## Library
+Date: {{ i.sequence.library.date|date:"c" }}
 Type of material: {{ i.sequence.library.get_source_display }}
-Layout: {{ i.sequence.library.get_layout_display }}
+Library layout: {{ i.sequence.library.get_layout_display }}
+Type of library: {{ i.sequence.library.type }}
 Construction: {{ i.sequence.library.protocol_note }} ({%filter striptags%}{% filter linkify_pubid %}{{ i.sequence.library.protocol_ref }}{% endfilter %}{%endfilter%})
-{% if i.sequence.library.repair_method %}Repair method: {{ i.sequence.library.repair_method }}{% endif %}
-{% if i.sequence.library.enrich_method %}Enrich method: {{ i.sequence.library.enrich_method }}{%endif%}
+Repair method: {{ i.sequence.library.repair_method }}
+Enrich method: {{ i.sequence.library.enrich_method }}
 {% if i.sequence.library.enrich_target %}Enrich target: {{i.sequence.library.get_enrich_target_display}}{%endif%}
+{% if i.sequence.library.enrich_target_subfrag %}Target subfragment: {{ i.sequence.library.enrich_target_subfrag }}{% endif %}
 {% if i.sequence.library.amp_method %}Target amplified using: {{ i.sequence.library.amp_method }}{% endif %}
 
 ## Sequence
+Date: {{ i.sequence.date|date:"c" }}
+Sequenced at: {{ i.sequence.centre }}
 Sequencing method: {{ i.sequence.method }} ({{ i.sequence.get_method_display }})
 Sequencer used: {{ i.sequence.tech }} (chemistry version {{i.sequence.tech_chem}})
 Sequencing options: {{ i.sequence.tech_options }}
-{% if i.sequence.demulti_prog %}Demultiplexed using: {{ i.sequence.demulti_prog }} version {{ i.sequence.demulti_prog_ver }} with options {{ i.sequence.demulti_prog_opt }}{%endif%}
+Output format: {{ i.sequence.fileformat }}
+Quality scale: {{ i.sequence.qualscale }}
 {% if i.sequence.error_rate %}Estimated error rate: 1 x 10^{{i.sequence.error_rate}}{% endif %}
 {% if i.sequence.error_method %}Error rate estimated using: {{ i.sequence.error_method}}{% endif %}
+{% if i.sequence.demulti_prog %}Demultiplexed using: {{ i.sequence.demulti_prog }} version {{ i.sequence.demulti_prog_ver }} with options {{ i.sequence.demulti_prog_opt }}{%endif%}
 
 ## Processing
 Processed using: {{ i.package }} version {{ i.package_ver }}
@@ -55,21 +62,28 @@ Organism: {{ source.organism }} (NCBI taxonomy ID {{ source.organism.id }})
 Source details: {{ source.source_details }}
 Gender: {{ source.get_gender_display }}
 Age: {{ source.get_age_cat_display }}
-Age range: {% if source.age_range %}{{ source.age_range }}{% endif %}
-
+{% if source.age_range %}Age range: {{ source.age_range }}{% endif %}
+{% if source.env_biome %}Environmental biome: {{ source.env_biome }}{% endif %}
+{% if source.env_feature %}Environmental feature: {{ source.env_feature }}{% endif %}
+{% if source.env_material %}Environmental material: {{ source.env_material }}{% endif %}
 Continent: {{ source.get_geoloc_continent_display }}
 Country: {{ source.geoloc_country }}
-Locale: {{ source.geoloc_locale }}
-{%if source.geoloc_lat or source.geoloc_lon %}Lat/lon: {{source.geoloc_lat}}, {{source.geoloc_lon}}{%endif%}
-Biome: {{ source.env_biome }}
-Env feature: {{ source.env_feature }}
+{% if source.geoloc_locale %}Locale: {{ source.geoloc_locale }}{% endif %}
+{% if source.geoloc_lat and source.geoloc_lon %}Lat/lon: {{ source.geoloc_lat }}, {{ source.geoloc_lon }}{% endif %}
+{% if source.geo_depth %}Depth: {{ source.geo_depth}}m below surface{% endif %}
+{% if source.geo_altitude %}Altitude: {{ source.geo_altitude }}m above sea level{% endif %}
+{% if source.geo_elev %}Elevation: {{ source.geo_elev }}m above mean sea level{% endif %}
+{% if source.period %}Technological period: {{ source.period }}{% endif %}
 {% if source.carbondate_id %}Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} ± {{ source.carbondate_error }}{% endif %}
+{% if source_notes %}Source notes: {{ source_notes }}{% endif %}
 
 {% for sample in samples %}{% if sample in source.sample_set.all %}## {{ sample }}
 
 Collection date: {{ sample.date|date:"c" }}
+Organism: {{ sample.organism }} (NCBI taxonomy ID {{ sample.organism.id }})
+{% if sample.env_package %}Environmental package: {{ sample.get_env_package_display }}{% endif %}
 Sample category: {{ sample.get_sample_cat_display }}
 Sample details: {{ sample.sample_details }}
-Environmental package: {{ sample.get_env_package_display }}
+{% if sample.sample_notes %}Sample notes: {{ sample.sample_notes }}{% endif %}
 {% endif %}{% endfor %}
 {% endfor %}
