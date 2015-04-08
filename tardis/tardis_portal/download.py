@@ -415,6 +415,10 @@ def _streaming_tar_thread(directory, downloads, out):
             from tardis.tardis_portal.ands_doi import DatasetDOIService
             context['doi'] = DatasetDOIService(dataset).get_doi()
             context['doi_exp'] = dataset.experiment
+        if hasattr(settings, 'SITE_LONGTITLE') and settings.SITE_LONGTITLE:
+            context['site_longtitle'] = settings.SITE_LONGTITLE
+        else:
+            context['site_longtitle'] = "MyTardis"
         from django.template.loader import render_to_string
         metadata = render_to_string('tardis_portal/dataset_metadata.txt', context).encode("utf8")
 
