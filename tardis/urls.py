@@ -154,6 +154,8 @@ ajax_urls = patterns(
      'display_datafile_details'),
     (r'^delete_datafile/(?P<dataset_id>\d+)/$', #POST form with all selected files
         'delete_datafile'),
+    (r'^get_datafile_urls/(?P<dataset_id>\d+)/$',
+        'get_datafile_urls'),
     (r'^dataset_metadata/(?P<dataset_id>\d+)/$', 'retrieve_dataset_metadata'),
     (r'^experiment_metadata/(?P<experiment_id>\d+)/$',
         'retrieve_experiment_metadata'),
@@ -165,6 +167,8 @@ ajax_urls = patterns(
     (r'^upload_files/(?P<dataset_id>\d+)/$', 'upload_files'),
     (r'^import_staging_files/(?P<dataset_id>\d+)/$', 'import_staging_files'),
     (r'^list_staging_files/(?P<dataset_id>\d+)/$', 'list_staging_files'),
+    (r'^get_dataset_urls/(?P<experiment_id>\d+)/$',
+        'get_dataset_urls'),
     (r'^experiment/(?P<experiment_id>\d+)/description$',
      'experiment_description'),
     (r'^experiment/(?P<experiment_id>\d+)/datasets$', 'experiment_datasets'),

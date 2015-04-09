@@ -230,18 +230,18 @@ $('#modal-metadata .submit-button').click(function() {
 </script>
 
 <div class="page-header">
-  <h4>Experiment</h4>
+  <h4>Study</h4>
   {% if has_write_permissions and not experiment.public and has_change_permissions %}
   <div class="pull-right">
-    <a class="btn btn-mini btn-warning" title="Edit Experiment"
+    <a class="btn btn-mini btn-warning" title="Edit Study"
        href="{{ experiment.get_edit_url }}">
       <i class="icon-pencil"></i>
-      Edit Experiment
+      Edit Study
     </a>
     {% if has_delete_permissions %}
-     <a class="btn btn-mini btn-danger" title="Delete Experiment" id="delete_experiment">
+     <a class="btn btn-mini btn-danger" title="Delete Study" id="delete_experiment">
       <i class="icon-remove"></i>
-      Delete Experiment
+      Delete Study
      </a>
     {% endif %}
   </div>
@@ -298,6 +298,22 @@ $('#modal-metadata .submit-button').click(function() {
     {% include "tardis_portal/ajax/experiment_datasets.html" %}
   </div>
 </div>
+	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px;">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="urlsModalLabel"></h4>
+	      </div>
+	      <div class="modal-body" id="urlsModalMain">
+	        
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+  	</div>
 
 
 <script type="text/javascript">
@@ -457,7 +473,7 @@ var datasetTiles = (function() {
 
 {% if has_write_permissions and not experiment.public and has_change_permissions and has_delete_permissions %}
 $("#delete_experiment").click(function() {
-    if (confirm("Are you sure you want to delete the experiment and its datasets?")) {
+    if (confirm("Are you sure you want to delete the study and its datasets?")) {
         $.ajax({
           headers: {'X-CSRFToken': '{{csrf_token}}'},
           type: 'DELETE',
@@ -473,6 +489,92 @@ $("#delete_experiment").click(function() {
     }
 });
 {% endif %}
+
+function delete_dataset(dataset_id) {
+    if (confirm("Are you sure you want to delete the dataset and its files?")) {
+        $.ajax({
+          headers: {'X-CSRFToken': '{{csrf_token}}'},
+          type: 'DELETE',
+          url: '/ajax/delete_dataset/'+dataset_id,
+          success: function(data) {
+                  if (data.status == "success") {
+                      window.location = "{% url 'tardis.tardis_portal.views.view_experiment' experiment.id %}"
+                  } else {
+                      alert("Can't delete: " + data.message);
+                  }
+            }
+        });
+    }
+}
+$('#show_dataset_urls').click(function() {
+   $.ajax({
+     headers: {'X-CSRFToken': '{{csrf_token}}'},
+     type: 'GET',
+     url: '/ajax/get_dataset_urls/{{ experiment.id }}/',
+     data: $("#dataset-download").serialize(),
+     success: function(data) {
+    	 console.log(data.urls);
+    	 htmlStr="";
+    	 url_prefix=$(location).attr('protocol')+"//"+$(location).attr('hostname');
+    	 if ($(location).attr('port'))
+    		 url_prefix+=":"+$(location).attr('port');
+    	 console.log(url_prefix);
+    	 $.each(data.urls, function(key, val){
+    		 console.log(val);
+    		 htmlStr+="<span>"+url_prefix+val+"</span><br>";
+    	 });
+    	 $('#urlsModalLabel').html('Download URLs');
+    	 $('#urlsModalMain').html(htmlStr);
+    	 $('#urlsDialog').modal('show');
+     }
+   });
+});
+
+$(window).keydown(function(event) {
+	if ($("#urlsDialog").data('modal').isShown) {
+		if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 
+			  //console.log("Hey! Ctrl+a event captured!");
+			  //console.log($('#urlsModalMain'));
+			  //$('#urlsModalMain').selText();
+			  //SelectText('urlsModalMain');
+			  selectElementText(document.getElementById("urlsModalMain"));
+			  event.preventDefault(); 
+			}
+	}
+});
+function selectElementText(el, win) {
+    win = win || window;
+    var doc = win.document, sel, range;
+    if (win.getSelection && doc.createRange) {
+        sel = win.getSelection();
+        range = doc.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (doc.body.createTextRange) {
+        range = doc.body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+    }
+}
+
+function SelectText(element) {
+    var doc = document
+        , text = doc.getElementById(element)
+        , range, selection
+    ;    
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();        
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
 </script>
 
 {% endblock %}

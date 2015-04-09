@@ -19,7 +19,7 @@ def dataset_tiles(experiment, include_thumbnails):
 
     # Get data to template (used by JSON service too)
     # ?? doesn't seem to be used by JSON service at all
-    data = (get_dataset_info(ds, bool(include_thumbnails),
+    data = (get_dataset_info(ds, experiment, bool(include_thumbnails),
                              exclude=['datasettype', 'size'])
             for ds in datasets)
 

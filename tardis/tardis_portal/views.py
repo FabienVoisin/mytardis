@@ -126,7 +126,7 @@ from tardis.tardis_portal.models.jti import JTI
 logger = logging.getLogger(__name__)
 
 
-def get_dataset_info(dataset, include_thumbnail=False, exclude=None):  # too complex # noqa
+def get_dataset_info(dataset, experiment, include_thumbnail=False, exclude=None):  # too complex # noqa
     obj = model_to_dict(dataset)
     if exclude is None or 'datafiles' not in exclude or 'file_count' \
        not in exclude:
@@ -160,6 +160,9 @@ def get_dataset_info(dataset, include_thumbnail=False, exclude=None):  # too com
                 if ns in schemas:
                     obj["datasettype"] = schemas[ns].name
                     break
+    if experiment:
+        obj['locked']=experiment.locked
+    logger.info('obj %s' % obj)
     return obj
 
 
@@ -480,7 +483,7 @@ def experiment_index(request):
 def experiment_list_mine(request):
 
     c = Context({
-        'subtitle': 'My Experiments',
+        'subtitle': 'My Studies',
         'can_see_private': True,
         'experiments': authz.get_owned_experiments(request)
                             .order_by('-update_time'),
@@ -495,7 +498,7 @@ def experiment_list_mine(request):
 def experiment_list_shared(request):
 
     c = Context({
-        'subtitle': 'Shared Experiments',
+        'subtitle': 'Shared Studies',
         'can_see_private': True,
         'experiments': authz.get_shared_experiments(request)
                             .order_by('-update_time'),
@@ -511,7 +514,7 @@ def experiment_list_public(request):
     private_filter = Q(public_access=Experiment.PUBLIC_ACCESS_NONE)
 
     c = Context({
-        'subtitle': 'Public Experiments',
+        'subtitle': 'Public Studies',
         'can_see_private': False,
         'experiments': Experiment.objects.exclude(private_filter)
                                          .order_by('-update_time'),
@@ -844,6 +847,27 @@ def experiment_datasets(request, experiment_id):
         request, experiment_id=experiment_id,
         template_name='tardis_portal/ajax/experiment_datasets.html')
 
+@never_cache
+@authz.experiment_access_required
+def get_dataset_urls(request, experiment_id):
+    experiment = Experiment.objects.get(id=experiment_id)
+    urls=[]
+    logger.info('request.GET %s' % request.__dict__)
+    logger.info('comp type %s' % request.GET['comptype'])
+    if 'dataset' in request.GET:
+        if len(request.GET.getlist('dataset')) > 0:
+            datasets = request.GET.getlist('dataset')
+            for ds in datasets:
+                dobj = Dataset.objects.get(id=ds)
+                urls.append(dobj.get_download_urls()[request.GET['comptype']])
+            return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"urls":[]}), mimetype='application/json')
+    else:
+        datasets = experiment.datasets.all()
+        for ds in datasets:
+            urls.append(ds.get_download_urls()[request.GET['comptype']])
+        return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
 
 @never_cache  # too complex # noqa
 @authz.dataset_access_required
@@ -881,7 +905,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
     # Update this experiment to add it to more experiments
     if request.method == 'PUT':
         # Obviously you can't do this if you don't own the dataset
-        if not can_update():
+        if not can_update() or experiment.locked == True:
             return HttpResponseForbidden()
         data = json.loads(request.body)
         # Detect if any experiments are new, and add the dataset to them
@@ -901,7 +925,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
                 return HttpResponseMethodNotAllowed(allow="GET PUT")
             return HttpResponseMethodNotAllowed(allow="GET")
         # Cannot remove if this is the last experiment
-        if not can_delete() or dataset.experiments.count() < 2:
+        if not can_delete() or dataset.experiments.count() < 2 or experiment.locked:
             return HttpResponseForbidden()
         dataset.experiments.remove(experiment)
         dataset.save()
@@ -909,7 +933,7 @@ def dataset_json(request, experiment_id=None, dataset_id=None):
     has_download_permissions = \
         authz.has_dataset_download_access(request, dataset_id)
 
-    return HttpResponse(json.dumps(get_dataset_info(dataset,
+    return HttpResponse(json.dumps(get_dataset_info(dataset, experiment,
                                                     has_download_permissions)),
                         mimetype='application/json')
 
@@ -926,7 +950,7 @@ def experiment_datasets_json(request, experiment_id):
         authz.has_experiment_download_access(request, experiment_id)
 
     objects = [
-        get_dataset_info(ds, include_thumbnail=has_download_permissions,
+        get_dataset_info(ds, experiment, include_thumbnail=has_download_permissions,
                          exclude=['datafiles'])
         for ds in experiment.datasets.all()]
 
@@ -1015,7 +1039,7 @@ def create_experiment(request,
 
     d = ';' #delimiter used for separating authors. comma is used for separating first and last names
     c = Context({
-        'subtitle': 'Create Experiment',
+        'subtitle': 'Create Study',
         'user_id': request.user.id,
         })
 
@@ -1041,7 +1065,7 @@ def create_experiment(request,
                             aclOwnershipType=ObjectACL.OWNER_OWNED)
             acl.save()
 
-            request.POST = {'status': "Experiment Created."}
+            request.POST = {'status': "Study Created."}
             return HttpResponseSeeAlso(reverse(
                 'tardis.tardis_portal.views.view_experiment',
                 args=[str(experiment.id)]) + "#created")
@@ -1075,7 +1099,7 @@ def edit_experiment(request, experiment_id,
     experiment = Experiment.objects.get(id=experiment_id)
     d = ';' #delimiter used for separating authors. comma is used for separating first and last names
 
-    c = Context({'subtitle': 'Edit Experiment',
+    c = Context({'subtitle': 'Edit Study',
                  'experiment_id': experiment_id, })
 
     if request.method == 'POST':
@@ -1086,7 +1110,7 @@ def edit_experiment(request, experiment_id,
             experiment.created_by = request.user
             full_experiment.save_m2m()
 
-            request.POST = {'status': "Experiment Saved."}
+            request.POST = {'status': "Study Saved."}
             return HttpResponseSeeAlso(reverse(
                 'tardis.tardis_portal.views.view_experiment',
                 args=[str(experiment.id)]) + "#saved")
@@ -1350,7 +1374,7 @@ def control_panel(request):
         experiments = experiments.order_by('title')
 
     c = Context({'experiments': experiments,
-                 'subtitle': 'Experiment Control Panel'})
+                 'subtitle': 'Study Control Panel'})
 
     return HttpResponse(render_response_index(request,
                         'tardis_portal/control_panel.html', c))
@@ -1388,7 +1412,7 @@ def search_experiment(request):
         result['datafile_hit'] = False
         result['experiment_hit'] = True
         results.append(result)
-    c = Context({'header': 'Search Experiment',
+    c = Context({'header': 'Search Study',
                  'experiments': results,
                  'bodyclass': bodyclass})
     url = 'tardis_portal/search_experiment_results.html'
@@ -1419,7 +1443,7 @@ def search_quick(request):
             logger.debug(experiments)
 
     c = Context({'submitted': get, 'experiments': experiments,
-                'subtitle': 'Search Experiments'})
+                'subtitle': 'Search Studies'})
     return HttpResponse(render_response_index(request,
                         'tardis_portal/search_experiment.html', c))
 
@@ -2283,7 +2307,7 @@ def add_experiment_access_user(request, experiment_id, username):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment (id=%d) does not exist.'
+        return HttpResponse('Study (id=%d) does not exist.'
                             % (experiment.id))
 
     acl = ObjectACL.objects.filter(
@@ -2328,7 +2352,7 @@ def remove_experiment_access_user(request, experiment_id, username):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment does not exist')
+        return HttpResponse('Study does not exist')
 
     acl = ObjectACL.objects.filter(
         content_type=experiment.get_ct(),
@@ -2556,7 +2580,7 @@ def add_experiment_access_group(request, experiment_id, groupname):
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
         transaction.rollback()
-        return HttpResponse('Experiment (id=%d) does not exist' %
+        return HttpResponse('Study (id=%d) does not exist' %
                             (experiment_id))
 
     try:
@@ -2611,7 +2635,7 @@ def remove_experiment_access_group(request, experiment_id, group_id):
     try:
         experiment = Experiment.objects.get(pk=experiment_id)
     except Experiment.DoesNotExist:
-        return HttpResponse('Experiment does not exist')
+        return HttpResponse('Study does not exist')
 
     acl = ObjectACL.objects.filter(
         content_type=experiment.get_ct(),
@@ -2952,6 +2976,26 @@ def add_datafile_par(request, datafile_id):
                        otype="datafile", stype=Schema.DATAFILE)
     else:
         return return_response_error(request)
+
+@authz.dataset_access_required
+def get_datafile_urls(request, dataset_id):
+    dataset = Dataset.objects.get(id=dataset_id)
+    urls=[]
+    #logger.debug('request.GET %s' % request.__dict__)
+    if 'datafile' in request.GET:
+        if len(request.GET.getlist('datafile')) > 0:
+            datafiles = request.GET.getlist('datafile')
+            for df in datafiles:
+                dobj = DataFile.objects.get(id=df)
+                urls.append(dobj.get_download_url())
+            return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps({"urls":[]}), mimetype='application/json')
+    else:
+        datafiles = dataset.datafile_set.all()
+        for df in datafiles:
+            urls.append(df.get_download_url())
+        return HttpResponse(json.dumps({"urls":urls}), mimetype='application/json')
 
 @login_required
 def delete_datafile(request, dataset_id):

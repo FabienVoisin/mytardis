@@ -2,7 +2,7 @@
 <form id="other-experiment-selection" class="form-horizontal">{% csrf_token %}
   <fieldset>
     <div class="control-group">
-      <label class="control-label" for="input01">Experiment</label>
+      <label class="control-label" for="input01">Study</label>
       <div class="controls">
         <select name="experiment_id">
           {% for experiment in experiments %}
@@ -15,8 +15,8 @@
 </form>
 
 <p class="help-text">
-  <strong>Instructons:</strong> Using the above list, select an experiment to copy from,
-  then drag datasets to the right to associate them with the current experiment.
+  <strong>Instructons:</strong> Using the above list, select a study to copy from,
+  then drag datasets to the right to associate them with the current study.
 </p>
 
 <div id="other-experiment-datasets"></div>
@@ -60,6 +60,6 @@ var otherDatasetTiles;
 
 {% else %}
 <div class="alert">
-  <p>You do not currently own any other experiments or this experiment is locked.</p>
+  <p>You do not currently own any other studies or this study is locked.</p>
 </div>
 {% endif %}

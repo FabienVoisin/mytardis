@@ -260,9 +260,9 @@
         <script type="text/javascript">
         $(function() {
           if(window.location.hash == '#created') {
-            $('#status-alert .message').text('Experiment Created');
+            $('#status-alert .message').text('Study Created');
           } else if(window.location.hash == '#saved') {
-              $('#status-alert .message').text('Experiment Saved');
+              $('#status-alert .message').text('Study Saved');
           } else if(window.location.hash.indexOf('#error:') == 0) {
 	      showMsg.error(decodeURIComponent(window.location.hash.substr(7)));
 	      window.location.hash = "";

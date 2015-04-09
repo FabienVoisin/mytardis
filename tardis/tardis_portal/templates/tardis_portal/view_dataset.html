@@ -372,7 +372,7 @@ $('#modal-metadata .submit-button').live('click', function() {
   {% if from_experiment %}
   <h4 style="padding-top: 4px">
       <small>
-      From the experiment:
+      From the study:
       <a
          class="experiment-link"
          href="{{ from_experiment.get_absolute_url }}">
@@ -384,7 +384,7 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% if other_experiments|length == 1 %}
         <h4 style="padding-top: 4px">
             <small>
-            From the experiment:
+            From the study:
         {% for other_experiment in other_experiments %}
             <a
                class="experiment-link"
@@ -401,7 +401,7 @@ $('#modal-metadata .submit-button').live('click', function() {
   {% if dataset.immutable %}
   <h4 style="padding-top: 4px">
       <small>
-      This experiment has been set to immutable on creation (cannot be modified)
+      This study has been set to immutable on creation (cannot be modified)
       </small>
   </h4>
   {% endif %}
@@ -481,10 +481,10 @@ $('#modal-metadata .submit-button').live('click', function() {
         {% include "tardis_portal/doi/citation.html" with rtype="Dataset" %}
     </div>
     <div id="other-experiments-pane">
-        <h3>Other experiments</h3>
+        <h3>Other Studies</h3>
         {% if other_experiments|length > 1 %}
         <div>
-        <em>This dataset also appears in these experiments:</em>
+        <em>This dataset also appears in these studies.</em>
         </div>
         <br/>
         <div id="other-experiments-content">
@@ -501,7 +501,7 @@ $('#modal-metadata .submit-button').live('click', function() {
                 {% endfor %}
         </div>
         {% else %}
-        <em>This dataset doesn't appear in any other experiments.</em>
+        <em>This dataset doesn't appear in any other studies.</em>
         {% endif %}
     </div>
   </div>
@@ -534,7 +534,7 @@ $('#modal-metadata .submit-button').live('click', function() {
       {% for p in protocol %}
         {% for o in organization %}
           <a class="btn btn-primary btn-mini" href="{{p.1}}{{o}}"
-             title="Download Entire Experiment as {{p.0|upper}} with {{o}} organization">
+             title="Download Entire Study as {{p.0|upper}} with {{o}} organization">
             <i class="icon-download-alt"></i>
             {% if o == default_organization %}
             {{p.0|upper}}
@@ -590,6 +590,22 @@ margin-top: 20px;
       </div>
   </div>
 </div>
+	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px;">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="urlsModalLabel"></h4>
+	      </div>
+	      <div class="modal-body" id="urlsModalMain">
+	        
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+  	</div>
 
 {% block finalscript %}
 <script type="text/javascript">
@@ -758,6 +774,29 @@ $("#delete_dataset").click(function() {
         });
     }
 });
+$(window).keydown(function(event) {
+	if ($("#urlsDialog").data('modal').isShown) {
+		if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 
+		  selectElementText(document.getElementById("urlsModalMain"));
+		  event.preventDefault(); 
+		}
+	}
+});
+function selectElementText(el, win) {
+    win = win || window;
+    var doc = win.document, sel, range;
+    if (win.getSelection && doc.createRange) {
+        sel = win.getSelection();
+        range = doc.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (doc.body.createTextRange) {
+        range = doc.body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+    }
+}
 {% endif %}
 </script>
 {% endblock finalscript %}
