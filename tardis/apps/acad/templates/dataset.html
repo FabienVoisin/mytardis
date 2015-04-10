@@ -3,41 +3,48 @@
 
 <ul class="nav nav-tabs">
     {% for i in dataset.analysis.processing_set.all %}
-    <li {% if i == dataset.analysis.processing_set.all.0 %}class="active"{%endif%}><a href="#{{i.id}}" data-toggle="tab">{{i.id}}</a></li>
+    <li {% if forloop.first %}class="active"{% endif %}><a href="#{{i.id}}" data-toggle="tab">{{i.id}}</a></li>
     {% endfor %}
 </ul>
 
 <div class="tab-content">
     {% for i in dataset.analysis.processing_set.all %}
-    <div role="tabpanel" class="tab-pane {% if i == dataset.analysis.processing_set.all.0 %}active{% endif %}" id="{{ i.id }}">
+    <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ i.id }}">
         {# Source #}
         <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>, sample {{ i.sequence.library.extract.sample }}</p>
 
         {# Extract #}
         <p>Extraction: {{ i.sequence.library.extract.protocol_note }}
-        ({% filter linkify_pubid %}{{ i.sequence.library.extract.protocol_ref }}{% endfilter %})</p>
+        ({% filter linkify_pubid %}{{ i.sequence.library.extract.protocol_ref }}{% endfilter %}) ({{ i.sequence.library.extract.date|date:"c"}})</p>
 
         {# Library #}
         <h4>Library</h4>
         <dl>
+        <dt>Date:</dt> <dd>{{ i.sequence.library.date|date:"c" }}</dd>
         <dt>Type of material:</dt> <dd>{{ i.sequence.library.get_source_display }}</dd>
         <dt>Layout:</dt> <dd>{{ i.sequence.library.get_layout_display }}</dd>
+        <dt>Type of library:</dt> <dd>{{ i.sequence.library.type }}</dd>
         <dt>Construction:</dt> <dd>{{ i.sequence.library.protocol_note }} ({% filter linkify_pubid %}{{ i.sequence.library.protocol_ref }}{% endfilter %})</dd>
-        {% if i.sequence.library.repair_method %}<dt>Repair method:</dt> <dd>{{ i.sequence.library.repair_method }}</dd>{%endif%}
-        {% if i.sequence.library.enrich_method %}<dt>Enrich method:</dt> <dd>{{ i.sequence.library.enrich_method }}</dd>{%endif%}
+        <dt>Repair method:</dt> <dd>{{ i.sequence.library.repair_method }}</dd>
+        <dt>Enrich method:</dt> <dd>{{ i.sequence.library.enrich_method }}</dd>
         {% if i.sequence.library.enrich_target %}<dt>Enrich target:</dt> <dd>{{i.sequence.library.get_enrich_target_display}}</dd>{%endif%}
+        {% if i.sequence.library.enrich_target_subfrag %}<dt>Target subfragment:</dt> <dd>{{ i.sequence.library.enrich_target_subfrag }}</dd>{% endif %}
         {% if i.sequence.library.amp_method %}<dt>Target amplified using:</dt> <dd>{{ i.sequence.library.amp_method }}</dd>{% endif %}
         </dl>
 
         {# Sequence #}
         <h4>Sequence</h4>
         <dl>
+            <dt>Date:</dt> <dd>{{ i.sequence.library.date|date:"c" }}</dd>
+            <dt>Sequenced at:</dt> <dd>{{ i.sequence.centre }}</dd>
             <dt>Sequencing method:</dt> <dd>{{ i.sequence.method }} ({{ i.sequence.get_method_display }})</dd>
             <dt>Sequencer used:</dt> <dd>{{ i.sequence.tech }} (chemistry version {{i.sequence.tech_chem}})</dd>
             <dt>Sequencing options:</dt> <dd> {{ i.sequence.tech_options }}</dd>
-            <dt>Demultiplexed using:</dt> <dd>{{ i.sequence.demulti_prog }} version {{ i.sequence.demulti_prog_ver }} with options <code>{{ i.sequence.demulti_prog_opt }}</code></dd>
+            <dt>Output format:</dt> <dd>{{ i.sequence.fileformat }}</dd>
+            <dt>Quality scale:</dt> <dd>{{ i.sequence.qualscale }}</dd>
             {% if i.sequence.error_rate %}<dt>Estimated error rate:</dt> <dd> 1 x 10<sup>{{i.sequence.error_rate}}</sup></dd>{% endif %}
             {% if i.sequence.error_method %}<dt>Error rate estimated using:</dt> <dd>{{ i.sequence.error_method}}</dd>{% endif %}
+            {% if i.sequence.demulti_prog %}<dt>Demultiplexed using:</dt> <dd>{{ i.sequence.demulti_prog }} version {{ i.sequence.demulti_prog_ver }} with options <code>{{ i.sequence.demulti_prog_opt }}</code></dd>{% endif %}
         </dl>
 
         {# Processing #}
@@ -54,4 +61,4 @@
 </div> <!-- tab-content -->
 
 <h3>Analysis</h3>
-<p>Software package {{ dataset.analysis.package }} ({{ dataset.analysis.package_ver }})</p>
+<p>Analysed using {{ dataset.analysis.package }} version {{ dataset.analysis.package_ver }}</p>
