@@ -75,7 +75,7 @@ Country: {{ source.geoloc_country }}
 {% if source.geo_elev %}Elevation: {{ source.geo_elev }}m above mean sea level{% endif %}
 {% if source.period %}Technological period: {{ source.period }}{% endif %}
 {% if source.carbondate_id %}Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} ± {{ source.carbondate_error }}{% endif %}
-{% if source_notes %}Source notes: {{ source_notes }}{% endif %}
+{% if source.source_notes %}Source notes: {{ source.source_notes }}{% endif %}
 
 {% for sample in samples %}{% if sample in source.sample_set.all %}## {{ sample }}
 
