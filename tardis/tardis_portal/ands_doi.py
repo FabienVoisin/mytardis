@@ -199,7 +199,7 @@ class ExperimentDOIService(DOIService):
     def _update_datasets(self):
         datasets = self.obj.datasets.all()
         for ds in datasets:
-            doi_service = DatasetDOIService(ds, self.obj)
+            doi_service = DatasetDOIService(ds)
             doi = doi_service.get_doi()
             doi_url = settings.DOI_BASE_URL + ds.get_absolute_url()
             doi_service.update_doi(doi, doi_url)
