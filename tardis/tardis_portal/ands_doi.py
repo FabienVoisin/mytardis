@@ -56,6 +56,24 @@ class DOIService(object):
             self._save_doi(doi)
         return doi
 
+    def update_doi(self, doi, url):
+        base_url = "https://services.ands.org.au/doi/1.1/update.json/" # put me in settings.py eventually
+        app_id = settings.DOI_APP_ID
+        mint_url = "%s?app_id=%s&doi=%s&url=%s" % (base_url, app_id, doi, url)
+        datacite_xml = self._datacite_xml()
+        post_data = {'xml': datacite_xml}
+
+        if hasattr(settings, 'DOI_DEBUG_XML') and settings.DOI_DEBUG_XML:
+            logger.info("Updating DOI %s with DataCite XML: %s" % (doi, datacite_xml))
+
+        if hasattr(settings, 'DOI_SHARED_SECRET') and settings.DOI_SHARED_SECRET:
+            post_data['shared_secret'] = settings.DOI_SHARED_SECRET
+
+        logger.info("I am attempting to update DOI")
+        doi_response = requests.post(mint_url, data = post_data)
+        doi = DOIService._read_doi(doi_response.json(), "MT002")
+        return doi
+
     def _mint_doi(self, url):
         base_url = settings.DOI_MINT_URL
         app_id = settings.DOI_APP_ID
@@ -70,7 +88,7 @@ class DOIService(object):
             post_data['shared_secret'] = settings.DOI_SHARED_SECRET
 
         doi_response = requests.post(mint_url, data = post_data)
-        doi = DOIService._read_doi(doi_response.json())
+        doi = DOIService._read_doi(doi_response.json(), "MT001")
         if hasattr(settings, 'DOI_RELATED_INFO_ENABLE') and settings.DOI_RELATED_INFO_ENABLE:
             import tardis.apps.related_info.related_info as ri
             rih = ri.RelatedInfoHandler(self.obj.id)
@@ -85,8 +103,8 @@ class DOIService(object):
         return doi
 
     @staticmethod
-    def _read_doi(rj):
-        if rj['response']['responsecode'] == 'MT001':
+    def _read_doi(rj, responsecode):
+        if rj['response']['responsecode'] == responsecode:
             return rj['response']['doi']
         else:
             logger.error('unrecognised response: %s' % json.dumps(rj, sort_keys=True, indent=2, separators=(",", ": ")))
@@ -109,6 +127,12 @@ class ExperimentDOIService(DOIService):
         doi = super(ExperimentDOIService, self).get_or_mint_doi(url)
         if doi:
             self._mint_datasets()
+        return doi
+
+    def update_doi(self, doi, url):
+        doi = super(ExperimentDOIService, self).update_doi(doi, url)
+        if doi:
+            self._update_datasets()
         return doi
 
     def _save_doi(self, doi):
@@ -159,6 +183,8 @@ class ExperimentDOIService(DOIService):
         c['num_datasets'] = ex.datasets.all().count()
         c['num_files'] = ex.get_datafiles().count()
         c['data_size'] = ex.get_size()
+        if self.get_doi():
+            c['doi'] = self.get_doi()
 
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml
@@ -169,6 +195,14 @@ class ExperimentDOIService(DOIService):
             doi_url = settings.DOI_BASE_URL + ds.get_absolute_url()
             doi_service = DatasetDOIService(ds, self.obj)
             doi_service.get_or_mint_doi(doi_url)
+
+    def _update_datasets(self):
+        datasets = self.obj.datasets.all()
+        for ds in datasets:
+            doi_service = DatasetDOIService(ds, self.obj)
+            doi = doi_service.get_doi()
+            doi_url = settings.DOI_BASE_URL + ds.get_absolute_url()
+            doi_service.update_doi(doi, doi_url)
 
 class DatasetDOIService(DOIService):
     """
@@ -249,6 +283,8 @@ class DatasetDOIService(DOIService):
             c['rights_url'] = ex.license.url
         c['num_files'] = self.obj.datafile_set.count()
         c['data_size'] = self.obj.get_size()
+        if self.get_doi():
+            c['doi'] = self.get_doi()
 
         doi_xml = render_to_string(template, context_instance=c)
         return doi_xml

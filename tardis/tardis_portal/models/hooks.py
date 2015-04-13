@@ -66,7 +66,12 @@ def ensure_doi_exists(sender, **kwargs):
         doi_url = settings.DOI_BASE_URL + experiment.get_absolute_url()
         from tardis.tardis_portal.ands_doi import ExperimentDOIService
         doi_service = ExperimentDOIService(experiment)
-        doi_service.get_or_mint_doi(doi_url)
+        if doi_service.get_doi() and experiment.public_access == Experiment.PUBLIC_ACCESS_FULL:
+            doi = doi_service.get_doi()
+            logger.info("update_doi is happening")
+            doi_service.update_doi(doi, doi_url)
+        else:
+            doi_service.get_or_mint_doi(doi_url)
 
 ### ApiKey hooks
 if getattr(settings, 'AUTOGENERATE_API_KEY', False):
