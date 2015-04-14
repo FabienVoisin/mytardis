@@ -69,9 +69,9 @@ class DOIService(object):
         if hasattr(settings, 'DOI_SHARED_SECRET') and settings.DOI_SHARED_SECRET:
             post_data['shared_secret'] = settings.DOI_SHARED_SECRET
 
-        logger.info("I am attempting to update DOI")
         doi_response = requests.post(mint_url, data = post_data)
         doi = DOIService._read_doi(doi_response.json(), "MT002")
+        logger.info("Updated metadata for DOI %s" % doi)
         return doi
 
     def _mint_doi(self, url):
