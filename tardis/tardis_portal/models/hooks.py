@@ -71,7 +71,8 @@ def ensure_doi_exists(sender, **kwargs):
             we are going from public (md) -> public (full) and need to update
             DOI metadata to reflect change in licensing status """
             doi = doi_service.get_doi()
-            doi_service.update_doi(doi, doi_url)
+            logger.info("update_doi would be called here")
+            #doi_service.update_doi(doi, doi_url)
         else:
             """ Otherwise, get or mint DOI """
             doi_service.get_or_mint_doi(doi_url)
