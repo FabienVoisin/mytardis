@@ -83,6 +83,11 @@ class DataFile(models.Model):
         ordering = ['filename']
         unique_together = ['dataset', 'directory', 'filename', 'version']
 
+    def delete(self):
+        if self.dataset.immutable:
+            raise Exception('Parent dataset is immutable')
+        super(DataFile, self).delete()
+
     @classmethod
     def sum_sizes(cls, datafiles):
         """

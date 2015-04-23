@@ -184,7 +184,7 @@ $("#delete_selected").click(function() {
 	      if (data.status == "success") {
 		  window.location.reload();
 	      } else {
-		  alert(data.message);
+		  alert("Can't delete: " + data.message);
 	      }
             }
         });
