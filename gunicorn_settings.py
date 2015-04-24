@@ -1,8 +1,7 @@
-import multiprocessing
 import os
 
-workers = multiprocessing.cpu_count() * 2 + 1
-worker_class = "gevent"
-timeout = 1800  # half an hour
+workers = 16
+worker_class = "sync"
+timeout = 24 * 60 * 60
 chdir = os.path.dirname(__file__)
 proc_name = "mytardis_gunicorn"
