@@ -437,7 +437,7 @@ def _external_streaming_tar(filename, directory, datafiles):
     pipe_read_file = os.fdopen(pipe_read, "rb")
     pipe_write_file = os.fdopen(pipe_write, "wb")
     threading.Thread(target=_streaming_tar_thread, args=(directory, downloads, pipe_write_file,)).start()
-    response = StreamingHttpResponse(pipe_read_file, content_type="application/tar")
+    response = StreamingHttpResponse(FileWrapper(pipe_read_file, 512 * 1024), content_type="application/x-tar")
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
 
