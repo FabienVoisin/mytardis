@@ -352,6 +352,9 @@ def about(request):
     return HttpResponse(render_response_index(request,
                         'tardis_portal/about.html', c))
 
+def repositoryguidelines(request):
+    c = Context({'subtitle': 'Repository guidelines',})
+    return HttpResponse(render_response_index(request, 'tardis_portal/repositoryguidelines.html', c))
 
 @login_required
 def my_data(request):
