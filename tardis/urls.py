@@ -34,6 +34,7 @@ core_urls = patterns(
     url(r'^mydata/$', 'my_data', name='mydata'),
     url(r'^public_data/', 'public_data', name='public_data'),
     (r'^about/$', 'about'),
+    (r'^about/repositoryguidelines/$', 'repositoryguidelines'),
     (r'^stats/$', 'stats'),
     (r'^help/$', 'user_guide'),
     url(r'^dataset_metadata/(?P<dataset_id>\w+)/$', 'view_dataset_metadata', name='view_dataset_metadata'),
