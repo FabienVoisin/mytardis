@@ -3444,6 +3444,9 @@ def user_guide(request):
     return HttpResponse(render_response_index(request,
                         'tardis_portal/user_guide.html', c))
 
+def help(request):
+    c = Context({'subtitle': 'Help',})
+    return HttpResponse(render_response_index(request, 'tardis_portal/help.html', c))
 
 @csrf_exempt
 def rcauth(request):
