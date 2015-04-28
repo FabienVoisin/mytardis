@@ -66,16 +66,7 @@ def ensure_doi_exists(sender, **kwargs):
         doi_url = settings.DOI_BASE_URL + experiment.get_absolute_url()
         from tardis.tardis_portal.ands_doi import ExperimentDOIService
         doi_service = ExperimentDOIService(experiment)
-        if doi_service.get_doi() and experiment.public_access == Experiment.PUBLIC_ACCESS_FULL:
-            """ If experiment has a DOI and public access is full, this implies
-            we are going from public (md) -> public (full) and need to update
-            DOI metadata to reflect change in licensing status """
-            doi = doi_service.get_doi()
-            logger.info("update_doi would be called here")
-            #doi_service.update_doi(doi, doi_url)
-        else:
-            """ Otherwise, get or mint DOI """
-            doi_service.get_or_mint_doi(doi_url)
+        doi_service.get_or_mint_doi(doi_url)
 
 ### ApiKey hooks
 if getattr(settings, 'AUTOGENERATE_API_KEY', False):
