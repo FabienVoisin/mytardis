@@ -93,15 +93,16 @@
           {% endblock %}
           <div class="nav-collapse">
             <ul class="nav">
-              <li><a href="{% url 'tardis.tardis_portal.views.index' %}">Home</a></li>
               <li><a href="{% url 'tardis.tardis_portal.views.about' %}">About</a></li>
+              <li><a href="{% url 'tardis.tardis_portal.views.public_data' %}">Studies</a></li>
               {% if navbar_extras %}
               {% for display_name, view_path in navbar_extras.items %}
               <li><a href="{% url view_path %}">{{ display_name }}</a></li>
               {% endfor %}
               {% endif %}
+              {% if is_authenticated %}
               <li><a href="{% url 'tardis.tardis_portal.views.my_data' %}">My Data</a></li>
-              <li><a href="{% url 'tardis.tardis_portal.views.public_data' %}">Public Data</a></li>
+              {% endif %}
               <li><a href="{% url 'tardis.tardis_portal.views.stats' %}">Stats</a></li>
               {% with request|check_if_facility_manager as facility_manager %}
               {% if facility_manager %}
@@ -180,11 +181,11 @@
               </li>
             {% else %}
               {% if registration_enabled %}
+              {% if is_superuser }
               <li>
-                <a href="{% url 'register' %}">
-                  Register
-                </a>
+                <a href="{% url 'register' %}">Add User</a>
               </li>
+              {% endif %}
               {% endif %}
               <li>
                 <a id="login-button" class="btn btn-info" href="{% url 'tardis.tardis_portal.views.login' %}">
