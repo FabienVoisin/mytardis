@@ -389,6 +389,9 @@ urlpatterns = patterns(
     # Jasmine JavaScript Tests
     (r'^jasmine/', include(django_jasmine.urls)),
 
+    # Source view
+    (r'^source/$', 'tardis.apps.acad.views.source_index'),
+    (r'^source/(?P<id>\w+)/$', 'tardis.apps.acad.views.source_detail'),
 )
 
 # Handle static files from /static
