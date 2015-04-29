@@ -181,7 +181,7 @@
               </li>
             {% else %}
               {% if registration_enabled %}
-              {% if is_superuser }
+              {% if is_superuser %}
               <li>
                 <a href="{% url 'register' %}">Add User</a>
               </li>
