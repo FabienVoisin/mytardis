@@ -194,7 +194,7 @@ class AnalysisIndex(indexes.SearchIndex, indexes.Indexable):
     source_age_cat=indexes.MultiValueField(indexed=True, stored=True)
     source_geoloc_continent=indexes.MultiValueField(indexed=True, stored=True)
     source_carbondate_years=indexes.MultiValueField(indexed=True, stored=True)
-    experiment_id=indexes.MultiValueField(indexed=True, stored=True)
+    study_id=indexes.MultiValueField(indexed=True, stored=True)
     analysis_package=indexes.CharField(model_attr='package')
 
     def prepare_source_id(self, obj):
@@ -212,7 +212,7 @@ class AnalysisIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_source_carbondate_years(self, obj):
         return [processing.sequence.library.extract.sample.source.carbondate_years for processing in obj.processing_set.all()]
 
-    def prepare_experiment_id(self, obj):
+    def prepare_study_id(self, obj):
         return [exp.id for exp in obj.dataset.experiments.all()]
 
     def get_model(self):

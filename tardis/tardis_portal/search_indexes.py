@@ -51,19 +51,19 @@ logger = logging.getLogger(__name__)
 
 class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    experiment_id_stored = indexes.IntegerField(model_attr='id')
-    experiment_title = indexes.CharField(model_attr='title')
-    experiment_description = indexes.CharField(model_attr='description')
-    experiment_created_time = indexes.DateTimeField(model_attr='created_time')
-    experiment_start_time = indexes.DateTimeField(model_attr='start_time', default=None)
-    experiment_end_time = indexes.DateTimeField(model_attr='end_time', default=None)
-    experiment_update_time = indexes.DateTimeField(model_attr='update_time', default=None)
-    experiment_institution_name = indexes.CharField(model_attr='institution_name', default=None)
-    experiment_creator=indexes.CharField(model_attr='created_by__username')
-    experiment_publication_year=indexes.CharField(model_attr='publication_year')
-    experiment_author = indexes.MultiValueField()
+    study_id_stored = indexes.IntegerField(model_attr='id')
+    study_title = indexes.CharField(model_attr='title')
+    study_description = indexes.CharField(model_attr='description')
+    study_created_time = indexes.DateTimeField(model_attr='created_time')
+    study_start_time = indexes.DateTimeField(model_attr='start_time', default=None)
+    study_end_time = indexes.DateTimeField(model_attr='end_time', default=None)
+    study_update_time = indexes.DateTimeField(model_attr='update_time', default=None)
+    study_institution_name = indexes.CharField(model_attr='institution_name', default=None)
+    study_creator=indexes.CharField(model_attr='created_by__username')
+    study_publication_year=indexes.CharField(model_attr='publication_year')
+    study_author = indexes.MultiValueField()
 
-    def prepare_experiment_author(self, obj):
+    def prepare_study_author(self, obj):
         return [author.author for author in obj.author_experiment_set.all()]
 
     def get_model(self):
@@ -75,11 +75,11 @@ class ExperimentIndex(indexes.SearchIndex, indexes.Indexable):
 
 class DatasetIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    experiment_id_stored = indexes.MultiValueField(indexed=True, stored=True) #indexes.IntegerField(model_attr='experiments', indexed=True)
+    study_id_stored = indexes.MultiValueField(indexed=True, stored=True) #indexes.IntegerField(model_attr='experiments', indexed=True)
     dataset_id_stored = indexes.IntegerField(model_attr='id') #changed
     dataset_description = indexes.CharField(model_attr='description')
 
-    def prepare_experiment_id_stored(self, obj):
+    def prepare_study_id_stored(self, obj):
         return [exp.id for exp in obj.experiments.all()]
 
     def get_model(self):
@@ -88,10 +88,10 @@ class DatasetIndex(indexes.SearchIndex, indexes.Indexable):
 class DataFileIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     datafile_filename  = indexes.CharField(model_attr='filename')
-    experiment_id_stored = indexes.MultiValueField(indexed=True, stored=True)
+    study_id_stored = indexes.MultiValueField(indexed=True, stored=True)
     dataset_id_stored = indexes.IntegerField(model_attr='dataset__id')
 
-    def prepare_experiment_id_stored(self, obj):
+    def prepare_study_id_stored(self, obj):
         return [exp.id for exp in obj.dataset.experiments.all()]
 
     def get_model(self):
