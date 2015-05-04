@@ -30,7 +30,7 @@
   {% endif %}
   <dl>
     <dt>Organism:</dt>
-    <dd>{{ source.organism }} ({{ source.organism.common }})</dd>
+    <dd>{{ source.organism }} {% if source.organism.common %}({{ source.organism.common }}){% endif %}</dd>
   </dl>
   <dl>
     <dt>Source details:</dt>
@@ -75,13 +75,13 @@
   {% if source.env_biome %}
   <dl>
     <dt>Biome:</dt>
-    <dd>{{ source.env_biome }}</dd>
+    <dd>{{ source.env_biome|capfirst }}</dd>
   </dl>
   {% endif %}
   {% if source.env_feature %}
   <dl>
     <dt>Env feature:</dt>
-    <dd>{{ source.env_feature }}</dd>
+    <dd>{{ source.env_feature|capfirst }}</dd>
   </dl>
   {% endif %}
   {% if source.geo_depth %}
@@ -142,7 +142,7 @@
 	    </dl>
         <dl>
             <dt style="width:150px">Organism:</dt>
-            <dd style="margin-left: 160px">{{ source.organism }} ({{ source.organism.common }})</dd>
+            <dd style="margin-left: 160px">{{ source.organism }} {% if source.organism.common%}({{ source.organism.common }}){% endif %}</dd>
         </dl>
 	    <dl>
 	      <dt style="width:150px">Sample category:</dt>
@@ -161,7 +161,7 @@
       
 	    <dl>
 	      <dt style="width:150px">Datasets:</dt>
-	      <dd style="margin-left: 160px"><ul>
+	      <dd style="margin-left: 160px"><ul class="list-unstyled">
 	      {% for dataset in sample.get_datasets %}
 	        {% if dataset.id in dataset_ids %}
             <li><a href="{{ dataset.get_absolute_url }}">{{ dataset }}</a></li>
