@@ -15,16 +15,16 @@ Analysed using: {{ dataset.analysis.package }} version {{ dataset.analysis.packa
 
 From source: {{ i.sequence.library.extract.sample.source }}, sample {{ i.sequence.library.extract.sample }}
 
-Extraction: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %}) ({{ i.sequence.library.extract.date|date:"c"}})
+Extracted {{ i.sequence.library.extract.date|date:"c"}}: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %})
 
 ## Library
 Date: {{ i.sequence.library.date|date:"c" }}
 Type of material: {{ i.sequence.library.get_source_display }}
 Library layout: {{ i.sequence.library.get_layout_display }}
-Type of library: {{ i.sequence.library.type }}
+Type of library: {{ i.sequence.library.get_type_display }}
 Construction: {{ i.sequence.library.protocol_note }} ({%filter striptags%}{% filter linkify_pubid %}{{ i.sequence.library.protocol_ref }}{% endfilter %}{%endfilter%})
 Repair method: {{ i.sequence.library.repair_method }}
-Enrich method: {{ i.sequence.library.enrich_method }}
+Enrichment method: {{ i.sequence.library.get_enrich_method_display }}
 {% if i.sequence.library.enrich_target %}Enrich target: {{i.sequence.library.get_enrich_target_display}}{%endif%}
 {% if i.sequence.library.enrich_target_subfrag %}Target subfragment: {{ i.sequence.library.enrich_target_subfrag }}{% endif %}
 {% if i.sequence.library.amp_method %}Target amplified using: {{ i.sequence.library.amp_method }}{% endif %}
@@ -58,13 +58,13 @@ Aligned to: {{ i.reference }}
 
 Source ID: {{ source.id }}
 Collection date: {{ source.date|date:"c"}}
-Organism: {{ source.organism }} (NCBI taxonomy ID {{ source.organism.id }})
-Source details: {{ source.source_details }}
+Organism: {{ source.organism }} {% if source.organism.common %}({{ source.organism.common}}){% endif %} (NCBI taxonomy ID {{ source.organism.id }})
+Source details: {{ source.source_details|capfirst }}
 Gender: {{ source.get_gender_display }}
 Age: {{ source.get_age_cat_display }}
 {% if source.age_range %}Age range: {{ source.age_range }}{% endif %}
-{% if source.env_biome %}Environmental biome: {{ source.env_biome }}{% endif %}
-{% if source.env_feature %}Environmental feature: {{ source.env_feature }}{% endif %}
+{% if source.env_biome %}Environmental biome: {{ source.env_biome|capfirst }}{% endif %}
+{% if source.env_feature %}Environmental feature: {{ source.env_feature|capfirst }}{% endif %}
 {% if source.env_material %}Environmental material: {{ source.env_material }}{% endif %}
 Continent: {{ source.get_geoloc_continent_display }}
 Country: {{ source.geoloc_country }}
@@ -80,10 +80,10 @@ Country: {{ source.geoloc_country }}
 {% for sample in samples %}{% if sample in source.sample_set.all %}## {{ sample }}
 
 Collection date: {{ sample.date|date:"c" }}
-Organism: {{ sample.organism }} (NCBI taxonomy ID {{ sample.organism.id }})
+Organism: {{ sample.organism }} {% if sample.organism.common %}({{ sample.organism.common }}){% endif %} (NCBI taxonomy ID {{ sample.organism.id }})
 {% if sample.env_package %}Environmental package: {{ sample.get_env_package_display }}{% endif %}
 Sample category: {{ sample.get_sample_cat_display }}
-Sample details: {{ sample.sample_details }}
+Sample details: {{ sample.sample_details|capfirst }}
 {% if sample.sample_notes %}Sample notes: {{ sample.sample_notes }}{% endif %}
 {% endif %}{% endfor %}
 {% endfor %}
