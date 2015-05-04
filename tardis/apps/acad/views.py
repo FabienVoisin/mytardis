@@ -34,10 +34,10 @@ class AcadSearchView(SearchView):
         logger.debug("self.form.__dict__ %s"%self.form.__dict__)
         logger.debug("self.results %s"%self.results)
         extra['query_string'] = self.form.query_string
-        exp_results=self.results.facet('experiment_id_stored')
+        exp_results=self.results.facet('study_id_stored')
         exp_facets = exp_results.facet_counts()
         if exp_facets:
-            experiment_facets = exp_facets['fields']['experiment_id_stored']
+            experiment_facets = exp_facets['fields']['study_id_stored']
             experiment_ids = [int(f[0])
                               for f in experiment_facets if int(f[1]) > 0]
         else:
