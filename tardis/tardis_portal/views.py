@@ -368,6 +368,7 @@ def my_data(request):
         .order_by('-update_time'),
         'shared_experiments': Experiment.safe.shared(request.user)
         .order_by('-update_time'),
+        subtitle: 'My Data',
     })
     return HttpResponse(render_response_index(
         request, 'tardis_portal/my_data.html', c))
@@ -470,6 +471,7 @@ def public_data(request):
     '''
     c = Context({
         'public_experiments': Experiment.safe.public(),
+        'subtitle': 'Studies',
     })
     return HttpResponse(render_response_index(
         request, 'tardis_portal/public_data.html', c))
@@ -2673,6 +2675,7 @@ def stats(request):
         'dataset_count': Dataset.objects.all().count(),
         'datafile_count': DataFile.objects.all().count(),
         'datafile_size': datafile_size,
+        'subtitle': 'Stats',
     })
     return HttpResponse(render_response_index(request,
                         'tardis_portal/stats.html', c))
