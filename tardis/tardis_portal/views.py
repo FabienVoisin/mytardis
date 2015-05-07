@@ -368,7 +368,7 @@ def my_data(request):
         .order_by('-update_time'),
         'shared_experiments': Experiment.safe.shared(request.user)
         .order_by('-update_time'),
-        subtitle: 'My Data',
+        'subtitle': 'My Data',
     })
     return HttpResponse(render_response_index(
         request, 'tardis_portal/my_data.html', c))

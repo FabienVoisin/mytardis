@@ -153,7 +153,7 @@ def search_source(request):
     """
 
     if len(request.GET) == 0:
-        c = Context({'searchForm': AdvancedSearchForm(), "gender_choices": Source.GENDERS, "age_cat_choices": Source.AGE_CATS, "continent_choices": Source.CONTINENTS, subtitle: 'Advanced Search'})
+        c = Context({'searchForm': AdvancedSearchForm(), "gender_choices": Source.GENDERS, "age_cat_choices": Source.AGE_CATS, "continent_choices": Source.CONTINENTS, 'subtitle': 'Advanced Search'})
         url = 'search/advanced_search_form.html'
         return HttpResponse(render_response_search(request, url, c))
 
@@ -192,7 +192,7 @@ def source_index(request):
         #logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
         if len(source.get_datasets(dataset_ids))>0:
             valid_sources.append(source)
-    context = {'sources': valid_sources, 'dataset_ids': dataset_ids, subtitle: 'Sources'}
+    context = {'sources': valid_sources, 'dataset_ids': dataset_ids, 'subtitle': 'Sources'}
     return render(request, 'source/index.html', context)
 
 def source_detail(request, id):
@@ -212,5 +212,5 @@ def source_detail(request, id):
         #logger.error("Intruder trying to get access, stop it")
         return HttpResponseNotFound('<h1>Source not accessible</h1>')
     samples = source.sample_set.all()
-    context = {'source': source, 'samples': samples, 'dataset_ids': dataset_ids, subtitle: source.id}
+    context = {'source': source, 'samples': samples, 'dataset_ids': dataset_ids, 'subtitle': source.id}
     return render(request, 'source/detail.html', context)
