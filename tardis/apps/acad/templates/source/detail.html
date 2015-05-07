@@ -15,24 +15,26 @@
 </div>
 
 <div class="row-fluid">
-  <div id="map" style="width: 300px; height: 300px; float: right"></div>
-  <div class="span8">
+  <div id="map" style="width: 250px; height: 250px; float: right"></div>
+  <div class="span9">
 <div id="source_details_left" class="dl-horizontal pull-left">
   <dl>
     <dt>Source ID:</dt>
     <dd>{{ source.id }}</dd>
   </dl>
+  {% if source.date %}
   <dl>
     <dt>Collection date:</dt>
     <dd>{{ source.date|date:"c"}}</dd>
   </dl>
+  {% endif %}
   <dl>
     <dt>Organism:</dt>
-    <dd><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ source.organism.get_organism_id }}">{{ source.organism }}</a></dd>
+    <dd>{{ source.organism }} {% if source.organism.common %}({{ source.organism.common }}){% endif %}</dd>
   </dl>
   <dl>
     <dt>Source details:</dt>
-    <dd>{{ source.source_details }}</dd>
+    <dd>{{ source.source_details|capfirst }}</dd>
   </dl>
   <dl>
     <dt>Gender:</dt>
@@ -73,13 +75,13 @@
   {% if source.env_biome %}
   <dl>
     <dt>Biome:</dt>
-    <dd>{{ source.env_biome }}</dd>
+    <dd>{{ source.env_biome|capfirst }}</dd>
   </dl>
   {% endif %}
   {% if source.env_feature %}
   <dl>
     <dt>Env feature:</dt>
-    <dd>{{ source.env_feature }}</dd>
+    <dd>{{ source.env_feature|capfirst }}</dd>
   </dl>
   {% endif %}
   {% if source.geo_depth %}
@@ -140,7 +142,7 @@
 	    </dl>
         <dl>
             <dt style="width:150px">Organism:</dt>
-            <dd style="margin-left: 160px"><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ sample.organism.get_organism_id }}">{{ sample.organism }}</a></dd>
+            <dd style="margin-left: 160px">{{ sample.organism }} {% if sample.organism.common%}({{ sample.organism.common }}){% endif %}</dd>
         </dl>
 	    <dl>
 	      <dt style="width:150px">Sample category:</dt>
@@ -148,7 +150,7 @@
 	    </dl>
 	    <dl>
 	      <dt style="width:150px">Sample details:</dt>
-	      <dd style="margin-left: 160px">{{ sample.sample_details }}</dd>
+	      <dd style="margin-left: 160px">{{ sample.sample_details|capfirst }}</dd>
 	    </dl>
         {% if sample.env_package %}
 	    <dl>
@@ -159,7 +161,7 @@
       
 	    <dl>
 	      <dt style="width:150px">Datasets:</dt>
-	      <dd style="margin-left: 160px"><ul>
+	      <dd style="margin-left: 160px"><ul class="list-unstyled">
 	      {% for dataset in sample.get_datasets %}
 	        {% if dataset.id in dataset_ids %}
             <li><a href="{{ dataset.get_absolute_url }}">{{ dataset }}</a></li>
@@ -173,7 +175,7 @@
 </div>
 {% endif %}
 
-{%if source.geoloc_lat and source.geoloc_lon %}
+{% if source.geoloc_lat and source.geoloc_lon %}
 <script>
     layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
 
@@ -183,7 +185,7 @@
         .addTo(map)
         .bindPopup('{{ source.geoloc_lat }}, {{ source.geoloc_lon}}')
 
-    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}], 100000, {
+    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}], 50000, {
             color: 'red',
             fillColor: 'red',
             fillOpacity: 0.25

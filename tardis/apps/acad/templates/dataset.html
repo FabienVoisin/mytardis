@@ -14,8 +14,8 @@
         <p>From <a href="{{ i.sequence.library.extract.sample.source.get_absolute_url }}">{{i.sequence.library.extract.sample.source}}</a>, sample {{ i.sequence.library.extract.sample }}</p>
 
         {# Extract #}
-        <p>Extraction: {{ i.sequence.library.extract.protocol_note }}
-        ({% filter linkify_pubid %}{{ i.sequence.library.extract.protocol_ref }}{% endfilter %}) ({{ i.sequence.library.extract.date|date:"c"}})</p>
+        <p>Extracted {{ i.sequence.library.extract.date|date:"c"}}: {{ i.sequence.library.extract.protocol_note }}
+        ({% filter linkify_pubid %}{{ i.sequence.library.extract.protocol_ref }}{% endfilter %})
 
         {# Library #}
         <h4>Library</h4>
@@ -23,10 +23,10 @@
         <dt>Date:</dt> <dd>{{ i.sequence.library.date|date:"c" }}</dd>
         <dt>Type of material:</dt> <dd>{{ i.sequence.library.get_source_display }}</dd>
         <dt>Layout:</dt> <dd>{{ i.sequence.library.get_layout_display }}</dd>
-        <dt>Type of library:</dt> <dd>{{ i.sequence.library.type }}</dd>
+        <dt>Type of library:</dt> <dd>{{ i.sequence.library.get_type_display }}</dd>
         <dt>Construction:</dt> <dd>{{ i.sequence.library.protocol_note }} ({% filter linkify_pubid %}{{ i.sequence.library.protocol_ref }}{% endfilter %})</dd>
         <dt>Repair method:</dt> <dd>{{ i.sequence.library.repair_method }}</dd>
-        <dt>Enrich method:</dt> <dd>{{ i.sequence.library.enrich_method }}</dd>
+        <dt>Enrichment method:</dt> <dd>{{ i.sequence.library.get_enrich_method_display }}</dd>
         {% if i.sequence.library.enrich_target %}<dt>Enrich target:</dt> <dd>{{i.sequence.library.get_enrich_target_display}}</dd>{%endif%}
         {% if i.sequence.library.enrich_target_subfrag %}<dt>Target subfragment:</dt> <dd>{{ i.sequence.library.enrich_target_subfrag }}</dd>{% endif %}
         {% if i.sequence.library.amp_method %}<dt>Target amplified using:</dt> <dd>{{ i.sequence.library.amp_method }}</dd>{% endif %}

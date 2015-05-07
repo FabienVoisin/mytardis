@@ -34,8 +34,9 @@ core_urls = patterns(
     url(r'^mydata/$', 'my_data', name='mydata'),
     url(r'^public_data/', 'public_data', name='public_data'),
     (r'^about/$', 'about'),
+    (r'^about/repositoryguidelines/$', 'repositoryguidelines'),
     (r'^stats/$', 'stats'),
-    (r'^help/$', 'user_guide'),
+    (r'^help/$', 'help'),
     url(r'^dataset_metadata/(?P<dataset_id>\w+)/$', 'view_dataset_metadata', name='view_dataset_metadata'),
     (r'^robots\.txt$', lambda r: HttpResponse(
         "User-agent: *\nDisallow: /download/\nDisallow: /stats/",
@@ -388,6 +389,9 @@ urlpatterns = patterns(
     # Jasmine JavaScript Tests
     (r'^jasmine/', include(django_jasmine.urls)),
 
+    # Source view
+    (r'^source/$', 'tardis.apps.acad.views.source_index'),
+    (r'^source/(?P<id>\w+)/$', 'tardis.apps.acad.views.source_detail'),
 )
 
 # Handle static files from /static

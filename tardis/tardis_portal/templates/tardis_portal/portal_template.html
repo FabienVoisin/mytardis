@@ -93,21 +93,22 @@
           {% endblock %}
           <div class="nav-collapse">
             <ul class="nav">
-              <li><a href="{% url 'tardis.tardis_portal.views.index' %}">Home</a></li>
               <li><a href="{% url 'tardis.tardis_portal.views.about' %}">About</a></li>
+              <li><a href="{% url 'tardis.tardis_portal.views.public_data' %}">Studies</a></li>
               {% if navbar_extras %}
               {% for display_name, view_path in navbar_extras.items %}
               <li><a href="{% url view_path %}">{{ display_name }}</a></li>
               {% endfor %}
               {% endif %}
+              {% if is_authenticated %}
               <li><a href="{% url 'tardis.tardis_portal.views.my_data' %}">My Data</a></li>
-              <li><a href="{% url 'tardis.tardis_portal.views.public_data' %}">Public Data</a></li>
+              {% endif %}
               <li><a href="{% url 'tardis.tardis_portal.views.stats' %}">Stats</a></li>
               {% with request|check_if_facility_manager as facility_manager %}
               {% if facility_manager %}
               <li><a href="{% url 'tardis.tardis_portal.views.facility_overview' %}">Facility Overview</a></li>
               {% endif %}{% endwith %}
-              <li><a href="{% url 'tardis.tardis_portal.views.user_guide' %}"><b>Help</b></a></li>
+              <li><a href="{% url 'tardis.tardis_portal.views.help' %}"><b>Help</b></a></li>
             </ul>
             <ul class="login-nav nav pull-right">
             {% if is_authenticated %}
@@ -179,13 +180,6 @@
                 </ul>
               </li>
             {% else %}
-              {% if registration_enabled %}
-              <li>
-                <a href="{% url 'register' %}">
-                  Register
-                </a>
-              </li>
-              {% endif %}
               <li>
                 <a id="login-button" class="btn btn-info" href="{% url 'tardis.tardis_portal.views.login' %}">
                   <i class="icon-signin"></i>
@@ -194,6 +188,13 @@
               </li>
             {% endif %}
             </ul>
+            {% if registration_enabled and is_superuser %}
+              <ul class="nav pull-right">
+                <li>
+                    <a href="{% url 'register' %}">Add User</a>
+                </li>
+              </ul>
+            {% endif %}
             {% if search_form %}
             <form id="searchbox" method="get"
                 class="navbar-search pull-right"

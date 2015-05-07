@@ -1,0 +1,53 @@
+{% extends "tardis_portal/portal_template.html" %}
+
+{% block style %}
+<style type="text/css">
+.citation-block {
+  text-indent:-3em;
+  padding-left:3em;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+<h1>OAGR Repository Guidelines</h1>
+</div>
+
+<h2>Scope</h2>
+
+<p>The Online Ancient Genome Repository will capture and catalogue ancient human genome and microbiome data, including raw sequence and processed data files, along with metadata about their provenance and production. Included datasets are generated from ancient samples studied at the Australian Centre for Ancient DNA in collaboration with other research groups.</p>
+
+<p>The intention of the repository is to make data openly available for reuse and citation. As genomics and microbiome data are routinely generated for ancient samples, it is crucial to keep track of raw and processed data, bioinformatics pipelines and metadata describing the provenance and production of the data. The repository will make this valuable data and metadata available for discovery and reuse by others.</p>
+
+<p>Data submitted for publication should not be subject to third party agreements or ethics requirements that restrict publication of data. When data custodians provide data and metadata for inclusion in the repository they warrant that they or their institutions are the authorised creator or owner of the data, that they have the right to publish the data, and that the data is not subject to agreements or ethics applications that otherwise restrict its publication.</p>
+
+<h2>Citation</h2>
+
+<p>Digital Object Identifiers (DOIs) will be minted for included datasets and data collections to enable persistent identification and citation. The repository will display suggested citations which end users can use to cite and link to a dataset or data collection, for example:</p>
+
+<p class="citation-block">Smith, Jane; Smart, John (2014): <cite>Title of collection</cite>. Online Ancient Genome Repository. Collection. <a href="http://dx.doi.org/10.4225/38/123456789">http://dx.doi.org/10.4225/38/123456789</a></p>
+
+<h2>Licences</h2>
+
+<p>Data published in the repository will be made openly available under the Creative Commons Attribution 4.0 International (CC BY 4.0) licence.</p>
+
+<p>In releasing data under this open licence, owners retain any copyright and ownership of the data, and are not required to assign copyright to the repository publishers, the Australian Centre for Ancient DNA.</p>
+
+<p>Under this licence, researchers and other end users of the data are permitted to share (copy and redistribute the metadata and data in any medium or format) and adapt (remix, transform, and build on the metadata and data) for any purpose, even commercially, provided that they attribute the creator(s) of the data, link to the licence, and indicate if changes were made.</p>
+
+<p>Creative Commons licences are non-exclusive, so making data available through the ACAD repository would not necessarily prevent owners from also depositing data elsewhere such as Sequence Read Archive or an institutional repository.</p>
+
+<p>The full license is available from <a href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a></p>
+
+<p>It should be noted that Creative Commons licences are irrevocable, and in the event published data is removed from the ACAD repository any copies already downloaded by end users could still be reused and shared under the terms of the licence.</p>
+
+<h2>Embargo</h2>
+
+<p>Datasets will be published in the repository on a case-by-case basis in consultation and with permission from the authorised data custodian. Data can be stored in the repository under embargo/restricted access until ready for publication.</p>
+
+<h2>Acknowledgements</h2>
+
+<p>This repository was produced for a project supported by the <a href="http://www.ands.org/au/">Australian National Data Service (ANDS)</a>. ANDS is supported by the Australian Government through the National Collaborative Research Infrastructure Strategy Program.</p>
+
+{% endblock content %}
