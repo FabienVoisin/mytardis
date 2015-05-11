@@ -114,6 +114,12 @@
     <dd>{{ source.carbondate_id }} {{ source.carbondate_years }} &plusmn; {{ source.carbondate_error }}</dd>
   </dl>
   {% endif %}
+  {% if source.arch_date %}
+  <dl>
+      <dt>Archaeological date:</dt>
+      <dd>{{ source.arch_date }}</dd>
+  </dl>
+  {% endif %}
   {% if source.source_notes %}
   <dl>
       <dt>Source notes:</dt>

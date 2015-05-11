@@ -9,16 +9,7 @@ class Organism(models.Model):
     common = models.CharField("Common name", max_length=255, blank=True)
 
     def __unicode__(self):
-        return self.get_organism_name()
-
-    def get_organism_id(self):
-        return str(self.id)
-
-    def get_organism_name(self):
         return str(self.genus + " " + self.species + " " + self.subspecies).rstrip()
-
-    def get_common_name(self):
-        return self.common
 
     class Meta:
         app_label = 'acad'
@@ -77,13 +68,10 @@ class Source(models.Model):
     collectedby = models.CharField("Individual/team who collected source", max_length=255, blank=True)
 
     def __unicode__(self):
-        return str(self.organism.get_common_name()) + " " + self.source_details + ", " + self.geoloc_country + " " + str(self.date)
-
-    def get_organism(self):
-        return str(self.organism)
-
-    def get_source_id(self):
-        return self.id
+        if self.date:
+            return str(self.organism.common) + " " + self.source_details + " " + str(self.date) + ", " + self.geoloc_country + " " + self.id
+        else:
+            return str(self.organism.common) + " " + self.source_details + ", " + self.geoloc_country + " " + self.id
 
     def get_datasets(self, accssible_dataset_ids=None):
         samples = Sample.objects.filter(source=self)
@@ -157,7 +145,7 @@ class Sample(models.Model):
     sample_notes = models.TextField("Free text notes about sample", blank=True)
 
     def __unicode__(self):
-        return self.get_sample_cat_display() + " (" + self.sample_details + ") " + self.id
+        return self.get_sample_cat_display() + " (" + self.sample_details[0].lower() + self.sample_details[1:] + ") " + self.id
 
     def get_id(self):
         return self.id
