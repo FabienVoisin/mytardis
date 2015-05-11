@@ -1,5 +1,4 @@
 from tardis.tardis_portal.models import Dataset
-# Django models based on MODC08 Metadata Schema v1.3
 from django.db import models
 
 class Organism(models.Model):
@@ -51,7 +50,7 @@ class Source(models.Model):
     id_type = models.CharField("Who assigned source id", max_length=255)
     other_id = models.CharField("Other id", max_length=255, blank=True)
     other_id_type = models.CharField("Who assigned other id", max_length=255, blank=True)
-    date = models.DateField("Date source was collected")
+    date = models.DateField("Date source was collected", blank=True, null=True)
     organism = models.ForeignKey(Organism)
     source_details = models.CharField("Details of sample", max_length=255)
     gender = models.CharField("Gender", choices=GENDERS, max_length=255)
@@ -72,6 +71,7 @@ class Source(models.Model):
     carbondate_years = models.PositiveIntegerField("Estimated age of source in radiocarbon years", blank=True, null=True)
     carbondate_error = models.PositiveIntegerField("Estimated carbon date error range", blank=True, null=True)
     carbondate_id = models.CharField("Centre + id reference for carbon dating", blank=True, max_length=255)
+    arch_date = models.CharField("Approximate/estimated archaeological age of source", blank=True, max_length=255)
     source_notes = models.TextField("Free text notes about source", blank=True)
     group_id = models.CharField("Group/set of sources collected on one trip/survey", max_length=255, blank=True)
     collectedby = models.CharField("Individual/team who collected source", max_length=255, blank=True)
@@ -227,6 +227,7 @@ class Library(models.Model):
         ('random', 'Random'),
         ('other', 'Other'),
         ('unspec', 'Unspecified'),
+        ('none', 'None'),
     )
     ENRICH_TARGET = (
         ('16S', '16S rNA'),
