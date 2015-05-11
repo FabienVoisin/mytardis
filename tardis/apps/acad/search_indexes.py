@@ -12,7 +12,7 @@ class SourceIndex(indexes.SearchIndex, indexes.Indexable):
     #source_other_id=indexes.CharField(model_attr='other_id')
     #source_other_id_type=indexes.CharField(model_attr='other_id_type')
     organism=indexes.CharField(model_attr='organism__common')
-    source_date = indexes.DateField(model_attr='date')
+    source_date = indexes.DateField(model_attr='date', default=None)
     source_details=indexes.CharField(model_attr='source_details')
     source_gender=indexes.CharField(model_attr='gender')
     source_age_cat=indexes.CharField(model_attr='age_cat')
