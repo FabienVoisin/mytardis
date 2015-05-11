@@ -69,9 +69,9 @@ class Source(models.Model):
 
     def __unicode__(self):
         if self.date:
-            return str(self.organism.common) + " " + self.source_details + " " + str(self.date) + ", " + self.geoloc_country + " " + self.id
+            return str(self.organism.common[0].upper() + self.organism.common[1:]) + " " + self.source_details + ", " + self.geoloc_country + " " + str(self.date) + " " + self.id
         else:
-            return str(self.organism.common) + " " + self.source_details + ", " + self.geoloc_country + " " + self.id
+            return str(self.organism.common[0].upper() + self.organism.common[1:]) + " " + self.source_details + ", " + self.geoloc_country + " " + self.id
 
     def get_datasets(self, accssible_dataset_ids=None):
         samples = Sample.objects.filter(source=self)
@@ -145,7 +145,7 @@ class Sample(models.Model):
     sample_notes = models.TextField("Free text notes about sample", blank=True)
 
     def __unicode__(self):
-        return self.get_sample_cat_display() + " (" + self.sample_details[0].lower() + self.sample_details[1:] + ") " + self.id
+        return self.get_sample_cat_display() + " (" + self.sample_details + ") " + self.id
 
     def get_id(self):
         return self.id

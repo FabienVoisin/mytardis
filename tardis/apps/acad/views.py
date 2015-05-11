@@ -188,7 +188,7 @@ def source_index(request):
 
     dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
     valid_sources=[]
-    for source in Source.objects.all():
+    for source in Source.objects.all().exclude(id="ACADLab"):
         #logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
         if len(source.get_datasets(dataset_ids))>0:
             valid_sources.append(source)
