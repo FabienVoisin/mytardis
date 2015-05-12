@@ -1058,6 +1058,8 @@ def create_experiment(request,
             experiment = full_experiment['experiment']
             experiment.created_by = request.user
             full_experiment.save_m2m()
+            # save experiment again to trigger haystack's auto-reindex mechanism
+            experiment.save()
 
             # add defaul ACL
             acl = ObjectACL(content_object=experiment,
@@ -1114,6 +1116,8 @@ def edit_experiment(request, experiment_id,
             experiment = full_experiment['experiment']
             experiment.created_by = request.user
             full_experiment.save_m2m()
+            # save experiment again to trigger haystack's auto-reindex mechanism
+            experiment.save()
 
             request.POST = {'status': "Study Saved."}
             return HttpResponseSeeAlso(reverse(
