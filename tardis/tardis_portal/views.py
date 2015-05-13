@@ -3519,8 +3519,8 @@ def view_dataset_metadata(request, dataset_id):
     dataset = Dataset.objects.get(pk=dataset_id)
     context = {'dataset': dataset}
     from tardis.apps.acad.models import Source, Sample
-    context['sources'] = Source.objects.filter(sample__extract__library__sequence__processing__analysis__dataset=dataset)
-    context['samples'] = Sample.objects.filter(extract__library__sequence__processing__analysis__dataset=dataset)
+    context['sources'] = Source.objects.filter(sample__extract__library__sequence__processing__analysis__dataset=dataset).distinct()
+    context['samples'] = Sample.objects.filter(extract__library__sequence__processing__analysis__dataset=dataset).distinct()
     if hasattr(settings, 'DOI_ENABLE') and settings.DOI_ENABLE:
         from tardis.tardis_portal.ands_doi import DatasetDOIService
         context['doi'] = DatasetDOIService(dataset).get_doi()
