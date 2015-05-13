@@ -77,7 +77,8 @@ Country: {{ source.geoloc_country }}
 {% if source.carbondate_id %}Carbon date: {{ source.carbondate_id }} {{ source.carbondate_years }} ± {{ source.carbondate_error }}{% endif %}
 {% if source.source_notes %}Source notes: {{ source.source_notes }}{% endif %}
 
-{% for sample in samples %}{% if sample in source.sample_set.all %}## {{ sample }}
+{% for sample in samples %}{% if sample in source.sample_set.all %}
+## {{ sample }}
 
 Collection date: {{ sample.date|date:"c" }}
 Organism: {{ sample.organism }} {% if sample.organism.common %}({{ sample.organism.common }}){% endif %} (NCBI taxonomy ID {{ sample.organism.id }})
