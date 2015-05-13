@@ -9,9 +9,9 @@
 {% endblock style %}
 {% block content %}
 <form id="searchbox" method="get"
-    class="navbar-search pull-left"
+    class="navbar-search pull-left span10"
     action=".">
-  <textarea id="id_q" autocomplete="off" name="q" style="width: 900px;" rows="4"
+  <textarea id="id_q" autocomplete="off" name="q" style="width: 100%;" rows="4"
        placeholder="Type your query here..."></textarea>
    <div class="well">
        <p>Advanced searching is supported using <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">Lucene query syntax</a>. Examples:</p>
@@ -48,7 +48,7 @@
 		{% endfor %}
   </div>
     <div class="well">
-        Carbon Date:&nbsp;<b>1000 years</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="carbondateinput" name="carbondate" class="span4" value="" type="text" data-slider-min="1000" data-slider-max="150000" data-slider-step="100" data-slider-value="[1000,150000]"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>150000 years</b>
+        Carbon Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="carbondateinput" name="carbondate" style="width: 85%;" value="" type="text" data-slider-min="1000" data-slider-max="150000" data-slider-step="50" data-slider-value="[1000,150000]"/>
 	</div>
   <div class="form-actions">
     <button type="submit" class="btn btn-info btn-large">
