@@ -2045,21 +2045,15 @@ def retrieve_field_list(request):
     #
     # TODO: these should be onl read from registered indexes
     #
-    
-    allFields = list(set(DataFileIndex.fields.items()+ExperimentIndex.fields.items()+DatasetIndex.fields.items()))
-    
-    users = User.objects.all()
 
-    usernames = [u.first_name + ' ' + u.last_name + ':username' for u in users]
+    allFields = list(set(DataFileIndex.fields.items()+ExperimentIndex.fields.items()+DatasetIndex.fields.items()))
 
     # Collect all of the indexed (searchable) fields, except
     # for the main search document ('text')
     searchableFields = ([key + ':search_field' for key, f in allFields
                          if f.indexed is True and key != 'text'])
 
-    auto_list = usernames + searchableFields
-
-    fieldList = '+'.join([str(fn) for fn in auto_list])
+    fieldList = '+'.join([str(fn) for fn in searchableFields])
     return HttpResponse(fieldList)
 
 
