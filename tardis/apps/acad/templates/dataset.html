@@ -1,11 +1,28 @@
 {# A section of block content in view_dataset #}
 {% load linkify_pubid %}
 
+{% if dataset.analysis.processing_set.count > 7 %}
+<p>Choose a pipeline:</p>
+<select id="pipelines">
+    {% for i in dataset.analysis.processing_set.all %}
+    <option value="{{ i.id }}">{{ i.id }}</option>
+    {% endfor %}
+</select>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#pipelines").change(function(){
+        $("#" + this.value).show().siblings().hide();
+    });
+    $("#pipelines").change();
+});
+</script>
+{% else %}
 <ul class="nav nav-tabs">
     {% for i in dataset.analysis.processing_set.all %}
     <li {% if forloop.first %}class="active"{% endif %}><a href="#{{i.id}}" data-toggle="tab">{{i.id}}</a></li>
     {% endfor %}
 </ul>
+{% endif %}
 
 <div class="tab-content">
     {% for i in dataset.analysis.processing_set.all %}
