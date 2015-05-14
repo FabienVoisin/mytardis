@@ -132,11 +132,26 @@
 {% if samples %}
 <h3>Samples</h3>
 
+{% if samples.count > 7 %}
+<select id="samples">
+    {% for sample in samples %}
+    <option value="{{ sample.get_id }}">{{ sample }}</option>
+    {% endfor %}
+</select>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#samples").change(function(){
+        $("#" + this.value).show().siblings().hide();    });
+    $("#samples").change();
+});
+</script>
+{% else %}
 <ul class="nav nav-tabs">
     {% for sample in samples %}
     <li{%if forloop.first %} class="active"{%endif%}><a data-toggle="tab" href="#{{sample.get_id}}">{{ sample }}</a></li>
     {% endfor %}
 </ul>
+{% endif %}
 
 <div class="tab-content">
     {% for sample in samples %}
