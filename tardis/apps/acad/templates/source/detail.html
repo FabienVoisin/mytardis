@@ -183,19 +183,13 @@
 
 {% if source.geoloc_lat and source.geoloc_lon %}
 <script>
-    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: ["otile1", "otile2", "otile3", "otile4"], attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
 
     var map = L.map('map').setView([{{ source.geoloc_lat }}, {{source.geoloc_lon}} ], 7).addLayer(layer);
 
     L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}])
         .addTo(map)
         .bindPopup('{{ source.geoloc_lat }}, {{ source.geoloc_lon}}')
-
-    var circle = L.circle([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}], 50000, {
-            color: 'red',
-            fillColor: 'red',
-            fillOpacity: 0.25
-        }).addTo(map);
 </script>
 {% endif %}
 {% endblock %}

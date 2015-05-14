@@ -2,10 +2,15 @@
 {% load bleach_tag %}
 {% block script %}
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 {% endblock script %}
 
 {% block style %}
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
 {% endblock style %}
 
 {% block content %}
@@ -92,34 +97,21 @@
 {% endif %}
 </div>
 <script>
-    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: ["otile1", "otile2", "otile3", "otile4"], attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
 
-    var map = L.map('map').setView([0, 0], 2).addLayer(layer);
+    var map = L.map('map', {fullscreenControl: true}).setView([0, 0], 2).addLayer(layer);
+    var markers = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.5 });
     var markerArray=new Array();
     {% for source in sources %}
     {%if source.geoloc_lat and source.geoloc_lon %}
     L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}])
-        .addTo(map)
+        .addTo(markers)
         .bindPopup('<a href="{{ source.get_absolute_url }}">{{ source }}</a>');
     markerArray.push(L.latLng({{ source.geoloc_lat }}, {{ source.geoloc_lon}}));
     {% endif %}
     {% endfor %}
+    map.addLayer(markers);
     var bounds = L.latLngBounds(markerArray);
     map.fitBounds(bounds);
 </script>
 {% endblock %}
-<!-- 
-<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-<div id="map" style="height: 500px"></div>
-<script>
-    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 18, subdomains: ["otile1", "otile2", "otile3", "otile4"]});
-
-    var map = L.map('map').setView([0, 0], 2).addLayer(layer);
-
-    {% for i in source_list %}
-    L.marker([{{ i.geoloc_lat }}, {{ i.geoloc_lon}}])
-        .addTo(map)
-        .bindPopup('<a href="{{ i.get_absolute_url }}">{{ i }}</a>')
-    {% endfor %}
-</script>
- -->
