@@ -9,7 +9,10 @@ class Organism(models.Model):
     common = models.CharField("Common name", max_length=255, blank=True)
 
     def __unicode__(self):
-        return str(self.genus + " " + self.species + " " + self.subspecies).rstrip()
+        string = str(self.genus + " " + self.species + " " + self.subspecies).strip()
+        if self.common:
+            string = string + " (" + self.common + ")"
+        return string
 
     class Meta:
         app_label = 'acad'
@@ -68,10 +71,15 @@ class Source(models.Model):
     collectedby = models.CharField("Individual/team who collected source", max_length=255, blank=True)
 
     def __unicode__(self):
-        if self.date:
-            return str(self.organism.common[0].upper() + self.organism.common[1:]) + " " + self.source_details + ", " + self.geoloc_country + " " + str(self.date) + " " + self.id
+        if self.organism.common:
+            string = str(self.organism.common[0].upper() + self.organism.common[1:])
         else:
-            return str(self.organism.common[0].upper() + self.organism.common[1:]) + " " + self.source_details + ", " + self.geoloc_country + " " + self.id
+            string = str(self.organism)[0].upper() + str(self.organism)[1:]
+        string = string + " " + self.source_details + ", " + self.geoloc_country
+        if self.date:
+            string = string + " " + str(self.date)
+        string = string + " " + self.id
+        return string
 
     def get_datasets(self, accssible_dataset_ids=None):
         samples = Sample.objects.filter(source=self)

@@ -58,7 +58,7 @@ Aligned to: {{ i.reference }}
 
 Source ID: {{ source.id }}
 Collection date: {{ source.date|date:"c"}}
-Organism: {{ source.organism }} {% if source.organism.common %}({{ source.organism.common}}){% endif %} (NCBI taxonomy ID {{ source.organism.id }})
+Organism: {{ source.organism }} {% if source.organism.id != 1 %}(NCBI taxonomy ID {{ source.organism.id }}){% endif %}
 Source details: {{ source.source_details|capfirst }}
 Gender: {{ source.get_gender_display }}
 Age: {{ source.get_age_cat_display }}
@@ -81,7 +81,7 @@ Country: {{ source.geoloc_country }}
 ## {{ sample }}
 
 Collection date: {{ sample.date|date:"c" }}
-Organism: {{ sample.organism }} {% if sample.organism.common %}({{ sample.organism.common }}){% endif %} (NCBI taxonomy ID {{ sample.organism.id }})
+Organism: {{ sample.organism }} {% if source.organism.id != 1 %}(NCBI taxonomy ID {{ sample.organism.id }}){% endif %}
 {% if sample.env_package %}Environmental package: {{ sample.get_env_package_display }}{% endif %}
 Sample category: {{ sample.get_sample_cat_display }}
 Sample details: {{ sample.sample_details|capfirst }}
