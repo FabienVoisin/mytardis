@@ -57,7 +57,7 @@ def post_save_experiment(sender, **kwargs):
     publish_public_expt_rifcs(experiment)
 
 
-@receiver(post_save, sender=Experiment)  # THIS MUST BE DEFINED BEFORE
+#@receiver(post_save, sender=Experiment)  # THIS MUST BE DEFINED BEFORE
                                          # GENERATING RIF-CS
 def ensure_doi_exists(sender, **kwargs):
     experiment = kwargs['instance']
