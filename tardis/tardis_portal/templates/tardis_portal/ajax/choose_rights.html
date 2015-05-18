@@ -52,6 +52,7 @@ $('#legal-section .cancel-button').live("click", function() {
 });
 </script>
 
+<img id="saving-doi" src="{% static 'images/busy.gif' %}" alt="Saving ..." style="display: none;" />
 <!-- Success / Error Message -->
 <div id="choose-rights-message"></div>
 
@@ -140,6 +141,8 @@ $('form.experiment-rights').submit(function(evt) {
     type: form.attr('method'),
     url:  form.attr('action'),
     data: form.serialize(),
+    beforeSend: function() { $("#saving-doi").show(); },
+    complete: function() { $("#saving-doi").hide(); },
     success: function(data) {
       var thisModal = $(form).parents('.modal-body');
       // Load new values into pane
