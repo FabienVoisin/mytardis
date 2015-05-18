@@ -282,7 +282,7 @@ $('#modal-metadata .submit-button').click(function() {
   </p>
   </div>
     <!-- Tab buttons -->
-    <ul id="experiment-tabs" class="nav nav-pills">
+    <ul id="experiment-tabs" class="nav nav-tabs">
       {% for appurl, appname in apps %}
       <li><a data-toggle="tab" title="{{appname}}" href="{{ appurl }}">{{ appname }}</a></li>
       {% endfor %}
