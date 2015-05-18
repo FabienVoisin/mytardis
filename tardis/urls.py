@@ -390,8 +390,8 @@ urlpatterns = patterns(
     (r'^jasmine/', include(django_jasmine.urls)),
 
     # Source view
-    (r'^source/$', 'tardis.apps.acad.views.source_index'),
-    (r'^source/(?P<id>\w+)/$', 'tardis.apps.acad.views.source_detail'),
+    url(r'^source/$', 'tardis.apps.acad.views.source_index', name='source_index'),
+    url(r'^source/(?P<id>\w+)/$', 'tardis.apps.acad.views.source_detail', name='source_detail'),
 )
 
 # Handle static files from /static
