@@ -322,6 +322,9 @@ api_urls = patterns(
 single_search_view='tardis.tardis_portal.views.single_search'
 if settings.SINGLE_SEARCH_VIEW:
     single_search_view=settings.SINGLE_SEARCH_VIEW
+advanced_search_view='tardis.tardis_portal.views.search_experiment'
+if settings.ADVANCED_SEARCH_VIEW:
+    advanced_search_view=settings.ADVANCED_SEARCH_VIEW
 
 apppatterns = patterns('',)
 for app in getTardisApps():
@@ -378,6 +381,7 @@ urlpatterns = patterns(
     (r'^upload/(?P<dataset_id>\d+)/$', 'tardis.tardis_portal.views.upload'),
 
     # Search
+    (r'^search/', advanced_search_view),
     (r'^search/$', single_search_view),
 
     # Apps
