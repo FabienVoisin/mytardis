@@ -590,7 +590,7 @@ margin-top: 20px;
       </div>
   </div>
 </div>
-	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px;">
+	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px; display: none">
 	  <div class="modal-dialog modal-lg">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -774,6 +774,16 @@ $("#delete_dataset").click(function() {
         });
     }
 });
+
+//quick fix: remove fade for ie 10/11, current version of jquery/bootstrap doesn't have good support for ie 10/11
+$(function() {
+	//console.log($.browser);
+	if ($.browser.msie||($.browser.mozilla&&$.browser.version=='11.0')) {
+		//console.log("this is ie");
+		$('.modal').removeClass('fade');
+	}
+});
+
 $(window).keydown(function(event) {
 	if ($("#urlsDialog").data('modal').isShown) {
 		if((event.ctrlKey||event.metaKey) && event.keyCode == 65) { 

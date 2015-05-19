@@ -298,7 +298,7 @@ $('#modal-metadata .submit-button').click(function() {
     {% include "tardis_portal/ajax/experiment_datasets.html" %}
   </div>
 </div>
-	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px;">
+	<div id="urlsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="urlsModalLabel" aria-hidden="true" style="width: 900px; margin-left: -450px; display: none">
 	  <div class="modal-dialog modal-lg">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -525,9 +525,18 @@ $('#show_dataset_urls').click(function() {
     	 });
     	 $('#urlsModalLabel').html('Download URLs');
     	 $('#urlsModalMain').html(htmlStr);
-    	 $('#urlsDialog').modal('show');
+    	 $('#urlsDialog').modal('toggle');
      }
    });
+});
+
+// quick fix: remove fade for ie 10/11, current version of jquery/bootstrap doesn't have good support for ie 10/11
+$(function() {
+	//console.log($.browser);
+	if ($.browser.msie||($.browser.mozilla&&$.browser.version=='11.0')) {
+		//console.log("this is ie");
+		$('.modal').removeClass('fade');
+	}
 });
 
 $(window).keydown(function(event) {
