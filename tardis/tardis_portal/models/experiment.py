@@ -18,7 +18,6 @@ from .license import License
 import logging
 logger = logging.getLogger(__name__)
 
-
 class Experiment(models.Model):
     """The ``Experiment`` model inherits from :class:`django.db.models.Model`
 
@@ -79,6 +78,7 @@ class Experiment(models.Model):
         super(Experiment, self).save(*args, **kwargs)
         from .hooks import publish_public_expt_rifcs
         publish_public_expt_rifcs(self)
+        self.mint_doi()
 
     def delete(self, *args, **kwargs):
         if self.locked:
@@ -212,6 +212,13 @@ class Experiment(models.Model):
 
         return None
 
+    def mint_doi(self):
+        if settings.DOI_ENABLE and \
+           self.public_access != Experiment.PUBLIC_ACCESS_NONE:
+            doi_url = settings.DOI_BASE_URL + self.get_absolute_url()
+            from tardis.tardis_portal.ands_doi import ExperimentDOIService
+            doi_service = ExperimentDOIService(self)
+            doi_service.get_or_mint_doi(doi_url)
 
 class Author_Experiment(models.Model):
 
