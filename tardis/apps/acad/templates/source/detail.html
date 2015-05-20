@@ -157,10 +157,12 @@ $(document).ready(function(){
     {% for sample in samples %}
     <div role="tabpanel" class="tab-pane{%if forloop.first %} active{%endif%}" id="{{sample.get_id}}">
       <div id="source_details" class="dl-horizontal">
+        {% if sample.date %}  
 	    <dl>
 	      <dt style="width:150px">Collection date:</dt>
 	      <dd style="margin-left: 160px">{{ sample.date|date:"c" }}</dd>
 	    </dl>
+        {% endif %}
         <dl>
             <dt style="width:150px">Organism:</dt>
             <dd style="margin-left: 160px">{{ sample.organism }}</dd>

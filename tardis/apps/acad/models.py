@@ -142,7 +142,7 @@ class Sample(models.Model):
     id = models.CharField("Sample id", primary_key=True, max_length=255)
     id_type = models.CharField("Who assigned source id", max_length=255)
     source = models.ForeignKey(Source)
-    date = models.DateField("Date sample was collected")
+    date = models.DateField("Date sample was collected", blank=True, null=True)
     organism = models.ForeignKey(Organism)
     sample_cat = models.CharField("Category of sample", choices=SAMPLE_CATS, max_length=255)
     sample_details = models.CharField("Sample details/description", max_length=255)
@@ -174,12 +174,15 @@ class Sample(models.Model):
 class Extract(models.Model):
     id = models.CharField("Extract ID", primary_key=True, max_length=255)
     sample = models.ForeignKey(Sample)
-    date = models.DateField("Date extract was done")
+    date = models.DateField("Date extract was done", blank=True, null=True)
     protocol_ref = models.CharField("Publication describing library construction method", max_length=255)
     protocol_note = models.TextField("Free text note describing extraction method", blank=True)
 
     def __unicode__(self):
-        return "Extract " + self.id + " " + str(self.date)
+        string = "Extract " + self.id
+        if self.date:
+            string = string + " " + str(self.date)
+        return string
 
     class Meta:
         app_label = 'acad'
@@ -238,7 +241,7 @@ class Library(models.Model):
 
     id = models.CharField("Library ID", primary_key=True, max_length=255)
     extract = models.ForeignKey(Extract)
-    date = models.DateField("Date library was made")
+    date = models.DateField("Date library was made", blank=True, null=True)
     source = models.CharField("Type of material", choices=LIB_SOURCES, max_length=255)
     layout = models.CharField("Layout/construction method", choices=(('single', 'Single'),('paired','Paired')), max_length=255)
     type = models.CharField("Type of library", choices=(('amplicon','Amplicon'),('shotgun','Shotgun')), max_length=255)
@@ -251,7 +254,10 @@ class Library(models.Model):
     amp_method = models.CharField("Method/enzyme used to amplify target", max_length=255, blank=True)
 
     def __unicode__(self):
-        return "Library " + self.id + " " + str(self.date)
+        string  = "Library " + self.id
+        if self.date:
+            string = string + " " + str(self.date)
+        return string
 
 class Sequence(models.Model):
     SEQ_METHOD = (
@@ -287,7 +293,7 @@ class Sequence(models.Model):
 
     id = models.CharField("Sequence ID", primary_key=True, max_length=255)
     library = models.ForeignKey(Library)
-    date = models.DateField("Date sequence was run")
+    date = models.DateField("Date sequence was run", blank=True, null=True)
     centre = models.CharField("Centre/lab/organisation where sequencing was performed", default="ACAD", max_length=255)
     method = models.CharField("Sequencing method used", max_length=255, choices=SEQ_METHOD)
     tech = models.CharField("Machine/technology used to generate sequence", max_length=255)
@@ -302,7 +308,10 @@ class Sequence(models.Model):
     demulti_prog_opt = models.CharField("Index demultiplexing program options", max_length=255, blank=True)
 
     def __unicode__(self):
-        return "Sequence " + self.id + " " + str(self.date)
+        string = "Sequence " + self.id
+        if self.date:
+            string = string + " " + str(self.date)
+        return string
 
     class Meta:
         app_label = 'acad'
