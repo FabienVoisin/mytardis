@@ -34,6 +34,7 @@ class SourceIndex(indexes.SearchIndex, indexes.Indexable):
     #source_carbondate_error=indexes.IntegerField(model_attr='carbondate_error', default=None)
     #source_carbondate_id=indexes.CharField(model_attr='carbondate_id')
     #source_source_notes=indexes.CharField(model_attr='source_notes')
+    source_arch_date=indexes.CharField(model_attr='arch_date', default=None)
     source_group_id=indexes.CharField(model_attr='group_id')
     source_collectedby=indexes.CharField(model_attr='collectedby')
 
