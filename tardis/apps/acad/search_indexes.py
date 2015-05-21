@@ -39,7 +39,9 @@ class SourceIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_source_geoloc(self, obj):
         # If you're just storing the floats...
-        return "%s,%s" % (obj.geoloc_lat, obj.geoloc_lon)
+        if obj.geoloc_lat and obj.geoloc_lon:
+            return "%s,%s" % (obj.geoloc_lat, obj.geoloc_lon)
+        return None
     
     #def prepare_source_geoloc_continent(self, obj):
     #    return obj.get_geoloc_continent_display()
