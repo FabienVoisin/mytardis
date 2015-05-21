@@ -4,3 +4,4 @@
 {{ object.group_id }}
 {{ object.collectedby }}
 {{ object.sample_notes }}
+{{ object.organism.common }}

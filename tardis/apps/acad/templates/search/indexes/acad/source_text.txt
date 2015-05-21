@@ -13,3 +13,4 @@
 {{ object.source_notes }}
 {{ object.group_id }}
 {{ object.collectedby }}
+{{ object.organism.common }}
