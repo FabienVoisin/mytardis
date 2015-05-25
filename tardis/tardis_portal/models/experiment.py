@@ -78,7 +78,13 @@ class Experiment(models.Model):
         super(Experiment, self).save(*args, **kwargs)
         from .hooks import publish_public_expt_rifcs
         publish_public_expt_rifcs(self)
-        self.mint_doi()
+        # Normal saves do not use update_fields, currently only ands_doi save_doi does this
+        # So, if only locking an experiment, skip minting doi
+        if 'update_fields' in kwargs and 'locked' in kwargs['update_fields']:
+           logger.debug("Successfully minted, locking, so skip")
+       else:
+           logger.info("Normal saving, trigger minting")
+            self.mint_doi()
 
     def delete(self, *args, **kwargs):
         if self.locked:
@@ -218,7 +224,12 @@ class Experiment(models.Model):
             doi_url = settings.DOI_BASE_URL + self.get_absolute_url()
             from tardis.tardis_portal.ands_doi import ExperimentDOIService
             doi_service = ExperimentDOIService(self)
-            doi_service.get_or_mint_doi(doi_url)
+            doi = doi_service.get_doi()
+            if doi and self.public_access == Experiment.PUBLIC_ACCESS_FULL:
+                logger.debug("DOI exists, access now is public, calling update_doi")
+                doi_service.update_doi(doi, doi_url)
+            else:
+                doi_service.get_or_mint_doi(doi_url)
 
 class Author_Experiment(models.Model):
 
