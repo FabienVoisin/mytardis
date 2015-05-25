@@ -81,9 +81,9 @@ class Experiment(models.Model):
         # Normal saves do not use update_fields, currently only ands_doi save_doi does this
         # So, if only locking an experiment, skip minting doi
         if 'update_fields' in kwargs and 'locked' in kwargs['update_fields']:
-           logger.debug("Successfully minted, locking, so skip")
-       else:
-           logger.info("Normal saving, trigger minting")
+            logger.debug("Successfully minted, locking, so skip")
+        else:
+            logger.info("Normal saving, trigger minting")
             self.mint_doi()
 
     def delete(self, *args, **kwargs):
