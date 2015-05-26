@@ -207,6 +207,26 @@ def logout(request):
 
 
 def index(request):
+    access_list = []
+    if request.user.is_authenticated():
+        access_list.extend(
+            [e.pk for e in
+             authz.get_accessible_experiments(request)])
+
+    access_list.extend(
+        [e.pk for e in Experiment.objects.exclude(
+            public_access=Experiment.PUBLIC_ACCESS_NONE)])
+
+    dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
+    valid_sources=[]
+    from tardis.apps.acad.models import Source
+    for source in Source.objects.all().exclude(id="ACADLab"):
+        #logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
+        if len(source.get_datasets(dataset_ids))>0:
+                valid_sources.append(source)
+    context = {'sources': valid_sources}
+    return HttpResponse(render_response_index(request, 'tardis_portal/index.html', context))
+    """
     status = ''
     limit = 8
     c = Context({'status': status})
@@ -222,6 +242,7 @@ def index(request):
     c['public_experiments'] = public_experiments
     return HttpResponse(render_response_index(request,
                         'tardis_portal/index.html', c))
+    """
 
 
 def site_settings(request):

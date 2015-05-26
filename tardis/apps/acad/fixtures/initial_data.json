@@ -30,6 +30,26 @@
   }
 },
 {
+  "pk": 447426, 
+  "model": "acad.organism", 
+  "fields": {
+    "subspecies": "", 
+    "genus": "", 
+    "species": "human oral metagenome", 
+    "common": ""
+  }
+},
+{
+  "pk": 1, 
+  "model": "acad.organism", 
+  "fields": {
+    "subspecies": "", 
+    "genus": "", 
+    "species": "environmental control metaorganism", 
+    "common": ""
+  }
+},
+{
   "pk": "Source1234", 
   "model": "acad.source", 
   "fields": {

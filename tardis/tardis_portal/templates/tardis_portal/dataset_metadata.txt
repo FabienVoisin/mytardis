@@ -15,10 +15,10 @@ Analysed using: {{ dataset.analysis.package }} version {{ dataset.analysis.packa
 
 From source: {{ i.sequence.library.extract.sample.source }}, sample {{ i.sequence.library.extract.sample }}
 
-Extracted {{ i.sequence.library.extract.date|date:"c"}}: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %})
+Extracted{% if i.sequence.library.extract.date %} {{ i.sequence.library.extract.date|date:"c"}}{% endif %}: {{ i.sequence.library.extract.protocol_note }} ({% filter linkify_pubid|striptags %}{{ i.sequence.library.extract.protocol_ref}}{% endfilter %})
 
 ## Library
-Date: {{ i.sequence.library.date|date:"c" }}
+{% if i.sequence.library.date %}Date: {{ i.sequence.library.date|date:"c" }}{% endif %}
 Type of material: {{ i.sequence.library.get_source_display }}
 Library layout: {{ i.sequence.library.get_layout_display }}
 Type of library: {{ i.sequence.library.get_type_display }}
@@ -30,7 +30,7 @@ Enrichment method: {{ i.sequence.library.get_enrich_method_display }}
 {% if i.sequence.library.amp_method %}Target amplified using: {{ i.sequence.library.amp_method }}{% endif %}
 
 ## Sequence
-Date: {{ i.sequence.date|date:"c" }}
+{% if i.sequence.date %}Date: {{ i.sequence.date|date:"c" }}{% endif %}
 Sequenced at: {{ i.sequence.centre }}
 Sequencing method: {{ i.sequence.method }} ({{ i.sequence.get_method_display }})
 Sequencer used: {{ i.sequence.tech }} (chemistry version {{i.sequence.tech_chem}})
@@ -57,7 +57,7 @@ Aligned to: {{ i.reference }}
 # {{ source }}
 
 Source ID: {{ source.id }}
-Collection date: {{ source.date|date:"c"}}
+{% if source.date %}Collection date: {{ source.date|date:"c"}}{% endif %}
 Organism: {{ source.organism }} {% if source.organism.id != 1 %}(NCBI taxonomy ID {{ source.organism.id }}){% endif %}
 Source details: {{ source.source_details|capfirst }}
 Gender: {{ source.get_gender_display }}
@@ -80,7 +80,7 @@ Country: {{ source.geoloc_country }}
 {% for sample in samples %}{% if sample in source.sample_set.all %}
 ## {{ sample }}
 
-Collection date: {{ sample.date|date:"c" }}
+{% if sample.date %}Collection date: {{ sample.date|date:"c" }}{% endif %}
 Organism: {{ sample.organism }} {% if source.organism.id != 1 %}(NCBI taxonomy ID {{ sample.organism.id }}){% endif %}
 {% if sample.env_package %}Environmental package: {{ sample.get_env_package_display }}{% endif %}
 Sample category: {{ sample.get_sample_cat_display }}
