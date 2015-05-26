@@ -355,7 +355,7 @@ urlpatterns = patterns(
     (r'^ajax/', include(ajax_urls)),
 
     # Account Views
-    (r'^accounts/', include(accounts_urls)),
+    #(r'^accounts/', include(accounts_urls)),
 
     # Group Views
     (r'^groups/$', 'tardis.tardis_portal.views.manage_groups'),
