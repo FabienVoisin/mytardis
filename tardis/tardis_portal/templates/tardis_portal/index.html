@@ -9,205 +9,65 @@
 {% endblock title %}
 
 {% block script %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 {% endblock script %}
+
+{% block style %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
+<style type="text/css">
+div.page-header h1 { font-size: 4em; }
+div#icons, div#map { max-width: 960px; margin-left: auto; margin-right: auto; }
+div#icons div { font-size: 2.5em; padding-bottom: 1em; }
+img.icon { max-width: 50%; image-rendering: optimizeQuality; border: 1px solid black; }
+</style>
+{% endblock style %}
 
 {% block content %}
 <div id="content">
+
   <div class="page-header">
     <h1>{{site_longtitle|default:'MyTardis Data Store'}}</h1>
   </div>
-  <p>
-    {% if not is_authenticated %}
-      Please <a href="{% url 'tardis.tardis_portal.views.login' %}">login</a>
-      to see your study data.
-    {% endif %}
-  </p>
-  <div class="row-fluid">
-    <div class="span7">
-      {% if is_authenticated %}
-	<h3>Your most recent studies <small><strong>(<a href="{% url 'tardis.tardis_portal.views.my_data' %}">view all</a>)</strong></small></h3>
-	<div id="experiments" class="accordion">
-	  {% for exp in private_experiments %}
-	    <div class="accordion-group">
-	      <div class="accordion-heading" data-parent="#experiments">
-		  <div class="accordion-toggle" data-toggle="collapse"  data-parent="#experiments"
-		       onclick="$('#collapse{{exp.id}}').collapse('toggle');" >
-		    <strong class="pull-left"><a class="explink"
-                    href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a>&nbsp;({{ exp.publication_year }})</strong>
-		    <ul class="nav nav-pills badgelist">
-		      <li class="pull-right">
-			{{ exp|experiment_public_access_badge }}
-		      </li>
-		      <li class="pull-right">
-			{{ exp|experiment_datafiles_badge }}
-		      </li>
-		      <li class="pull-right">
-			{{ exp|experiment_datasets_badge }}
-		      </li>
-		      <li class="pull-right">
-			{{ exp|experiment_last_updated_badge }}
-		      </li>
-		    </ul>
-		    <small>
-		      {% for author in exp.author_experiment_set.all %}{% if not forloop.first %}; {% endif %}
-		      <span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
-		    </small>
-		    <span class="pull-right">
-		      {% for dltype, dlurl in exp.get_download_urls.items %}
-			{% if forloop.first %}
-			  <a class="dllink" href="{{dlurl}}"
-			     title="Download Entire Study as {{dltype}}">
-			    <i class="icon-download-alt"></i>
-			    <em>Download data as .{{dltype}}</em>
-			  </a>
-			{% endif %}
-		      {% endfor %}
-		    </span>
-		  </div>
-	      </div>
-	      <div id="collapse{{exp.id}}"
-		   class="accordion-body collapse{% if forloop.first %} in{% endif %}">
-		<div class="accordion-inner">
-		  <p>{{exp.description|default:"<em>No description</em>"|bleach}}</p>
-		  {% for ds in exp.datasets.all|dictsortreversed:"id"|slice:":5" %}
-		    {% if forloop.first %}
-		      <ul class="nav nav-list">
-			{% with total=exp.datasets.all|length %}
-			  <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this study</li>
-			{% endwith %}
-		      {% endif %}
-		      <li>
-			<a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
-			{% for datafile in ds.get_images|slice:":5" %}
-			  {% if forloop.first %}
-			    <ul class="thumbnails">
-			  {% endif %}
-			  <li>
-			    <a class="thumbnail" href="{% url 'tardis.tardis_portal.download.view_datafile' datafile.id %}">{% url 'tardis.tardis_portal.iiif.download_image' datafile_id=datafile.id region='full' size=',50' rotation=0 quality='native' format='jpg' as thumbnail %}
-			    <img alt="Thumbnail for Datafile #{{datafile.id}}"
-				 src="{{ thumbnail }}"
-				 onerror="$(this).hide()"/></a>
-			  </li>
-			  {% if forloop.last %}
-			    </ul>
-			  {% endif %}
-			{% endfor %}
-		      </li>
-		      {% if forloop.last %}
-			</ul>
-		      {% endif %}
-		    {% endfor %}
-		</div>
-	      </div>
-	    </div>
-	    {% empty %}
-	    <p>You have no data stored on this server.<br/>
-	    <a href="{% url 'tardis.tardis_portal.views.create_experiment' %}">Create
-	    a new study</a> and upload your data</p>
-	  {% endfor %}
-	  <br/>
-      {% endif %}
 
-      {% with total=public_experiments|length %}
-	<h3>The {{ total }} most recent public stud{{total|pluralize:"y,ies"}}</h3>
-      {% endwith %}
-      {% if not is_authenticated %}
-	<div id="experiments" class="accordion">
-      {% endif %}
-      {% for exp in public_experiments %}
-	<div class="accordion-group">
-	  <div class="accordion-heading" data-parent="#experiments">
-	    <div class="accordion-toggle"
-		 data-toggle="collapse"  data-parent="#experiments"
-		 onclick="$('#collapsepub{{exp.id}}').collapse('toggle');" >
-	      <strong class="pull-left"><a class="explink"
-                  href="{% url 'tardis.tardis_portal.views.view_experiment' exp.id %}">{{ exp.title }}</a>&nbsp;({{ exp.publication_year }})</strong>
-	      <ul class="nav nav-pills badgelist">
-		<li class="pull-right">
-		  {{ exp|experiment_datafiles_badge }}
-		</li>
-		<li class="pull-right">
-		  {{ exp|experiment_datasets_badge }}
-		</li>
-		<li class="pull-right">
-		  {{ exp|experiment_last_updated_badge }}
-		</li>
-	      </ul>
-	      <small>
-		{% for author in exp.author_experiment_set.all %}{% if not forloop.first %};
-	      {% endif %}
-	      <span property="dc:author">{{ author.author|invert_parts }}</span>{% empty %}&nbsp;{% endfor %}
-	      </small>
-	      <span class="pull-right">
-		{% if exp.public_download_allowed %}
-
-		  {% for dltype, dlurl in exp.get_download_urls.items %}
-		    {% if forloop.first %}
-		      <a class="dllink" href="{{dlurl}}"
-			 title="Download Entire Study as {{dltype}}">
-			<i class="icon-download-alt"></i>
-			<em>Download data as .{{dltype}}</em>
-		      </a>
-		    {% endif %}
-		  {% endfor %}
-		 {% endif %}
-	      </span>
-	    </div>
-	  </div>
-	  <div id="collapsepub{{exp.id}}"
-	       class="accordion-body collapse{% if forloop.first and not is_authenticated %} in{% endif %}">
-	    <div class="accordion-inner">
-	      <p>{{exp.description|default:"<em>No description</em>"|bleach}}</p>
-	      {% for ds in exp.datasets.all|dictsortreversed:"id"|slice:":5" %}
-		{% if forloop.first %}
-		  <ul class="nav nav-list">
-		    {% with total=exp.datasets.all|length %}
-		      <li class="nav-header dataset-list-header">The most recent dataset{{total|pluralize}} in this study</li>
-		    {% endwith %}
-		  {% endif %}
-		  <li>
-		    <a href="{% url 'tardis.tardis_portal.views.view_dataset' ds.id %}"><strong>{{ ds.description }}</strong></a>
-		    {% if exp.public_download_allowed %}
-
-		    {% for datafile in ds.get_images|slice:":5" %}
-		      {% if forloop.first %}
-			<ul class="thumbnails">
-		      {% endif %}
-		      <li>
-			<a class="thumbnail" href="{% url 'tardis.tardis_portal.download.view_datafile' datafile.id %}">{% url 'tardis.tardis_portal.iiif.download_image' datafile_id=datafile.id region='full' size=',50' rotation=0 quality='native' format='jpg' as thumbnail %}
-			<img alt="Thumbnail for Datafile #{{datafile.id}}"
-			     src="{{ thumbnail }}"
-			     onerror="$(this).hide()"/></a>
-		      </li>
-		      {% if forloop.last %}
-			</ul>
-		      {% endif %}
-		    {% endfor %}
-		    {% endif %}
-		  </li>
-		  {% if forloop.last %}
-		    </ul>
-		  {% endif %}
-		{% endfor %}
-	    </div>
-	  </div>
-	</div>
-	{% empty %}
-	<p>There is no public data available on this server.</p>
-      {% endfor %}
-      </div>
+    <div class="row-fluid" id="icons">
+        <div class="span4">
+            <a href="{% url 'tardis.tardis_portal.views.public_data' %}"><img src="{% static 'images/STUDIES_SQ_Recolored.jpg' %}" alt="Studies" class="icon"></a>
+            <a href="{% url 'tardis.tardis_portal.views.public_data' %}">Studies</a>
+        </div>
+        <div class="span4">
+            <a href="{% url 'tardis.apps.acad.views.source_index' %}"><img src="{% static 'images/SOURCES_SQ_Recolored.jpg' %}" alt="Sources" class="icon"></a>
+            <a href="{% url 'tardis.apps.acad.views.source_index' %}">Sources</a>
+        </div>
+        <div class="span4">
+            <a href="/search/"><img src="{% static 'images/SEARCH_SQ_Recolored.jpg' %}" alt="Search" class="icon"></a>
+            <a href="/search/">Search</a>
+        </div>
     </div>
-  </div>
+    <div id="map" style="height: 500px"></div>
+
 </div>
-<script type="text/javascript">
-$(function(){
-    $("#experiments .accordion-body").collapse({parent:"#experiments", toggle: false});
-    $(".explink").click(function(e){
-	e.stopPropagation();
-    });
-    $(".dllink").click(function(e){
-	e.stopPropagation();
-    });
-});
+
+<script>
+    layer = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: ["otile1", "otile2", "otile3", "otile4"], attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+
+    var map = L.map('map', {fullscreenControl: true}).setView([0, 0], 2).addLayer(layer);
+    var markers = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.5 });
+    var markerArray=new Array();
+    {% for source in sources %}
+    {%if source.geoloc_lat and source.geoloc_lon %}
+    L.marker([{{ source.geoloc_lat }}, {{ source.geoloc_lon}}])
+        .addTo(markers)
+        .bindPopup('<a href="{{ source.get_absolute_url }}">{{ source }}</a>');
+    markerArray.push(L.latLng({{ source.geoloc_lat }}, {{ source.geoloc_lon}}));
+    {% endif %}
+    {% endfor %}
+    map.addLayer(markers);
+    var bounds = L.latLngBounds(markerArray);
+    map.fitBounds(bounds);
 </script>
 {% endblock content %}
