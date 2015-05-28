@@ -14,47 +14,46 @@
 <h1>OAGR Help</h1>
 </div>
 
-<h2>What is a Source?</h2>
+<h2>What is a source?</h2>
 <p>Sources are individual ancient human remains, from which samples are taken
 to generate ancient human genome and microbiome data. If the location of the
-source is known, it is displayed on the OAGR map. Clicking on a Source title
-(either via the list of the map) will load a page that displays information
-about the Source, including provenance metadata. Any samples taken from the
-Source are listed below the provenance metadata, along with links to Datasets
-derived from the samples.</p>
+source is known, it is displayed on the OAGR map. Clicking on a source title,
+either on the list or the map, will display provenance metadata and information
+about the source. Any samples taken from the source are listed below the
+metadata, along with links to datasets derived from the samples.</p>
 
-<h2>What is a Study?</h2>
-<p>Studies are groups of related Datasets. In many cases there will only be one
-Dataset per Study, but it is possible for a Study to have multiple Datasets.
-Clicking on the title of a Study will load a page that displays information
-about the Study on the left and links to the included Dataset(s) on the
-right.</p>
+<h2>What is a study?</h2>
+<p>Studies are collections of related datasets. In many cases there will only
+be one dataset per study. Clicking on the title of a study will load a page
+displaying information about the study, with links to included dataset/s on
+the right.</p>
 
-<h2>What is a Dataset?</h2>
-<p>A Dataset is a group of related files and accompanying metadata. Clicking on
-the title of the Dataset will load a page that displays information about how
-the Dataset was generated. In cases where the files are generated from multiple
+<h2>What is a dataset?</h2>
+<p>A dataset is a group of related data files and associated metadata. Clicking on
+the title of the dataset will load a page that displays metadata about how
+the dataset was generated. In cases where the dataset involves multiple
 bioinformatics pipelines, metadata about each pipeline appears separately and
-can be accessed using the tabs at the top of the dataset, or in some cases
-through a drop-down menu depending on the number of bioinformatics pipelines
-incorporated. The individual files appear on the right.</p>
+can be accessed using the tabs or dropdown menu at the top of the dataset page.
+Files in the dataset are listed on the right.</p>
 
-<h2>Why do some Datasets not have any related files?</h2>
-<p>In some cases, the metadata about a Dataset is published before the data
-files are available. Data files may be released at a later stage.</p>
+<h2>Why do some datasets not have any related files?</h2>
+<p>In some cases metadata for a dataset is published before the data files are
+available. Data files may be released at a later stage.</p>
 
-<h2>How do I download Datasets?</h2>
-<p>Clicking on the title of the Dataset will load a page that displays
-information about the Dataset and lists included data files on the right-hand
-side of the page. Files can be downloaded individually by clicking the download
-icon next to the file name. Selected files can be downloaded by clicking the
-checkbox next to the required files and clicking the ‘Download Selected Files’
-button. The entire Dataset (including a text file containing metadata) can be
-downloaded by clicking the TAR download button.</p>
+<h2>How do I download datasets?</h2>
+<p>Clicking on the title of the dataset will load a page that displays
+information about the dataset and lists included data files on the right of the
+page. Files can be downloaded individually by clicking the download icon next
+to the file name. One or more individual files can be downloaded by clicking
+the checkbox next to the required files and then clicking the ‘Download Selected
+Files’ button. The entire dataset, including a plain text file containing the
+dataset metadata, can be downloaded by clicking the blue TAR download
+button.</p>
 
-<p>OAGR can also show a list of direct download URLs for a batch download of
-files or datasets. Click the checkbox next to the required files and click
-‘Show Download URLs’ button.</p>
+<p>OAGR can also show a list of direct download URLs for downloading files
+through an external utility such as wget. Click the checkbox next to the
+desired file/s and then click the ‘<i class="icon-list"></i> Show Download
+URLs’ button.</p>
 
 <h2>Can I reuse data in OAGR?</h2>
 <p>Data published through OAGR is made openly available under the <a
@@ -73,37 +72,36 @@ including commercially, provided you:</p>
 <p>Ancient human genome and microbiome data, including raw sequence and
 processed data, is generated from ancient samples studied at the <a
     href="http://www.adelaide.edu.au/acad/">Australian Centre for Ancient
-    DNA</a>, <a href="http://www.adelaide.edu.au/">University of Adelaide</a>,
+    DNA</a>, <a href="http://www.adelaide.edu.au/">University of Adelaide</a>
 in collaboration with other research groups.</p>
 
 <h2>How do I cite something in OAGR?</h2>
-<p>Digital Object Identifiers (DOIs) will be minted for included Datasets and
-Studies to enable persistent identification and citation. The repository will
-display suggested citations, which you can use to cite and link to a Dataset or
-Study, for example:</p>
+<p>Digital Object Identifiers (DOIs) are minted for included datasets and
+studies to enable persistent identification and citation. The repository will
+display suggested citations which you can use to cite and link to a dataset or
+study. For example:</p>
 
-<p class="citation-block">Smith, Jane; Smart, John (2014): <cite>Title of
-collection</cite>. Online Ancient Genome Repository. Collection.
+<p class="citation-block">Smith, Jane; Smart, John (2014): <i>Title of
+collection</i>. Online Ancient Genome Repository. Collection.
 <a href="http://dx.doi.org/10.4225/38/123456789">http://dx.doi.org/10.4225/38/123456789</a></p>
 
 <h2>How do I view files in a genome browser?</h2>
-<p>Files with .vcf or .bam extension can be viewed in the external <a
-    href="http://genome.ucsc.edu">UCSC genome browser</a>. Simply click the
-‘Open in genome browser’ button next to a listed .vcf or .bam file. The UCSC
-Genome Browser opens in new window/tab.</p>
+<p>VCF or BAM files can be opened in the external <a
+    href="http://genome.ucsc.edu">UCSC genome browser</a>. Click the
+‘<i class="icon-share"></i> Open in genome browser’ button next to a listed VCF
+or BAM file. The UCSC Genome Browser opens in a new window/tab.</p>
 
 <h2>Can I upload my data?</h2>
 <p>OAGR is currently limited to data generated from ancient samples studied at
 the Australian Centre for Ancient DNA in collaboration with other research
-groups, accordance with the Repository Guidelines. Individuals and groups
-interested in collaborations should contact ACAD.</p>
+groups, and published through OAGR under the <a
+    href="/about/repositoryguidelines">repository guidelines</a>.
+Individuals and research groups interested in collaborations should contact <a
+    href="http://www.adelaide.edu.au/acad/">ACAD</a>.</p>
 
 <h2>I can’t open TAR files!</h2>
-<p>You may require tools to support TAR files. Open source operating systems
-often include tools such as gzip and bzip2 but other third party tools are
-available for other platforms.</p>
+<p>You may require additional software to open TAR files. Options for Windows include <a href="http://www.7-zip.org">7-Zip</a>, <a href="http://www.rarlab.com">WinRAR</a> and <a href="http://winzip.com/">WinZip</a>.</p>
 
 <h2>Which browsers are recommended?</h2>
-<p>OAGR can be accessed on all internet browsers but for the best experience it
-is recommended that you use either Chrome or Firefox.</p>
+<p>We recommend using the current version of Chrome, Firefox or Safari.</p>
 {% endblock content %}
