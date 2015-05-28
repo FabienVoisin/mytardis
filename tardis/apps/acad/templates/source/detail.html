@@ -200,7 +200,7 @@ $(document).ready(function(){
 
 {% if source.geoloc_lat and source.geoloc_lon %}
 <script>
-    layer = L.tileLayer("https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234"], attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+    layer = L.tileLayer("https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
 
     var map = L.map('map').setView([{{ source.geoloc_lat }}, {{source.geoloc_lon}} ], 7).addLayer(layer);
 
