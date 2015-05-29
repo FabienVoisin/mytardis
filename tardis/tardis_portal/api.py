@@ -6,6 +6,8 @@ Implemented with Tastypie.
 '''
 import json as simplejson
 
+import sys
+
 from django.conf import settings
 from django.conf.urls.defaults import url
 from django.contrib.auth.models import AnonymousUser
