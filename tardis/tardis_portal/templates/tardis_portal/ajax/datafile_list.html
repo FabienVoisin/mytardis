@@ -75,6 +75,7 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
   </tr>
 </thead>
 {% endif %}
+{% if has_download_permissions %}
 <tbody>
 {% for datafile in datafiles.object_list %}
 <tr class="datafile search_match_file">
@@ -157,6 +158,8 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
 {% endfor %}
 
 </tbody>
+{% else %}<p>Sorry, files not currently available</p>
+{% endif %}
 </table>
 </form>
 
