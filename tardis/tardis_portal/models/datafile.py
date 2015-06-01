@@ -205,9 +205,15 @@ class DataFile(models.Model):
 
     def is_genome(self):
         '''
-        returns True if it's a gemoe file?
+        Check if a datafile is supported by Genome Browser
+        It returns True if file extensions either is VCF or BAM
+        They can be compressed into .gz or .bz2 file: foo.vcf.gz
         '''
-        suffix = path.splitext(self.filename)[-1].upper()
+        name_parts = [p.upper() for p in path.splitext(self.filename)]
+        if name_parts[-1] in ('.GZ', '.BZ2'):
+            suffix = path.splitext(name_parts[0])[-1]
+        else:
+            suffix = name_parts[-1]
         return suffix in ('.VCF', '.BAM')
 
     def get_image_data(self):
