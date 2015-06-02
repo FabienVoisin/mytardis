@@ -140,11 +140,13 @@ Select: <a class="dataset_selector_all btn btn-mini">All</a> / <a class="dataset
           <i class="icon-list"></i>
       </a>
       {% endcomment %}
+      {% comment %}
       {% if datafile.is_genome %}
       <a title="Open in genome browser" class="btn"
           target="_blank" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&hgt.customText=https://{{ request.get_host }}{{ datafile.get_download_url }}"><i class="icon-share"></i>
       </a>
        {% endif %}
+       {% endcomment %}
       {% if has_download_permissions %}
       <a  class="btn"
           href="{{ datafile.get_download_url }}"
