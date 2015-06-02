@@ -209,7 +209,7 @@ class DataFile(models.Model):
         It returns True if file extensions either is VCF or BAM
         They can be compressed into .gz or .bz2 file: foo.vcf.gz
         '''
-        name_parts = [p.upper() for p in path.splitext(self.filename)]
+        name_parts = path.splitext(self.filename.upper())
         if name_parts[-1] in ('.GZ', '.BZ2'):
             suffix = path.splitext(name_parts[0])[-1]
         else:
