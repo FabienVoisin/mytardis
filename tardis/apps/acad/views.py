@@ -87,8 +87,8 @@ class AcadSearchView(SearchView):
             extra['sources'] = []
         else:
             source_id_string=(",").join(["'"+s+"'" for s in set(source_ids)])
-            #sources=Source.objects.extra(where=["lower(id) IN (%s)" % source_id_string], order_by=["-date"])
-            sources=Source.objects.filter(pk__in=source_ids).order_by("-date")
+            sources=Source.objects.extra(where=["lower(id) IN (%s)" % source_id_string], order_by=["-date"])
+            #sources=Source.objects.filter(pk__in=source_ids).order_by("-date")
             logger.debug("sources %s " % sources)
             #if self.form.cleaned_data['gender'] and self.form.cleaned_data['gender'] != "All":
             #    sources = sources.filter(gender=self.form.cleaned_data['gender'])
