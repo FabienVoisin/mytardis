@@ -1,5 +1,6 @@
 from tardis.tardis_portal.models import Dataset
 from django.db import models
+from django.utils.functional import cached_property
 
 class Organism(models.Model):
     id = models.PositiveIntegerField("NCBI taxonomy ID", primary_key=True)
@@ -13,6 +14,14 @@ class Organism(models.Model):
         if self.common:
             string = string + " (" + self.common + ")"
         return string
+
+    @cached_property
+    def get_name(self):
+        if self.common:
+            return str(self.common[0].upper() + self.common[1:])
+        else:
+            string = str(self.genus + " " + self.species + " " + self.subspecies).strip()
+            return string[0].upper() + string[1:]
 
     class Meta:
         app_label = 'acad'
@@ -71,11 +80,7 @@ class Source(models.Model):
     collectedby = models.CharField("Individual/team who collected source", max_length=255, blank=True)
 
     def __unicode__(self):
-        if self.organism.common:
-            string = str(self.organism.common[0].upper() + self.organism.common[1:])
-        else:
-            string = str(self.organism)[0].upper() + str(self.organism)[1:]
-        string = string + " " + self.source_details + ", " + self.geoloc_country
+        string = self.organism.get_name + " " + self.source_details + ", " + self.geoloc_country
         if self.date:
             string = string + " " + str(self.date)
         string = string + " " + self.id
