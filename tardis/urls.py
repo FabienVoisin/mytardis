@@ -6,8 +6,6 @@ from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from registration.backends.default.views import RegistrationView
-
 from tardis.tardis_portal.forms import RegistrationForm
 
 from django.http import HttpResponse
@@ -109,8 +107,8 @@ accounts_urls = patterns(
     (r'^login/$', 'login'),
     (r'^manage$', 'manage_user_account'),
     (r'^manage_auth_methods/$', 'manage_auth_methods'),
-    url(r'^register/$', 'login'),
-    (r'', include('registration.backends.default.urls')),
+    url(r'^register/$', OAGRRegistrationView.as_view(form_class=RegistrationForm), name='register'),
+    (r'', include('registration.backends.simple.urls')),
     )
 
 dataset_urls = patterns(

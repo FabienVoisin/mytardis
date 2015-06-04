@@ -58,7 +58,6 @@ from datetime import date
 from haystack.forms import SearchForm
 
 from form_utils import forms as formutils
-from registration.models import RegistrationProfile
 
 from tardis.tardis_portal import models
 from tardis.tardis_portal.fields import DelimitedMultiValueField
@@ -166,6 +165,7 @@ class RegistrationForm(forms.Form):
 
         return self.cleaned_data
 
+    """ As far as I can tell this stuff is never executed ...
     @transaction.commit_on_success()
     def save(self, profile_callback=None):
         user = RegistrationProfile.objects.create_inactive_user(
@@ -183,7 +183,7 @@ class RegistrationForm(forms.Form):
         authentication.save()
 
         return user
-
+    """
 
 class ChangeUserPermissionsForm(ModelForm):
 

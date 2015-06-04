@@ -3547,3 +3547,22 @@ def view_dataset_metadata(request, dataset_id):
         context['doi'] = DatasetDOIService(dataset).get_doi()
         context['doi_exp'] = dataset.experiment
     return render(request, 'tardis_portal/dataset_metadata.txt', context, content_type='text/plain')
+
+from registration.backends.simple.views import RegistrationView
+
+class OAGRRegistrationView(RegistrationView):
+    def register(self, request, **cleaned_data):
+        user = super(OAGRRegistrationView, self).register(request, **cleaned_data)
+
+        from tardis.tardis_portal.models import UserProfile, UserAuthentication
+        from tardis.tardis_portal.auth.localdb_auth import auth_key as locabdb_auth_key
+        userProfile = UserProfile(user=user, isDjangoAccount=True)
+        userProfile.save()
+
+        authentication = UserAuthentication(userProfile=userProfile,
+                                            username=cleaned_data['username'],
+                                            authenticationMethod=locabdb_auth_key)
+        authentication.save()
+
+    def get_success_url(self, request, user):
+        return 'tardis.tardis_portal.views.index'
