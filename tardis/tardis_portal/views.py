@@ -219,11 +219,10 @@ def index(request):
 
     dataset_ids=Dataset.objects.filter(experiments__pk__in=access_list).values_list('id', flat=True).order_by('id')
     valid_sources=[]
-    from tardis.apps.acad.models import Source
-    for source in Source.objects.all().exclude(id="ACADLab"):
-        #logger.info("source %s datasets %s" % (source.id, source.get_datasets(dataset_ids)))
-        if len(source.get_datasets(dataset_ids))>0:
-                valid_sources.append(source)
+    from tardis.apps.acad.models import Analysis, Processing, Source
+    analysis_list=Analysis.objects.filter(dataset__pk__in=dataset_ids).values_list('id', flat=True)
+    processing_list=Processing.objects.filter(analysis__pk__in=analysis_list)
+    valid_sources = list(Source.objects.filter(sample__extract__library__sequence__processing__pk__in=processing_list).exclude(id="ACADLab").select_related().all().distinct())
     context = {'sources': valid_sources}
     return HttpResponse(render_response_index(request, 'tardis_portal/index.html', context))
     """
