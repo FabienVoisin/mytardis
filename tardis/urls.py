@@ -101,7 +101,7 @@ token_urls = patterns(
     (r'^delete/(?P<token_id>.+)/', 'token_delete'),
     )
 
-
+from tardis.tardis_portal.views import OAGRRegistrationView
 accounts_urls = patterns(
     'tardis.tardis_portal.views',
     (r'^login/$', 'login'),
