@@ -3553,6 +3553,9 @@ from registration.backends.simple.views import RegistrationView
 class OAGRRegistrationView(RegistrationView):
     def register(self, request, **cleaned_data):
         user = super(OAGRRegistrationView, self).register(request, **cleaned_data)
+        user.first_name=cleaned_data['first_name']
+        user.last_name=cleaned_data['last_name']
+        user.save()
 
         from tardis.tardis_portal.models import UserProfile, UserAuthentication
         from tardis.tardis_portal.auth.localdb_auth import auth_key as locabdb_auth_key

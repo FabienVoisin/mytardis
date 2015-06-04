@@ -133,6 +133,24 @@ class RegistrationForm(forms.Form):
         widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
         label=_("Password (again)"))
 
+    first_name=forms.RegexField(
+        regex=r'^[\w\.]+$',
+        max_length=30,
+        widget=forms.TextInput(attrs=attrs_dict),
+        label=_("First name"),
+        error_messages={'invalid':
+            _("This value must contain only letters, \
+            numbers and underscores.")})
+
+    last_name=forms.RegexField(
+        regex=r'^[\w\.]+$',
+        max_length=50,
+        widget=forms.TextInput(attrs=attrs_dict),
+        label=_("Last name"),
+        error_messages={'invalid':
+            _("This value must contain only letters, \
+            numbers and underscores.")})
+
     def clean_username(self):
         """
         Validate that the username is alphanumeric and is not already
