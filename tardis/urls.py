@@ -102,12 +102,13 @@ token_urls = patterns(
     )
 
 from tardis.tardis_portal.views import OAGRRegistrationView
+from django.contrib.auth.decorators import permission_required
 accounts_urls = patterns(
     'tardis.tardis_portal.views',
     (r'^login/$', 'login'),
     (r'^manage$', 'manage_user_account'),
     (r'^manage_auth_methods/$', 'manage_auth_methods'),
-    url(r'^register/$', OAGRRegistrationView.as_view(form_class=RegistrationForm), name='register'),
+    url(r'^register/$', permission_required('is_superuser')(OAGRRegistrationView.as_view(form_class=RegistrationForm)), name='register'),
     (r'', include('registration.backends.simple.urls')),
     )
 
