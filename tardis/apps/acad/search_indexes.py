@@ -193,27 +193,11 @@ class AnalysisIndex(indexes.SearchIndex, indexes.Indexable):
     text=indexes.CharField(document=True, use_template=True)
     analysis_id=indexes.CharField(model_attr='id')
     source_id=indexes.MultiValueField(indexed=True, stored=True)
-    source_gender=indexes.MultiValueField(indexed=True, stored=True)
-    source_age_cat=indexes.MultiValueField(indexed=True, stored=True)
-    source_geoloc_continent=indexes.MultiValueField(indexed=True, stored=True)
-    source_carbondate_years=indexes.MultiValueField(indexed=True, stored=True)
     study_id=indexes.MultiValueField(indexed=True, stored=True)
     analysis_package=indexes.CharField(model_attr='package')
 
     def prepare_source_id(self, obj):
         return [processing.sequence.library.extract.sample.source.id for processing in obj.processing_set.all()]
-
-    def prepare_source_gender(self, obj):
-        return [processing.sequence.library.extract.sample.source.gender for processing in obj.processing_set.all()]
-
-    def prepare_source_age_cat(self, obj):
-        return [processing.sequence.library.extract.sample.source.age_cat for processing in obj.processing_set.all()]
-
-    def prepare_source_geoloc_continent(self, obj):
-        return [processing.sequence.library.extract.sample.source.geoloc_continent for processing in obj.processing_set.all()]
-
-    def prepare_source_carbondate_years(self, obj):
-        return [processing.sequence.library.extract.sample.source.carbondate_years for processing in obj.processing_set.all()]
 
     def prepare_study_id(self, obj):
         return [exp.id for exp in obj.dataset.experiments.all()]
