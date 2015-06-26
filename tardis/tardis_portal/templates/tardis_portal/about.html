@@ -1,4 +1,14 @@
 {% extends "tardis_portal/portal_template.html" %}
+{% load static from staticfiles %}
+{% block style %}
+<style type="text/css">
+.citation-block {
+    text-indent:-3em;
+    padding-left:3em;
+}
+blockquote .citation-block { font-size: inherit; }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="page-header">
@@ -27,5 +37,15 @@
 <h2>Acknowledgements</h2>
 <p>OAGR is built on the <a href="http://mytardis.org/">MyTardis</a> research data management system.</p>
 
+<blockquote>
+<p class="citation-block">Androulakis, S., Schmidberger, J., Bate M.A. et al (2008):
+Federated repositories of X-ray diffraction images.
+<i>Acta Crystallogr D Biol Crystallogr</i> 64(7):810-4.
+<a href="http://dx.doi.org/10.1107/S0907444908015540">http://dx.doi.org/10.1107/S0907444908015540</a>
+</p>
+</blockquote>
+
 <p>OAGR was developed by the <a href="http://www.adelaide.edu.au/acad/">Australian Centre for Ancient DNA</a>, <a href="http://www.adelaide.edu.au/library/">University of Adelaide Libraries</a> and <a href="http://www.ersa.edu.au/">eResearch SA</a>, as part of a project supported by the <a href="http://www.ands.org.au/">Australian National Data Service (ANDS)</a>. ANDS is supported by the Australian Government through the National Collaborative Research Infrastructure Strategy Program.</p>
+
+<p><a href="http://www.ands.org.au/"><img src="{% static 'images/ands-logo-hi-res.jpg' %}" width=150 /></a></p>
 {% endblock content %}
