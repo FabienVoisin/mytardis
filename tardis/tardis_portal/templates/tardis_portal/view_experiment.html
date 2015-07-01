@@ -477,7 +477,7 @@ $("#delete_experiment").click(function() {
         $.ajax({
           headers: {'X-CSRFToken': '{{csrf_token}}'},
           type: 'DELETE',
-          url: '/ajax/delete_experiment/{{ experiment.id }}',
+          url: '/ajax/delete_experiment/{{ experiment.id }}/',
           success: function(data) {
                   if (data.status == "success") {
                       window.location = "{% url 'tardis.tardis_portal.views.my_data' %}";
@@ -490,22 +490,6 @@ $("#delete_experiment").click(function() {
 });
 {% endif %}
 
-function delete_dataset(dataset_id) {
-    if (confirm("Are you sure you want to delete the dataset and its files?")) {
-        $.ajax({
-          headers: {'X-CSRFToken': '{{csrf_token}}'},
-          type: 'DELETE',
-          url: '/ajax/delete_dataset/'+dataset_id,
-          success: function(data) {
-                  if (data.status == "success") {
-                      window.location = "{% url 'tardis.tardis_portal.views.view_experiment' experiment.id %}"
-                  } else {
-                      alert("Can't delete: " + data.message);
-                  }
-            }
-        });
-    }
-}
 $('#show_dataset_urls').click(function() {
    $.ajax({
      headers: {'X-CSRFToken': '{{csrf_token}}'},

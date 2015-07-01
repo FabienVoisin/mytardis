@@ -763,7 +763,7 @@ $("#delete_dataset").click(function() {
         $.ajax({
           headers: {'X-CSRFToken': '{{csrf_token}}'},
           type: 'DELETE',
-          url: '/ajax/delete_dataset/{{ dataset.id }}',
+          url: '/ajax/delete_dataset/{{ dataset.id }}/',
           success: function(data) {
                   if (data.status == "success") {
                       window.location = "{% url 'tardis.tardis_portal.views.view_experiment' other_experiments.0.id %}"
