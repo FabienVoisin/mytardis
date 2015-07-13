@@ -397,7 +397,7 @@ def _streaming_tar_thread(directory, downloads, out):
         datasets.add((download["datafile"].dataset_id, download["datafile"].dataset))
         tarobj = tarfile.TarInfo(name="%s/%s/%s" % (directory, download["datafile"].dataset, download["datafile"].filename))
         tarobj.mode = 0644
-        tarobj.size = download["datafile"].get_size()
+        tarobj.size = int(download["datafile"].get_size())
         mtime = None
         dj_mtime = download["datafile"].modification_time
         if dj_mtime is not None:
