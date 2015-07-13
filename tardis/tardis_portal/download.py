@@ -26,6 +26,7 @@ from itertools import chain
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponseRedirect, StreamingHttpResponse
 from django.conf import settings
+from django.utils.dateformat import format as dateformatter
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.decorators import login_required
@@ -42,11 +43,7 @@ from tardis.tardis_portal.views import return_response_not_found, \
 
 from tardis.apps.acad.models import Analysis
 
-import datetime
 import threading
-import boto
-import pytz
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -393,8 +390,6 @@ def _streaming_downloader(request, datafiles, rootdir, filename,
         return HttpResponseRedirect(redirect)
 
 
-_epoch = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
-
 def _streaming_tar_thread(directory, downloads, out):
     tar = tarfile.open(fileobj=out, mode="w|")
     datasets = set()
@@ -402,10 +397,20 @@ def _streaming_tar_thread(directory, downloads, out):
         datasets.add((download["datafile"].dataset_id, download["datafile"].dataset))
         tarobj = tarfile.TarInfo(name="%s/%s/%s" % (directory, download["datafile"].dataset, download["datafile"].filename))
         tarobj.mode = 0644
-        tarobj.size = download["key"].size
-        timestamp = pytz.utc.localize(boto.utils.parse_ts(download["key"].last_modified))
-        tarobj.mtime = int((timestamp - _epoch).total_seconds())
-        tar.addfile(tarobj, download["key"])
+        tarobj.size = download["datafile"].get_size()
+        mtime = None
+        dj_mtime = download["datafile"].modification_time
+        if dj_mtime is not None:
+            mtime = dateformatter(dj_mtime, 'U')
+        else:
+            try:
+                mtime = os.fstat(fileobj.fileno()).st_mtime
+            except:
+                pass
+        if mtime is None:
+            mtime = time.time()
+        tarobj.mtime = mtime
+        tar.addfile(tarobj, download["obj"])
     for dataset_id, dataset in datasets:
         context = {'dataset': dataset}
         from tardis.apps.acad.models import Source, Sample
@@ -432,7 +437,7 @@ def _streaming_tar_thread(directory, downloads, out):
 
 
 def _external_streaming_tar(filename, directory, datafiles):
-    downloads = [{ "datafile" : datafile, "key" : datafile.get_file().key } for datafile in datafiles]
+    downloads = [{ "datafile" : datafile, "obj" : datafile.get_file() } for datafile in datafiles]
     pipe_read, pipe_write = os.pipe()
     pipe_read_file = os.fdopen(pipe_read, "rb")
     pipe_write_file = os.fdopen(pipe_write, "wb")

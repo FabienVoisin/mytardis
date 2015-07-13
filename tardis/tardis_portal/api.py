@@ -705,23 +705,6 @@ class DatasetResource(MyTardisModelResource):
         df_res = DataFileResource()
         return df_res.dispatch('list', request, **kwargs)
 
-class S3Response(StreamingHttpResponse):
-    """
-    A streaming HTTP response class optimized for S3.
-    """
-
-    def close(self):
-        for closable in self._closable_objects:
-            try:
-                closable.close(fast=True)
-            except Exception:
-                pass
-        signals.request_finished.send(sender=self._handler_class)
-        # The following is a heavy-handed way of ensuring S3 connections are freed.
-        # We've seen dangling interrupted connections even after the above close().
-        # Might be related to https://bugs.python.org/issue23865 .
-        sys.exit(0)
-
 class DataFileResource(MyTardisModelResource):
     dataset = fields.ForeignKey(DatasetResource, 'dataset')
     parameter_sets = fields.ToManyField(
@@ -762,7 +745,7 @@ class DataFileResource(MyTardisModelResource):
             [file_record],
             self.build_bundle(obj=file_record, request=request))
         file_object = file_record.get_file()
-        response = S3Response(file_object.key, content_type=file_record.mimetype)
+        response = StreamingHttpResponse(FileWrapper(file_object), content_type=file_record.mimetype)
         response['Content-Length'] = file_record.size
         response['Content-Disposition'] = 'attachment; filename="%s"' % \
                                           file_record.filename
