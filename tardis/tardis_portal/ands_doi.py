@@ -57,7 +57,7 @@ class DOIService(object):
         return doi
 
     def update_doi(self, doi, url):
-        base_url = "https://services.ands.org.au/doi/1.1/update.json/" # put me in settings.py eventually
+        base_url = "https://researchdata.ands.org.au/api/doi/update.json/" # put me in settings.py eventually
         app_id = settings.DOI_APP_ID
         mint_url = "%s?app_id=%s&doi=%s&url=%s" % (base_url, app_id, doi, url)
         datacite_xml = self._datacite_xml()

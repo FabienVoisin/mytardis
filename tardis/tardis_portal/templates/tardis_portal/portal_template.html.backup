@@ -289,8 +289,7 @@
           {% block sidebar %}{% endblock sidebar %}
         {% endcapture %}
         {% capture as content %}
-          {% block content %}
- 	  {% endblock content %}
+          {% block content %}{% endblock content %}
         {% endcapture %}
 
         {% if sidebar %}

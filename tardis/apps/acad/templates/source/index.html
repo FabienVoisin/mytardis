@@ -5,6 +5,7 @@
 <script src="{% static 'leaflet-0.7.3/leaflet.js' %}"></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
+<script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=AH5gc7uLKpuLkASxE8LM57Tio6HOjPVT"></script>
 {% endblock script %}
 
 {% block style %}
@@ -84,9 +85,11 @@
 {% endif %}
 </div>
 <script>
-    layer = L.tileLayer("https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+    //layer = L.tileLayer("https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+    //layer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'});
 
-    var map = L.map('map', {fullscreenControl: true}).setView([0, 0], 2).addLayer(layer);
+    //var map = L.map('map', {fullscreenControl: true}).setView([0, 0], 2).addLayer(layer);
+    var map = L.map('map', {fullscreenControl: true}).setView([0, 0], 2).addLayer(MQ.mapLayer());
     var markers = new L.MarkerClusterGroup({ showCoverageOnHover: false, spiderfyDistanceMultiplier: 1.5 });
     var markerArray=new Array();
     {% for source in sources %}
