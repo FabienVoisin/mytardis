@@ -73,4 +73,10 @@ img.icon { max-width: 50%; image-rendering: optimizeQuality; border: 1px solid b
     map.fitBounds(bounds);
 </script>
 
+<p style="font-size: 12pt; line-height: 20pt;", align="center">
+    <strong>Public studies stored:</strong> {{experiment_count|default:"14"}}<br/>
+    <strong>Public datasets stored:</strong> {{dataset_count|default:"331"}}<br/>
+    <strong>Public files stored:</strong> {{datafile_count|default:"2104"}}<br/>
+    <strong>Public data stored (at least):</strong> {{datafile_size|default:"3.1 Tb"}}<br/>
+</p>
 {% endblock content %}
