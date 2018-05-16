@@ -49,10 +49,11 @@ img.icon { max-width: 50%; image-rendering: optimizeQuality; border: 1px solid b
             <a href="/search/">Search</a>
         </div>
     </div>
-    <div id="map" style="height: 500px"></div>
+    <div id="map" style="height: 600px"><iframe width="1000" height="580" scrolling="no" frameborder="no" src="https://fusiontables.google.com/embedviz?q=select+col14+from+1QoskJ27xFL1BXhPuu7F3r8r8-2-Bk8IJPyh9KjqU&amp;viz=MAP&amp;h=false&amp;lat=39.59219370720537&amp;lng=117.67836343383783&amp;t=1&amp;z=2&amp;l=col14&amp;y=2&amp;tmplt=2&amp;hml=TWO_COL_LAT_LNG"></iframe></div>
 </div>
 
-<script>
+<!-- Old Mapquest map -->
+<!-- <script>
     //layer = L.tileLayer("https://otile{s}-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: 'Tiles courtesy <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
     //layer = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 14, subdomains: "1234", attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'});
 
@@ -71,12 +72,13 @@ img.icon { max-width: 50%; image-rendering: optimizeQuality; border: 1px solid b
     map.addLayer(markers);
     var bounds = L.latLngBounds(markerArray);
     map.fitBounds(bounds);
-</script>
+</script>  -->
+
 
 <p style="font-size: 12pt; line-height: 20pt;", align="center">
-    <strong>Public studies stored:</strong> {{experiment_count|default:"14"}}<br/>
-    <strong>Public datasets stored:</strong> {{dataset_count|default:"331"}}<br/>
-    <strong>Public files stored:</strong> {{datafile_count|default:"2104"}}<br/>
-    <strong>Public data stored (at least):</strong> {{datafile_size|default:"3.1 Tb"}}<br/>
+    <strong>Studies stored:</strong> {{experiment_count|default:"16"}}<br/>
+    <strong>Datasets stored:</strong> {{dataset_count|default:"497"}}<br/>
+    <strong>Files stored:</strong> {{datafile_count|default:"2104"}}<br/>
+    <strong>Data stored (at least):</strong> {{datafile_size|filesizeformat|default:"3.1 Tb"}}<br/>
 </p>
 {% endblock content %}
