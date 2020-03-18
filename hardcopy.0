@@ -1,0 +1,49 @@
+[oagr@eRSA440 mytardis]$ bin/gunicorn -c gunicorn_settings.py mytardis_wsgi --bind 127.0.0.1:8080
+[2020-02-24 17:25:47 +0000] [1440] [INFO] Starting gunicorn 19.3.0
+[2020-02-24 17:25:47 +0000] [1440] [INFO] Listening at: http://127.0.0.1:8080 (1440)
+[2020-02-24 17:25:47 +0000] [1440] [INFO] Using worker: sync
+[2020-02-24 17:25:47 +0000] [1445] [INFO] Booting worker with pid: 1445
+[2020-02-24 17:25:47 +0000] [1446] [INFO] Booting worker with pid: 1446
+[2020-02-24 17:25:47 +0000] [1447] [INFO] Booting worker with pid: 1447
+[2020-02-24 17:25:48 +0000] [1448] [INFO] Booting worker with pid: 1448
+[2020-02-24 17:25:48 +0000] [1449] [INFO] Booting worker with pid: 1449
+[2020-02-24 17:25:48 +0000] [1450] [INFO] Booting worker with pid: 1450
+[2020-02-24 17:25:48 +0000] [1451] [INFO] Booting worker with pid: 1451
+[2020-02-24 17:25:48 +0000] [1452] [INFO] Booting worker with pid: 1452
+[2020-02-24 17:25:48 +0000] [1453] [INFO] Booting worker with pid: 1453
+[2020-02-24 17:25:48 +0000] [1454] [INFO] Booting worker with pid: 1454
+[2020-02-24 17:25:48 +0000] [1455] [INFO] Booting worker with pid: 1455
+[2020-02-24 17:25:48 +0000] [1456] [INFO] Booting worker with pid: 1456
+[2020-02-24 17:25:48 +0000] [1457] [INFO] Booting worker with pid: 1457
+[2020-02-24 17:25:49 +0000] [1458] [INFO] Booting worker with pid: 1458
+[2020-02-24 17:25:49 +0000] [1459] [INFO] Booting worker with pid: 1459
+[2020-02-24 17:25:49 +0000] [1460] [INFO] Booting worker with pid: 1460
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

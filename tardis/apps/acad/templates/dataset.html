@@ -1,7 +1,7 @@
 {# A section of block content in view_dataset #}
 {% load linkify_pubid %}
 
-{% if dataset.analysis.processing_set|length > 0 %}
+{% if dataset.analysis.processing_set.count|length > 0 %}
 <p>Choose a pipeline:</p>
 <select id="pipelines">
     {% for i in dataset.analysis.processing_set.all %}

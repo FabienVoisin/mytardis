@@ -223,6 +223,7 @@ def index(request):
     analysis_list=Analysis.objects.filter(dataset__pk__in=dataset_ids).values_list('id', flat=True)
     processing_list=Processing.objects.filter(analysis__pk__in=analysis_list)
     valid_sources = list(Source.objects.filter(sample__extract__library__sequence__processing__pk__in=processing_list).exclude(id="ACADLab").select_related().all().distinct())
+    #context = {'sources': valid_sources}
     # using count() is more efficient than using len() on a query set
     cursor = connection.cursor()
     if cursor.db.vendor == 'postgresql':
@@ -241,6 +242,7 @@ def index(request):
         'datafile_size': datafile_size,
         'subtitle': 'Stats',
     })
+    #return HttpResponse(render_response_index(request, 'tardis_portal/index.html', context))
     return HttpResponse(render_response_index(request, 'tardis_portal/index.html', c))
     """
     status = ''
